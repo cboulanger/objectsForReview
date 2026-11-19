@@ -523,7 +523,7 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 		);
 		$templateMgr->addStylesheet(
 			'ObjectsForReviewGridHandlerStyles',
-			'.objectsForReviewWorkflowGrid { margin: 1rem; } .orDoiLookup .orDoiLookupButton, .orDoiLookup .orDoiLookupStatus { margin-left: 0.5em; }'
+			'.objectsForReviewWorkflowGrid { margin: 1rem; } .orIdLookup .orIdLookupButton, .orIdLookup .orIdLookupStatus { margin-left: 0.5em; }'
 				. ' .objectsForReviewManagement .ofrTable { width: 100%; border-collapse: collapse; }'
 				. ' .objectsForReviewManagement .ofrTable th, .objectsForReviewManagement .ofrTable td { text-align: left; vertical-align: top; padding: 0.75rem 1rem; border-bottom: 1px solid #ddd; }'
 				. ' .objectsForReviewManagement .ofrIdentifier { margin-top: 0.25rem; font-size: 0.875rem; }'

@@ -150,7 +150,7 @@ class ObjectForReview extends \PKP\core\DataObject {
 	}
 
 	/**
-	 * Get a URL for the identifier, if it can be linked (DOI or web link).
+	 * Get a URL for the identifier, if it can be linked (DOI, ISBN via WorldCat, or web link).
 	 * @return string|null
 	 */
 	function getIdentifierUrl() {
@@ -158,6 +158,8 @@ class ObjectForReview extends \PKP\core\DataObject {
 		switch (strtolower((string) $this->getData('identifierType'))) {
 			case 'doi':
 				return CrossrefLookup::doiUrl($identifier);
+			case 'isbn':
+				return IsbnLookup::worldcatUrl($identifier);
 			case 'link':
 				return preg_match('#^https?://#i', $identifier) ? $identifier : null;
 		}

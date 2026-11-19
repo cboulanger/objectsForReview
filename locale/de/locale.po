@@ -333,3 +333,21 @@ msgstr "Bitte ganze Monatszahlen angeben (höchstens 24); die Voreinstellung dar
 
 msgid "plugins.generic.objectsForReview.contract.default"
 msgstr "<p>Mit der Reservierung dieses Werks stimmen Sie folgenden Bedingungen zu:</p><ul><li>Sie verfassen eine Rezension des Werks und reichen sie bis zu dem von Ihnen gewählten Abgabetermin bei der Zeitschrift ein.</li><li>Wenn Sie den Termin nicht einhalten können, informieren Sie die Redaktion so früh wie möglich.</li><li>Wenn Sie die Reservierung stornieren oder keine Rezension einreichen, kann die Redaktion Sie bitten, ein erhaltenes Rezensionsexemplar zurückzusenden.</li><li>Ihre Rezension durchläuft das übliche redaktionelle Verfahren der Zeitschrift; die Einreichung garantiert keine Veröffentlichung.</li></ul>"
+
+msgid "plugins.generic.objectsForReview.isbnLookup.button"
+msgstr "ISBN nachschlagen"
+
+msgid "plugins.generic.objectsForReview.isbnLookup.loading"
+msgstr "Metadaten werden abgerufen (Crossref, Open Library)…"
+
+msgid "plugins.generic.objectsForReview.isbnLookup.done"
+msgstr "Metadaten von {$source} übernommen. Bitte prüfen Sie die Felder vor dem Speichern."
+
+msgid "plugins.generic.objectsForReview.isbnLookup.failed"
+msgstr "Die Abfrage ist fehlgeschlagen. Bitte versuchen Sie es später erneut oder geben Sie die Metadaten manuell ein."
+
+msgid "plugins.generic.objectsForReview.isbnLookup.notFound"
+msgstr "Zu dieser ISBN wurden keine Metadaten gefunden (durchsucht: Crossref, Open Library). Bitte geben Sie die Metadaten manuell ein."
+
+msgid "plugins.generic.objectsForReview.isbnLookup.invalid"
+msgstr "Bitte geben Sie eine gültige ISBN-10 oder ISBN-13 ein, z. B. 978-3-658-45780-8."

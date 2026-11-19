@@ -35,7 +35,8 @@
 		{fbvFormSection label="plugins.generic.objectsForReview.itemIdentifier" for="identifier"}
 			{fbvElement type="text" id="identifier" value=$identifier maxlength="255" inline=true multilingual=false size=$fbvStyles.size.MEDIUM}
 			{capture assign="doiLookupUrl"}{url router=\PKP\core\PKPApplication::ROUTE_COMPONENT component="plugins.generic.objectsForReview.controllers.grid.ObjectsForReviewManagementGridHandler" op="lookupDoi" escape=false}{/capture}
-			{include file=$doiLookupTemplate doiLookupUrl=$doiLookupUrl}
+			{capture assign="isbnLookupUrl"}{url router=\PKP\core\PKPApplication::ROUTE_COMPONENT component="plugins.generic.objectsForReview.controllers.grid.ObjectsForReviewManagementGridHandler" op="lookupIsbn" escape=false}{/capture}
+			{include file=$identifierLookupTemplate doiLookupUrl=$doiLookupUrl isbnLookupUrl=$isbnLookupUrl}
 		{/fbvFormSection}
 
 		{fbvFormSection label="plugins.generic.objectsForReview.itemAuthors" for="authors"}

@@ -87,7 +87,7 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 		$templateMgr->assign('objectId', $this->objectId);
 		$templateMgr->assign('identifierTypes', $identifierTypes);
 		$templateMgr->assign('resourceTypes', $resourceTypes);
-		$templateMgr->assign('doiLookupTemplate', $this->plugin->getTemplateResource('doiLookup.tpl'));
+		$templateMgr->assign('identifierLookupTemplate', $this->plugin->getTemplateResource('identifierLookup.tpl'));
 		return parent::fetch($request);
 	}
 

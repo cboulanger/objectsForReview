@@ -313,3 +313,21 @@ msgstr "Anna kuukaudet kokonaislukuina (enintään 24); oletus ei saa ylittää 
 
 msgid "plugins.generic.objectsForReview.contract.default"
 msgstr "<p>Varaamalla tämän julkaisun hyväksyt seuraavat ehdot:</p><ul><li>Kirjoitat julkaisusta arvion ja lähetät sen lehdelle valitsemaasi määräpäivään mennessä.</li><li>Jos et ehdi toimittaa arviota ajallaan, ilmoitat toimitukselle mahdollisimman pian.</li><li>Jos perut varauksen tai et toimita arviota, toimitus voi pyytää sinua palauttamaan saamasi arvostelukappaleen.</li><li>Arviosi käy läpi lehden tavanomaisen toimitusprosessin; lähettäminen ei takaa julkaisua.</li></ul>"
+
+msgid "plugins.generic.objectsForReview.isbnLookup.button"
+msgstr "Hae ISBN"
+
+msgid "plugins.generic.objectsForReview.isbnLookup.loading"
+msgstr "Haetaan metatietoja (Crossref, Open Library)…"
+
+msgid "plugins.generic.objectsForReview.isbnLookup.done"
+msgstr "Metatiedot haettu lähteestä {$source}. Tarkista kentät ennen tallentamista."
+
+msgid "plugins.generic.objectsForReview.isbnLookup.failed"
+msgstr "Haku epäonnistui. Yritä myöhemmin uudelleen tai syötä metatiedot käsin."
+
+msgid "plugins.generic.objectsForReview.isbnLookup.notFound"
+msgstr "Tälle ISBN:lle ei löytynyt metatietoja (haettu: Crossref, Open Library). Syötä metatiedot käsin."
+
+msgid "plugins.generic.objectsForReview.isbnLookup.invalid"
+msgstr "Anna kelvollinen ISBN-10 tai ISBN-13, esim. 978-3-658-45780-8."

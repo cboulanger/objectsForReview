@@ -334,3 +334,21 @@ msgstr "Please enter whole numbers of months (at most 24); the default must not 
 
 msgid "plugins.generic.objectsForReview.contract.default"
 msgstr "<p>By reserving this work you agree to the following terms:</p><ul><li>You will write a review of the work and submit it to the journal by the due date you choose.</li><li>If you cannot deliver the review on time, you will inform the editors as early as possible.</li><li>If you cancel the reservation or do not deliver the review, the editors may ask you to return a review copy you received.</li><li>Your review goes through the journal's usual editorial process; submitting it does not guarantee publication.</li></ul>"
+
+msgid "plugins.generic.objectsForReview.isbnLookup.button"
+msgstr "Look up ISBN"
+
+msgid "plugins.generic.objectsForReview.isbnLookup.loading"
+msgstr "Looking up metadata (Crossref, Open Library)…"
+
+msgid "plugins.generic.objectsForReview.isbnLookup.done"
+msgstr "Metadata filled in from {$source}. Please check the fields before saving."
+
+msgid "plugins.generic.objectsForReview.isbnLookup.failed"
+msgstr "The lookup failed. Please try again later or enter the metadata manually."
+
+msgid "plugins.generic.objectsForReview.isbnLookup.notFound"
+msgstr "No metadata found for this ISBN (searched Crossref and Open Library). Please enter the metadata manually."
+
+msgid "plugins.generic.objectsForReview.isbnLookup.invalid"
+msgstr "Please enter a valid ISBN-10 or ISBN-13, e.g. 978-3-658-45780-8."

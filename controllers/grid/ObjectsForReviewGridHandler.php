@@ -18,6 +18,7 @@ namespace APP\plugins\generic\objectsForReview\controllers\grid;
 use APP\core\Application;
 
 use APP\plugins\generic\objectsForReview\classes\CrossrefLookup;
+use APP\plugins\generic\objectsForReview\classes\IsbnLookup;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
 use APP\plugins\generic\objectsForReview\controllers\grid\form\ObjectsForReviewForm;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridRow;
@@ -48,7 +49,7 @@ class ObjectsForReviewGridHandler extends GridHandler {
 
 		$this->addRoleAssignment(
 			array(Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_ASSISTANT, Role::ROLE_ID_AUTHOR),
-			array('fetchGrid', 'fetchRow', 'addObjectForReview', 'editObjectForReview', 'updateObjectForReview', 'deleteObjectForReview','addReservedObjectForReview', 'lookupDoi')
+			array('fetchGrid', 'fetchRow', 'addObjectForReview', 'editObjectForReview', 'updateObjectForReview', 'deleteObjectForReview','addReservedObjectForReview', 'lookupDoi', 'lookupIsbn')
 		);
 	}
 
@@ -368,6 +369,16 @@ class ObjectsForReviewGridHandler extends GridHandler {
 	 */
 	function lookupDoi($args, $request) {
 		return CrossrefLookup::handleRequest($request);
+	}
+
+	/**
+	 * Look up metadata for an ISBN (Open Library, Crossref)
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage
+	 */
+	function lookupIsbn($args, $request) {
+		return IsbnLookup::handleRequest($request);
 	}
 
 }
