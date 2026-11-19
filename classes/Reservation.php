@@ -30,9 +30,19 @@ class Reservation {
 	const DEFAULT_DUE_MONTHS = 3;
 	const DEFAULT_MAX_DUE_MONTHS = 6;
 	const MAX_DUE_MONTHS_LIMIT = 24;
+	const DEFAULT_REMINDER_DAYS = 14;
+	const MAX_REMINDER_DAYS = 90;
+
+	/**
+	 * Days before the due date on which the reminder is sent (0: no reminder).
+	 */
+	public static function getReminderDays($plugin, int $contextId): int {
+		$days = $plugin->getSetting($contextId, 'ofrReminderDays');
+		return $days === null ? self::DEFAULT_REMINDER_DAYS : (int) $days;
+	}
 
 	/** Reservation data stored as object settings (see ObjectForReviewDAO::getAdditionalFieldNames()) */
-	const FIELDS = ['dateReserved', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote'];
+	const FIELDS = ['dateReserved', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote', 'reminderSent'];
 
 	/** Personal data that is erased once it is no longer needed */
 	const PERSONAL_FIELDS = ['shippingAddress', 'phone'];
@@ -164,6 +174,7 @@ class Reservation {
 			'shippingAddress' => $object->getData('shippingAddress'),
 			'phone' => $object->getData('phone'),
 			'copyNote' => $object->getData('copyNote'),
+			'reminderSent' => $object->getData('reminderSent'),
 		];
 	}
 

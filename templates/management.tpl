@@ -42,6 +42,7 @@
 							<th>{translate key="plugins.generic.objectsForReview.column.reservedBy"}</th>
 							<th>{translate key="plugins.generic.objectsForReview.column.dates"}</th>
 							<th>{translate key="plugins.generic.objectsForReview.reserve.copy"}</th>
+							<th><span class="pkp_screen_reader">{translate key="common.actions"}</span></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -52,12 +53,18 @@
 								<td class="ofrNoWrap">
 									{if $row.dateReserved}{translate key="plugins.generic.objectsForReview.column.reservedOn"}: {$row.dateReserved|date_format:$dateFormatShort}<br />{/if}
 									{if $row.dueDate}<strong>{translate key="plugins.generic.objectsForReview.reserve.dueDate"}: {$row.dueDate|date_format:$dateFormatShort}</strong>{/if}
+									{if $row.reminderSent}<br />{translate key="plugins.generic.objectsForReview.column.reminderSent"}: {$row.reminderSent|date_format:$dateFormatShort}{/if}
 								</td>
 								<td>
 									{$row.copyPreferenceLabel|escape}
 									{if $row.shippingAddress}<div class="ofrDetail">{$row.shippingAddress|escape|nl2br}</div>{/if}
 									{if $row.phone}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.reserve.phone"}: {$row.phone|escape}</div>{/if}
 									{if $row.copyNote}<div class="ofrDetail">{$row.copyNote|escape|nl2br}</div>{/if}
+								</td>
+								<td class="ofrActions">
+									{foreach from=$row.actions item=action}
+										{include file="linkAction/linkAction.tpl" action=$action contextId="ofrReservations"}
+									{/foreach}
 								</td>
 							</tr>
 						{/foreach}
@@ -66,6 +73,12 @@
 			{else}
 				<p>{translate key="plugins.generic.objectsForReview.reservations.none"}</p>
 			{/if}
+			<script>
+				// Reload after a reservation was emailed or cancelled in a modal
+				$(function() {ldelim}
+					$('.objectsForReviewManagement').on('dataChanged', function() {ldelim} window.location.reload(); {rdelim});
+				{rdelim});
+			</script>
 
 		{elseif $view == 'reviewedWorks'}
 			{if $rows|@count}

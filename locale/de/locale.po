@@ -351,3 +351,81 @@ msgstr "Zu dieser ISBN wurden keine Metadaten gefunden (durchsucht: Crossref, Op
 
 msgid "plugins.generic.objectsForReview.isbnLookup.invalid"
 msgstr "Bitte geben Sie eine gültige ISBN-10 oder ISBN-13 ein, z. B. 978-3-658-45780-8."
+
+msgid "plugins.generic.objectsForReview.history"
+msgstr "Verlauf"
+
+msgid "plugins.generic.objectsForReview.history.empty"
+msgstr "Noch keine Einträge."
+
+msgid "plugins.generic.objectsForReview.history.system"
+msgstr "automatisch"
+
+msgid "plugins.generic.objectsForReview.history.email"
+msgstr "E-Mail"
+
+msgid "plugins.generic.objectsForReview.history.email.message"
+msgstr "E-Mail an die rezensierende Person"
+
+msgid "plugins.generic.objectsForReview.history.email.cancelledByEditor"
+msgstr "Benachrichtigung über die Aufhebung gesendet"
+
+msgid "plugins.generic.objectsForReview.history.email.reminder"
+msgstr "Erinnerung gesendet"
+
+msgid "plugins.generic.objectsForReview.history.event.reserved"
+msgstr "Reserviert von {$recipientName}, fällig am {$reviewDueDate}"
+
+msgid "plugins.generic.objectsForReview.history.event.cancelledByReviewer"
+msgstr "Reservierung storniert von {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.cancelledByEditor"
+msgstr "Reservierung von {$recipientName} durch die Redaktion aufgehoben"
+
+msgid "plugins.generic.objectsForReview.history.event.attached"
+msgstr "Von {$recipientName} der Einreichung #{$submissionId} zugeordnet"
+
+msgid "plugins.generic.objectsForReview.reservations.email"
+msgstr "E-Mail senden"
+
+msgid "plugins.generic.objectsForReview.reservations.email.submit"
+msgstr "Senden"
+
+msgid "plugins.generic.objectsForReview.reservations.cancel"
+msgstr "Reservierung aufheben"
+
+msgid "plugins.generic.objectsForReview.reservations.cancel.description"
+msgstr "Die Reservierung von {$reviewer} aufheben? Das Werk wird danach wieder zur Rezension angeboten."
+
+msgid "plugins.generic.objectsForReview.reservations.cancel.sendEmail"
+msgstr "Rezensierende Person per E-Mail benachrichtigen"
+
+msgid "plugins.generic.objectsForReview.reservations.cancel.submit"
+msgstr "Reservierung aufheben"
+
+msgid "plugins.generic.objectsForReview.reservations.notReserved"
+msgstr "Dieses Objekt ist nicht (mehr) reserviert."
+
+msgid "plugins.generic.objectsForReview.reservations.subjectRequired"
+msgstr "Bitte geben Sie einen Betreff ein."
+
+msgid "plugins.generic.objectsForReview.reservations.bodyRequired"
+msgstr "Bitte geben Sie eine Nachricht ein."
+
+msgid "plugins.generic.objectsForReview.column.reminderSent"
+msgstr "Erinnerung gesendet"
+
+msgid "plugins.generic.objectsForReview.settings.reminderDays"
+msgstr "Erinnerung"
+
+msgid "plugins.generic.objectsForReview.settings.reminderDays.description"
+msgstr "Tage vor dem Abgabetermin, an dem Rezensierende automatisch erinnert werden (0: keine Erinnerung)"
+
+msgid "plugins.generic.objectsForReview.settings.reminderDays.invalid"
+msgstr "Bitte geben Sie eine ganze Zahl von Tagen zwischen 0 und 90 ein."
+
+msgid "plugins.generic.objectsForReview.reminder.taskName"
+msgstr "Rezensionsangebote: Erinnerungen vor dem Abgabetermin"
+
+msgid "plugins.generic.objectsForReview.reminder.sent"
+msgstr "{$count} Erinnerung(en) für {$context} gesendet."

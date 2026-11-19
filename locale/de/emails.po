@@ -45,3 +45,39 @@ msgstr ""
 
 msgid "emails.ofrCancelReservation.description"
 msgstr "Diese E-Mail benachrichtigt die Redaktion, wenn die Reservierung eines Rezensionsobjekts storniert wurde."
+
+msgid "emails.ofrMessage.name"
+msgstr "Nachricht an die rezensierende Person"
+
+msgid "emails.ofrMessage.description"
+msgstr "Wird von der Redaktion an die Person gesendet, die ein Rezensionsangebot reserviert hat."
+
+msgid "emails.ofrMessage.subject"
+msgstr "Ihr reserviertes Rezensionsexemplar ({$contextName})"
+
+msgid "emails.ofrMessage.body"
+msgstr "<p>Liebe/r {$recipientName},</p><p>wir schreiben Ihnen zu dem von Ihnen zur Rezension reservierten Werk:<br />{$objectDescription}<br />Abgabetermin Ihrer Rezension: {$dueDate}</p><p></p><p>Mit freundlichen Grüßen<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrCancelByEditor.name"
+msgstr "Reservierung durch die Redaktion aufgehoben"
+
+msgid "emails.ofrCancelByEditor.description"
+msgstr "Benachrichtigt die Person, die ein Rezensionsangebot reserviert hat, dass die Redaktion die Reservierung aufgehoben hat."
+
+msgid "emails.ofrCancelByEditor.subject"
+msgstr "Ihre Reservierung wurde aufgehoben ({$contextName})"
+
+msgid "emails.ofrCancelByEditor.body"
+msgstr "<p>Liebe/r {$recipientName},</p><p>da wir nichts von Ihnen gehört haben, haben wir Ihre Reservierung des folgenden Werks zur Rezension aufgehoben:<br />{$objectDescription}</p><p>Bei Fragen wenden Sie sich bitte an uns.</p><p>Mit freundlichen Grüßen<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrReminder.name"
+msgstr "Erinnerung vor dem Abgabetermin"
+
+msgid "emails.ofrReminder.description"
+msgstr "Wird automatisch eine einstellbare Anzahl von Tagen vor dem Abgabetermin an die Person gesendet, die ein Rezensionsangebot reserviert hat."
+
+msgid "emails.ofrReminder.subject"
+msgstr "Erinnerung: Ihre Rezension ist am {$dueDate} fällig"
+
+msgid "emails.ofrReminder.body"
+msgstr "<p>Liebe/r {$recipientName},</p><p>wir möchten Sie freundlich daran erinnern, dass Ihre Rezension des folgenden Werks am <strong>{$dueDate}</strong> fällig ist:<br />{$objectDescription}</p><p>Wenn Sie mehr Zeit benötigen, wenden Sie sich bitte so bald wie möglich an die Redaktion.</p><p>Mit freundlichen Grüßen<br />{$contextName}</p>"

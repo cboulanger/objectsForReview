@@ -352,3 +352,81 @@ msgstr "No metadata found for this ISBN (searched Crossref and Open Library). Pl
 
 msgid "plugins.generic.objectsForReview.isbnLookup.invalid"
 msgstr "Please enter a valid ISBN-10 or ISBN-13, e.g. 978-3-658-45780-8."
+
+msgid "plugins.generic.objectsForReview.history"
+msgstr "History"
+
+msgid "plugins.generic.objectsForReview.history.empty"
+msgstr "No entries yet."
+
+msgid "plugins.generic.objectsForReview.history.system"
+msgstr "automatically"
+
+msgid "plugins.generic.objectsForReview.history.email"
+msgstr "Email"
+
+msgid "plugins.generic.objectsForReview.history.email.message"
+msgstr "Email to the reviewer"
+
+msgid "plugins.generic.objectsForReview.history.email.cancelledByEditor"
+msgstr "Cancellation notice sent"
+
+msgid "plugins.generic.objectsForReview.history.email.reminder"
+msgstr "Reminder sent"
+
+msgid "plugins.generic.objectsForReview.history.event.reserved"
+msgstr "Reserved by {$recipientName}, due {$reviewDueDate}"
+
+msgid "plugins.generic.objectsForReview.history.event.cancelledByReviewer"
+msgstr "Reservation cancelled by {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.cancelledByEditor"
+msgstr "Reservation of {$recipientName} cancelled by the editors"
+
+msgid "plugins.generic.objectsForReview.history.event.attached"
+msgstr "Attached to submission #{$submissionId} by {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.reservations.email"
+msgstr "Send email"
+
+msgid "plugins.generic.objectsForReview.reservations.email.submit"
+msgstr "Send"
+
+msgid "plugins.generic.objectsForReview.reservations.cancel"
+msgstr "Cancel reservation"
+
+msgid "plugins.generic.objectsForReview.reservations.cancel.description"
+msgstr "Cancel the reservation of {$reviewer}? The work will be offered for review again."
+
+msgid "plugins.generic.objectsForReview.reservations.cancel.sendEmail"
+msgstr "Notify the reviewer by email"
+
+msgid "plugins.generic.objectsForReview.reservations.cancel.submit"
+msgstr "Cancel reservation"
+
+msgid "plugins.generic.objectsForReview.reservations.notReserved"
+msgstr "This object is not reserved (any more)."
+
+msgid "plugins.generic.objectsForReview.reservations.subjectRequired"
+msgstr "Please enter a subject."
+
+msgid "plugins.generic.objectsForReview.reservations.bodyRequired"
+msgstr "Please enter a message."
+
+msgid "plugins.generic.objectsForReview.column.reminderSent"
+msgstr "Reminder sent"
+
+msgid "plugins.generic.objectsForReview.settings.reminderDays"
+msgstr "Reminder"
+
+msgid "plugins.generic.objectsForReview.settings.reminderDays.description"
+msgstr "Days before the due date on which reviewers are reminded automatically (0: no reminder)"
+
+msgid "plugins.generic.objectsForReview.settings.reminderDays.invalid"
+msgstr "Please enter a whole number of days between 0 and 90."
+
+msgid "plugins.generic.objectsForReview.reminder.taskName"
+msgstr "Objects for review: reminders before the due date"
+
+msgid "plugins.generic.objectsForReview.reminder.sent"
+msgstr "{$count} reminder(s) sent for {$context}."

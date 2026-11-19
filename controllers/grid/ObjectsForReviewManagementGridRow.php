@@ -56,6 +56,20 @@ class ObjectsForReviewManagementGridRow extends GridRow {
 				)
 			);
 
+			// Audit trail of the object's reservations
+			$this->addAction(
+				new LinkAction(
+					'history',
+					new AjaxModal(
+						$request->getDispatcher()->url($request, \APP\core\Application::ROUTE_COMPONENT, null,
+							\APP\plugins\generic\objectsForReview\controllers\ReservationActionsHandler::COMPONENT, 'history', null, ['objectId' => $objectId]),
+						__('plugins.generic.objectsForReview.history'),
+						'modal_information'),
+					__('plugins.generic.objectsForReview.history'),
+					'history'
+				)
+			);
+
 			// Create the "delete" action
 			$this->addAction(
 				new LinkAction(

@@ -47,6 +47,10 @@
 			{fbvElement type="text" label="plugins.generic.objectsForReview.settings.dueMonthsMax" id="ofrDueMonthsMax" value=$ofrDueMonthsMax maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
 		{/fbvFormSection}
 
+		{fbvFormSection label="plugins.generic.objectsForReview.settings.reminderDays" description="plugins.generic.objectsForReview.settings.reminderDays.description"}
+			{fbvElement type="text" id="ofrReminderDays" value=$ofrReminderDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
+		{/fbvFormSection}
+
 		{if $standalone}
 			{fbvFormButtons hideCancel=true submitText="common.save"}
 		{else}

@@ -20,6 +20,7 @@ use APP\core\Application;
 use APP\plugins\generic\objectsForReview\classes\CrossrefLookup;
 use APP\plugins\generic\objectsForReview\classes\IsbnLookup;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
+use APP\plugins\generic\objectsForReview\classes\ReservationLog;
 use APP\plugins\generic\objectsForReview\controllers\grid\form\ObjectsForReviewForm;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridRow;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridCellProvider;
@@ -323,6 +324,8 @@ class ObjectsForReviewGridHandler extends GridHandler {
 		// Shipping address and phone are no longer needed
 		Reservation::erasePersonalData($objectForReview);
 		$objectForReviewDao->updateObject($objectForReview);
+		ReservationLog::logEvent($objectForReview, ReservationLog::EVENT_ATTACHED, $currentUser, $currentUser,
+			['submissionId' => $submissionId]);
 
 		$json = DAO::getDataChangedEvent($submissionId);
 		$json->setGlobalEvent('plugin:objectsForReview:added', $this->plugin->getObjectForReviewData($objectForReview));

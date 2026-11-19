@@ -45,6 +45,9 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'ofrDueMonthsDefault', 'required',
 			'plugins.generic.objectsForReview.settings.dueMonths.invalid',
 			fn ($default) => ctype_digit((string) $default) && $default >= 1 && $default <= (int) $this->getData('ofrDueMonthsMax')));
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'ofrReminderDays', 'required',
+			'plugins.generic.objectsForReview.settings.reminderDays.invalid',
+			fn ($days) => ctype_digit((string) $days) && $days <= Reservation::MAX_REMINDER_DAYS));
 		$this->addCheck(new \PKP\form\validation\FormValidatorPost($this));
 		$this->addCheck(new \PKP\form\validation\FormValidatorCSRF($this));
 	}
@@ -64,6 +67,7 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 			'ofrContract' => $this->_plugin->getSetting($this->_journalId, 'ofrContract'),
 		);
 		[$this->_data['ofrDueMonthsDefault'], $this->_data['ofrDueMonthsMax']] = Reservation::getDueMonths($this->_plugin, $this->_journalId);
+		$this->_data['ofrReminderDays'] = Reservation::getReminderDays($this->_plugin, $this->_journalId);
 		// Prefill the contract with the default text
 		if (empty(array_filter((array) $this->_data['ofrContract']))) {
 			$contract = [];
@@ -78,7 +82,7 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 	 * Assign form data to user-submitted data.
 	 */
 	function readInputData() {
-		$this->readUserVars(array('displayAsSubtitle', 'displayAsList', 'onlyReserved', 'ofrNotifyEmail', 'ofrInstructions', 'ofrContract', 'ofrDueMonthsDefault', 'ofrDueMonthsMax'));
+		$this->readUserVars(array('displayAsSubtitle', 'displayAsList', 'onlyReserved', 'ofrNotifyEmail', 'ofrInstructions', 'ofrContract', 'ofrDueMonthsDefault', 'ofrDueMonthsMax', 'ofrReminderDays'));
 	}
 
 	/**
@@ -106,6 +110,7 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 		$this->_plugin->updateSetting($this->_journalId, 'ofrContract', $this->getData('ofrContract'));
 		$this->_plugin->updateSetting($this->_journalId, 'ofrDueMonthsDefault', (int) $this->getData('ofrDueMonthsDefault'), 'int');
 		$this->_plugin->updateSetting($this->_journalId, 'ofrDueMonthsMax', (int) $this->getData('ofrDueMonthsMax'), 'int');
+		$this->_plugin->updateSetting($this->_journalId, 'ofrReminderDays', (int) $this->getData('ofrReminderDays'), 'int');
 
 	}
 }

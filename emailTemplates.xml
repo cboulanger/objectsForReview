@@ -12,4 +12,7 @@
 <emails>
   <email key="OFR_NEW_RESERVATION" subject="emails.ofrNewReservation.subject" name="emails.ofrNewReservation.name" body="emails.ofrNewReservation.body"/>
   <email key="OFR_CANCEL_RESERVATION" subject="emails.ofrCancelReservation.subject" name="emails.ofrCancelReservation.name" body="emails.ofrCancelReservation.body"/>
+  <email key="OFR_MESSAGE" subject="emails.ofrMessage.subject" name="emails.ofrMessage.name" body="emails.ofrMessage.body"/>
+  <email key="OFR_CANCEL_BY_EDITOR" subject="emails.ofrCancelByEditor.subject" name="emails.ofrCancelByEditor.name" body="emails.ofrCancelByEditor.body"/>
+  <email key="OFR_REMINDER" subject="emails.ofrReminder.subject" name="emails.ofrReminder.name" body="emails.ofrReminder.body"/>
 </emails>

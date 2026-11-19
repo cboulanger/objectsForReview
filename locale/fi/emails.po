@@ -49,3 +49,38 @@ msgstr "This email template is used to notify the editor for a cancelled OFR ite
 
 msgid "emails.ofrCancelReservation.name"
 msgstr "Notify the editor for a cancelled OFR item reservation."
+msgid "emails.ofrMessage.name"
+msgstr "Viesti varauksen tehneelle arvioijalle"
+
+msgid "emails.ofrMessage.description"
+msgstr "Toimitus lähettää tämän henkilölle, joka on varannut julkaisun arvioitavaksi."
+
+msgid "emails.ofrMessage.subject"
+msgstr "Varaamasi arvioitava julkaisu ({$contextName})"
+
+msgid "emails.ofrMessage.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>koskien julkaisua, jonka olet varannut arvioitavaksi:<br />{$objectDescription}<br />Arviosi määräpäivä: {$dueDate}</p><p></p><p>Ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrCancelByEditor.name"
+msgstr "Toimitus perui varauksen"
+
+msgid "emails.ofrCancelByEditor.description"
+msgstr "Ilmoittaa julkaisun arvioitavaksi varanneelle henkilölle, että toimitus on perunut varauksen."
+
+msgid "emails.ofrCancelByEditor.subject"
+msgstr "Varauksesi on peruttu ({$contextName})"
+
+msgid "emails.ofrCancelByEditor.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>koska emme ole kuulleet sinusta, olemme peruneet seuraavan julkaisun arviointivarauksesi:<br />{$objectDescription}</p><p>Jos sinulla on kysyttävää, ota meihin yhteyttä.</p><p>Ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrReminder.name"
+msgstr "Muistutus ennen määräpäivää"
+
+msgid "emails.ofrReminder.description"
+msgstr "Lähetetään automaattisesti julkaisun arvioitavaksi varanneelle henkilölle asetettavan määrän päiviä ennen määräpäivää."
+
+msgid "emails.ofrReminder.subject"
+msgstr "Muistutus: arviosi määräpäivä on {$dueDate}"
+
+msgid "emails.ofrReminder.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>muistutamme ystävällisesti, että seuraavan julkaisun arviosi määräpäivä on <strong>{$dueDate}</strong>:<br />{$objectDescription}</p><p>Jos tarvitset lisää aikaa, ota yhteyttä toimitukseen mahdollisimman pian.</p><p>Ystävällisin terveisin<br />{$contextName}</p>"

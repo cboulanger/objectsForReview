@@ -331,3 +331,81 @@ msgstr "Tälle ISBN:lle ei löytynyt metatietoja (haettu: Crossref, Open Library
 
 msgid "plugins.generic.objectsForReview.isbnLookup.invalid"
 msgstr "Anna kelvollinen ISBN-10 tai ISBN-13, esim. 978-3-658-45780-8."
+
+msgid "plugins.generic.objectsForReview.history"
+msgstr "Historia"
+
+msgid "plugins.generic.objectsForReview.history.empty"
+msgstr "Ei merkintöjä."
+
+msgid "plugins.generic.objectsForReview.history.system"
+msgstr "automaattisesti"
+
+msgid "plugins.generic.objectsForReview.history.email"
+msgstr "Sähköposti"
+
+msgid "plugins.generic.objectsForReview.history.email.message"
+msgstr "Sähköposti arvioijalle"
+
+msgid "plugins.generic.objectsForReview.history.email.cancelledByEditor"
+msgstr "Peruutusilmoitus lähetetty"
+
+msgid "plugins.generic.objectsForReview.history.email.reminder"
+msgstr "Muistutus lähetetty"
+
+msgid "plugins.generic.objectsForReview.history.event.reserved"
+msgstr "{$recipientName} varasi, määräpäivä {$reviewDueDate}"
+
+msgid "plugins.generic.objectsForReview.history.event.cancelledByReviewer"
+msgstr "{$recipientName} perui varauksen"
+
+msgid "plugins.generic.objectsForReview.history.event.cancelledByEditor"
+msgstr "Toimitus perui käyttäjän {$recipientName} varauksen"
+
+msgid "plugins.generic.objectsForReview.history.event.attached"
+msgstr "{$recipientName} liitti käsikirjoitukseen #{$submissionId}"
+
+msgid "plugins.generic.objectsForReview.reservations.email"
+msgstr "Lähetä sähköposti"
+
+msgid "plugins.generic.objectsForReview.reservations.email.submit"
+msgstr "Lähetä"
+
+msgid "plugins.generic.objectsForReview.reservations.cancel"
+msgstr "Peru varaus"
+
+msgid "plugins.generic.objectsForReview.reservations.cancel.description"
+msgstr "Perutaanko käyttäjän {$reviewer} varaus? Julkaisu tulee taas tarjolle arvioitavaksi."
+
+msgid "plugins.generic.objectsForReview.reservations.cancel.sendEmail"
+msgstr "Ilmoita arvioijalle sähköpostitse"
+
+msgid "plugins.generic.objectsForReview.reservations.cancel.submit"
+msgstr "Peru varaus"
+
+msgid "plugins.generic.objectsForReview.reservations.notReserved"
+msgstr "Julkaisua ei ole (enää) varattu."
+
+msgid "plugins.generic.objectsForReview.reservations.subjectRequired"
+msgstr "Anna aihe."
+
+msgid "plugins.generic.objectsForReview.reservations.bodyRequired"
+msgstr "Kirjoita viesti."
+
+msgid "plugins.generic.objectsForReview.column.reminderSent"
+msgstr "Muistutus lähetetty"
+
+msgid "plugins.generic.objectsForReview.settings.reminderDays"
+msgstr "Muistutus"
+
+msgid "plugins.generic.objectsForReview.settings.reminderDays.description"
+msgstr "Montako päivää ennen määräpäivää arvioijia muistutetaan automaattisesti (0: ei muistutusta)"
+
+msgid "plugins.generic.objectsForReview.settings.reminderDays.invalid"
+msgstr "Anna päivien määrä kokonaislukuna väliltä 0–90."
+
+msgid "plugins.generic.objectsForReview.reminder.taskName"
+msgstr "Arvioitavat julkaisut: muistutukset ennen määräpäivää"
+
+msgid "plugins.generic.objectsForReview.reminder.sent"
+msgstr "{$count} muistutus(ta) lähetetty: {$context}."

@@ -19,6 +19,7 @@ use PKP\facades\Locale;
 use PKP\db\DAORegistry;
 use APP\plugins\generic\objectsForReview\classes\ObjectForReviewDAO;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
+use APP\plugins\generic\objectsForReview\classes\ReservationLog;
 use PKP\core\PKPRequest;
 use APP\template\TemplateManager;
 use PKP\plugins\PluginRegistry;
@@ -128,6 +129,8 @@ class ObjectsForReviewHandler extends Handler {
 
 		Reservation::apply($objectForReview, $currentUser->getId(), $data);
 		$objectForReviewDao->updateObject($objectForReview);
+		ReservationLog::logEvent($objectForReview, ReservationLog::EVENT_RESERVED, $currentUser, $currentUser,
+			['reviewDueDate' => $data['dueDate']]);
 		$plugin->notifyEditor($currentUser, $objectForReview->getDescription(), 'OFR_NEW_RESERVATION',
 			Reservation::getEmailDetails($objectForReview, $currentContext));
 		$request->redirect(null, 'for-review');
@@ -151,6 +154,7 @@ class ObjectsForReviewHandler extends Handler {
 		if ($objectForReview && $objectForReview->getUserId() == $currentUser->getId() && $currentContext->getId() == $objectForReview->getContextId()) {
 			Reservation::clear($objectForReview);
 			$objectForReviewDao->updateObject($objectForReview);
+			ReservationLog::logEvent($objectForReview, ReservationLog::EVENT_CANCELLED_BY_REVIEWER, $currentUser, $currentUser);
 			$plugin = PluginRegistry::getPlugin('generic', 'ObjectsForReviewPlugin');
 			$plugin->notifyEditor($currentUser, $objectForReview->getDescription(), 'OFR_CANCEL_RESERVATION');
 		}

@@ -19,6 +19,9 @@ use APP\handler\Handler;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
 use APP\template\TemplateManager;
 use PKP\db\DAORegistry;
+use PKP\linkAction\LinkAction;
+use PKP\linkAction\request\AjaxModal;
+use APP\plugins\generic\objectsForReview\controllers\ReservationActionsHandler;
 use PKP\security\authorization\ContextAccessPolicy;
 use PKP\security\Role;
 
@@ -78,7 +81,8 @@ class ObjectsForReviewManagementHandler extends Handler {
 			if ($filterUserId && $filterUserId !== $userId) {
 				continue;
 			}
-			$rows[] = $this->objectRow($object) + ['user' => $users[$userId]] + Reservation::getDisplayData($object);
+			$rows[] = $this->objectRow($object) + ['user' => $users[$userId], 'actions' => $this->reservationActions($request, $object)]
+				+ Reservation::getDisplayData($object);
 		}
 		asort($users);
 		usort($rows, fn ($a, $b) => strcmp((string) $a['dueDate'], (string) $b['dueDate']));
@@ -121,6 +125,25 @@ class ObjectsForReviewManagementHandler extends Handler {
 			'grid.settings.plugins.SettingsPluginGridHandler', 'manage', null,
 			['verb' => 'settings', 'plugin' => $this->plugin->getName(), 'category' => 'generic', 'standalone' => 1]);
 		return $this->display($request, 'settings', 'plugins.generic.objectsForReview.menu.settings', ['settingsUrl' => $settingsUrl]);
+	}
+
+	/**
+	 * Modal actions for a reservation: email the reviewer, cancel, show the audit trail.
+	 * @return LinkAction[]
+	 */
+	protected function reservationActions($request, $object): array {
+		$actions = [];
+		foreach ([
+			'email' => ['emailForm', 'plugins.generic.objectsForReview.reservations.email', 'modal_email'],
+			'cancel' => ['cancelForm', 'plugins.generic.objectsForReview.reservations.cancel', 'modal_delete'],
+			'history' => ['history', 'plugins.generic.objectsForReview.history', 'modal_information'],
+		] as $name => [$op, $labelKey, $modalClass]) {
+			$url = $request->getDispatcher()->url($request, Application::ROUTE_COMPONENT, null,
+				ReservationActionsHandler::COMPONENT, $op, null, ['objectId' => $object->getId()]);
+			$actions[$name] = new LinkAction('ofr-' . $name . '-' . $object->getId(),
+				new AjaxModal($url, __($labelKey), $modalClass), __($labelKey));
+		}
+		return $actions;
 	}
 
 	/**

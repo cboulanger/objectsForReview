@@ -39,13 +39,16 @@ use APP\template\TemplateManager;
 use PKP\db\DAORegistry;
 use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
+use PKP\plugins\interfaces\HasTaskScheduler;
+use PKP\scheduledTask\PKPScheduler;
+use APP\plugins\generic\objectsForReview\classes\ReservationReminder;
 use PKP\security\Role;
 use Illuminate\Support\Facades\Mail;
 
 
 define('OBJECTSFORREVIEW_NMI_TYPE', 'OBJECTSFORREVIEW_NMI');
 
-class ObjectsForReviewPlugin extends GenericPlugin {
+class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 
 	/**
 	 * @copydoc Plugin::getName()
@@ -75,6 +78,17 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 		return ($this->getPluginPath() . '/emailTemplates.xml');
 	}
 
+
+	/**
+	 * @copydoc \PKP\plugins\interfaces\HasTaskScheduler::registerSchedules()
+	 */
+	public function registerSchedules(PKPScheduler $scheduler): void {
+		$scheduler
+			->addSchedule(new ReservationReminder())
+			->daily()
+			->name(ReservationReminder::class)
+			->withoutOverlapping();
+	}
 
 	/**
 	 * @copydoc Plugin::getActions()
@@ -254,6 +268,11 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 
 		if ($component === 'plugins.generic.objectsForReview.controllers.grid.ObjectsForReviewManagementGridHandler') {
 			$componentInstance = new controllers\grid\ObjectsForReviewManagementGridHandler($this);
+			return true;
+		}
+
+		if ($component === controllers\ReservationActionsHandler::COMPONENT) {
+			$componentInstance = new controllers\ReservationActionsHandler($this);
 			return true;
 		}
 		
@@ -529,6 +548,7 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 				. ' .objectsForReviewManagement .ofrIdentifier { margin-top: 0.25rem; font-size: 0.875rem; }'
 				. ' .objectsForReviewManagement .ofrFilter { margin-bottom: 1rem; }'
 				. ' .objectsForReviewManagement .ofrNoWrap { white-space: nowrap; }'
+				. ' .objectsForReviewManagement .ofrActions a { display: block; white-space: nowrap; margin-bottom: 0.25rem; }'
 				. ' .objectsForReviewManagement .ofrDetail { margin-top: 0.25rem; font-size: 0.875rem; }'
 				. ' .objectsForReviewManagement .ofrFilter label { margin-right: 0.5rem; font-weight: bold; }',
 			[
@@ -657,6 +677,9 @@ class ObjectsForReviewPlugin extends GenericPlugin {
     {
         $args[0]->push(ObjectsForReviewNew::class);
 		$args[0]->push(ObjectsForReviewCancel::class);
+		$args[0]->push(\APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewMessage::class);
+		$args[0]->push(\APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewCancelByEditor::class);
+		$args[0]->push(\APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewReminder::class);
     }
 	
 	/**

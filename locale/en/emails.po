@@ -49,3 +49,38 @@ msgstr "This email template is used to notify the editor for a cancelled OFR ite
 
 msgid "emails.ofrCancelReservation.name"
 msgstr "Notify the editor for a cancelled OFR item reservation."
+msgid "emails.ofrMessage.name"
+msgstr "Message to the reviewer of a reserved object"
+
+msgid "emails.ofrMessage.description"
+msgstr "Sent by the editors to the person who reserved an object for review."
+
+msgid "emails.ofrMessage.subject"
+msgstr "Your reserved work for review ({$contextName})"
+
+msgid "emails.ofrMessage.body"
+msgstr "<p>Dear {$recipientName},</p><p>regarding the work you reserved for review:<br />{$objectDescription}<br />Due date of your review: {$dueDate}</p><p></p><p>Kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrCancelByEditor.name"
+msgstr "Reservation cancelled by the editors"
+
+msgid "emails.ofrCancelByEditor.description"
+msgstr "Notifies the person who reserved an object for review that the editors cancelled the reservation."
+
+msgid "emails.ofrCancelByEditor.subject"
+msgstr "Your reservation has been cancelled ({$contextName})"
+
+msgid "emails.ofrCancelByEditor.body"
+msgstr "<p>Dear {$recipientName},</p><p>as we have not heard from you, we have cancelled your reservation of the following work for review:<br />{$objectDescription}</p><p>If you have any questions, please contact us.</p><p>Kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrReminder.name"
+msgstr "Reminder before the review is due"
+
+msgid "emails.ofrReminder.description"
+msgstr "Sent automatically to the person who reserved an object for review, a configurable number of days before the due date."
+
+msgid "emails.ofrReminder.subject"
+msgstr "Reminder: your review is due on {$dueDate}"
+
+msgid "emails.ofrReminder.body"
+msgstr "<p>Dear {$recipientName},</p><p>this is a friendly reminder that your review of the following work is due on <strong>{$dueDate}</strong>:<br />{$objectDescription}</p><p>If you need more time, please contact the editors as soon as possible.</p><p>Kind regards,<br />{$contextName}</p>"
