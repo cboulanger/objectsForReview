@@ -57,7 +57,7 @@
           {if $currentUser} <!-- If logged in, show buttons -->
             {if $objectForReview.userId} <!-- If object reserved, show cancel or status -->
               {if $currentUser->getId() == $objectForReview.userId} <!-- If reserved for current user, show cancel button -->
-              <form class="pkp_form" id="cancelObjectForm-{$objectForReview.objectId|escape}" method="post" action="{url op="cancelObject"}" onsubmit="return confirm('{translate key='plugins.generic.objectsForReview.cancel.confirm'}');">
+              <form class="pkp_form" id="cancelObjectForm-{$objectForReview.objectId|escape}" method="post" action="{url op="cancelObject"}" onsubmit="return confirm('{translate|escape:"javascript"|escape key="plugins.generic.objectsForReview.cancel.confirm"}');">
                 {csrf}
                 <input type="hidden" name="objectId" value="{$objectForReview.objectId|escape}" />
                 <button type="submit" id="cancelObject-{$objectForReview.objectId|escape}" class="pkp_button pkp_button_offset">{translate key='plugins.generic.objectsForReview.cancel'}</button>
@@ -66,7 +66,7 @@
                 {translate key='plugins.generic.objectsForReview.objectReserved'}
               {/if}
             {else} <!-- Else if not reserved, show reserve button -->
-              <form class="pkp_form" id="reserveObjectForm-{$objectForReview.objectId|escape}" method="post" action="{url op="reserveObject"}" onsubmit="return confirm('{translate key='plugins.generic.objectsForReview.reserve.confirm'}');">
+              <form class="pkp_form" id="reserveObjectForm-{$objectForReview.objectId|escape}" method="post" action="{url op="reserveObject"}" onsubmit="return confirm('{translate|escape:"javascript"|escape key="plugins.generic.objectsForReview.reserve.confirm"}');">
                 {csrf}
                 <input type="hidden" name="objectId" value="{$objectForReview.objectId|escape}" />
                 <button type="submit" id="reserveObject-{$objectForReview.objectId|escape}" class="pkp_button">{translate key='plugins.generic.objectsForReview.reserve'}</button>
