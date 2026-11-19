@@ -1,0 +1,176 @@
+<?php
+
+/**
+ * @file dev/devSetup.php
+ *
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
+ *
+ * Non-interactive setup of a local OJS test instance. Copied into the OJS
+ * tools/ directory by the dev Containerfile; not used in production.
+ *
+ * Usage:
+ *   php tools/devSetup.php install         Install OJS (database + config.inc.php)
+ *   php tools/devSetup.php journal         Create the test journal and an author account
+ *   php tools/devSetup.php enable-plugin   Install and enable objectsForReview in all journals
+ *
+ * Settings are read from environment variables (see Containerfile).
+ */
+
+require(dirname(__FILE__) . '/bootstrap.php');
+
+use APP\core\Application;
+use APP\facades\Repo;
+use PKP\cliTool\InstallTool;
+use PKP\core\Core;
+use PKP\db\DAORegistry;
+use PKP\security\Role;
+use PKP\security\Validation;
+use PKP\userGroup\relationships\UserUserGroup;
+use PKP\userGroup\UserGroup;
+
+function devEnv(string $name, string $default): string
+{
+	$value = getenv($name);
+	return ($value === false || $value === '') ? $default : $value;
+}
+
+/**
+ * Runs the regular OJS installer with parameters from the environment instead of stdin.
+ */
+class DevInstallTool extends InstallTool
+{
+	public function readParams()
+	{
+		$this->params = [
+			'locale' => 'en',
+			'additionalLocales' => ['de'],
+			'timeZone' => devEnv('OJS_TIMEZONE', 'Europe/Berlin'),
+			'filesDir' => devEnv('OJS_FILES_DIR', '/var/www/files'),
+			'adminUsername' => devEnv('OJS_ADMIN_USER', 'admin'),
+			'adminPassword' => devEnv('OJS_ADMIN_PASSWORD', 'ojsadmin'),
+			'adminPassword2' => devEnv('OJS_ADMIN_PASSWORD', 'ojsadmin'),
+			'adminEmail' => devEnv('OJS_ADMIN_EMAIL', 'admin@example.org'),
+			'databaseDriver' => 'mysqli',
+			'databaseHost' => 'localhost',
+			'databaseUsername' => devEnv('OJS_DB_USER', 'ojs'),
+			'databasePassword' => devEnv('OJS_DB_PASSWORD', 'ojs'),
+			'databaseName' => devEnv('OJS_DB_NAME', 'ojs'),
+			'oaiRepositoryId' => 'ojs.localhost',
+			'enableBeacon' => 0,
+		];
+		return true;
+	}
+}
+
+class DevSetupTool extends \PKP\cliTool\CommandLineTool
+{
+	public function usage()
+	{
+		echo "Usage: php tools/devSetup.php install|journal|enable-plugin\n";
+	}
+
+	public function execute()
+	{
+		switch ($this->argv[0] ?? '') {
+			case 'journal':
+				$this->createJournal();
+				$this->createAuthor();
+				break;
+			case 'enable-plugin':
+				$this->enablePlugin();
+				break;
+			default:
+				$this->usage();
+				exit(1);
+		}
+	}
+
+	/**
+	 * Create the test journal; the admin user (registered by CommandLineTool) becomes its manager.
+	 */
+	protected function createJournal()
+	{
+		$path = devEnv('OJS_JOURNAL_PATH', 'test');
+		$contextDao = Application::getContextDAO();
+		if ($contextDao->getByPath($path)) {
+			echo "Journal '{$path}' already exists.\n";
+			return;
+		}
+
+		$context = $contextDao->newDataObject();
+		$context->setData('urlPath', $path);
+		$context->setData('name', ['en' => 'Test Journal', 'de' => 'Testzeitschrift']);
+		$context->setData('acronym', ['en' => 'TJ', 'de' => 'TZ']);
+		$context->setData('contactName', 'Journal Manager');
+		$context->setData('contactEmail', devEnv('OJS_ADMIN_EMAIL', 'admin@example.org'));
+		$context->setData('enabled', true);
+		$context->setData('primaryLocale', 'en');
+		$context->setData('supportedLocales', ['en', 'de']);
+		$context->setData('supportedFormLocales', ['en', 'de']);
+		$context->setData('supportedSubmissionLocales', ['en', 'de']);
+		$context->setData('supportedAddedSubmissionLocales', ['en', 'de']);
+		$context->setData('supportedSubmissionMetadataLocales', ['en', 'de']);
+		$context->setData('country', 'DE');
+
+		$context = app()->get('context')->add($context, Application::get()->getRequest());
+		echo "Created journal '{$path}' (id {$context->getId()}).\n";
+	}
+
+	/**
+	 * Create an author account in the test journal, for testing the author-side form.
+	 */
+	protected function createAuthor()
+	{
+		$username = devEnv('OJS_AUTHOR_USER', 'author');
+		if (Repo::user()->getByUsername($username, true)) {
+			echo "User '{$username}' already exists.\n";
+			return;
+		}
+		$context = Application::getContextDAO()->getByPath(devEnv('OJS_JOURNAL_PATH', 'test'));
+
+		$user = Repo::user()->newDataObject();
+		$user->setUsername($username);
+		$user->setEmail(devEnv('OJS_AUTHOR_EMAIL', 'author@example.org'));
+		$user->setPassword(Validation::encryptCredentials($username, devEnv('OJS_AUTHOR_PASSWORD', 'ojsauthor')));
+		$user->setGivenName('Test', 'en');
+		$user->setFamilyName('Author', 'en');
+		$user->setCountry('DE');
+		$user->setAffiliation('Test University', 'en');
+		$user->setDateRegistered(Core::getCurrentDate());
+		$user->setDateValidated(Core::getCurrentDate());
+		$user->setMustChangePassword(false);
+		$userId = Repo::user()->add($user);
+
+		$authorGroup = UserGroup::withContextIds([$context->getId()])
+			->withRoleIds([Role::ROLE_ID_AUTHOR])
+			->isDefault(true)
+			->firstOrFail();
+		UserUserGroup::create([
+			'userId' => $userId,
+			'userGroupId' => $authorGroup->userGroupId,
+			'dateStart' => null,
+			'dateEnd' => null,
+			'masthead' => null,
+		]);
+		echo "Created author account '{$username}'.\n";
+	}
+
+	/**
+	 * Enable objectsForReview in every journal (the schema is installed by installPluginVersion.php).
+	 */
+	protected function enablePlugin()
+	{
+		$pluginSettingsDao = DAORegistry::getDAO('PluginSettingsDAO');
+		$contexts = Application::getContextDAO()->getAll();
+		while ($context = $contexts->next()) {
+			$pluginSettingsDao->updateSetting($context->getId(), 'objectsforreviewplugin', 'enabled', true, 'bool');
+			echo "Enabled objectsForReview in journal '{$context->getPath()}'.\n";
+		}
+	}
+}
+
+if (($argv[1] ?? '') === 'install') {
+	(new DevInstallTool($argv))->execute();
+} else {
+	(new DevSetupTool($argv))->execute();
+}
