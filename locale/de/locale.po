@@ -192,3 +192,6 @@ msgstr "Bitte geben Sie eine gültige DOI ein, z. B. 10.1000/xyz123."
 
 msgid "plugins.generic.objectsForReview.doiLookup.editorSuffix"
 msgstr "Hrsg."
+
+msgid "plugins.generic.objectsForReview.itemYearShort"
+msgstr "Jahr"

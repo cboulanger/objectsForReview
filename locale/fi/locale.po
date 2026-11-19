@@ -174,3 +174,6 @@ msgstr "kartta"
 
 msgid "plugins.generic.objectsForReview.COAR.sound"
 msgstr "äänite"
+
+msgid "plugins.generic.objectsForReview.itemYearShort"
+msgstr "Vuosi"

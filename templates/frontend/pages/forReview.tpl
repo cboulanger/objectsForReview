@@ -30,7 +30,7 @@
         <th>{translate key="plugins.generic.objectsForReview.itemTitle"}</th>
         <th>{translate key="plugins.generic.objectsForReview.itemAuthors"}</th>
         <th>{translate key="plugins.generic.objectsForReview.itemPublisher"}</th>
-        <th>{translate key="plugins.generic.objectsForReview.itemYear"}</th>
+        <th>{translate key="plugins.generic.objectsForReview.itemYearShort"}</th>
         <th></th> 
       </tr>
 			{foreach from=$objectsForReview item=objectForReview}
