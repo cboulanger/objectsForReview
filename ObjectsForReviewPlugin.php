@@ -152,7 +152,8 @@ class ObjectsForReviewPlugin extends GenericPlugin {
             Hook::add('Template::SubmissionWizard::Section', $this->addToSubmissionWizardTemplate(...));
             Hook::add('Template::SubmissionWizard::Section::Review', $this->addToSubmissionWizardReviewTemplate(...));
 
-			Hook::Add('Template::Workflow::Publication', array($this, 'addToPublicationForms'));
+			// OJS 3.5: the workflow page is Vue-based; the publication tab is added in js/Workflow.js
+			// (the Template::Workflow::Publication hook was removed, see pkp/pkp-lib#10766)
 
 			Hook::Add('LoadComponentHandler', array($this, 'setupGridHandler'));
 			Hook::Add('TemplateManager::display',array($this, 'addJs'));
@@ -346,26 +347,6 @@ class ObjectsForReviewPlugin extends GenericPlugin {
     }
 
 	/**
-	 * Insert ObjectsForReview grid in the publication tabs
-	 */
-	function addToPublicationForms($hookName, $params) {
-		$smarty =& $params[1];
-		$output =& $params[2];
-		$submission = $smarty->getTemplateVars('submission');
-		$smarty->assign([
-			'submissionId' => $submission->getId(),
-		]);
-
-		$output .= sprintf(
-			'<tab id="objectsForReviewGridInWorkflow" label="%s">%s</tab>',
-			__('plugins.generic.objectsForReview.management.gridTitle'),
-			$smarty->fetch($this->getTemplateResource('metadataForm.tpl'))
-		);
-
-		return false;
-	}
-
-	/**
 	* Hook to Templates::Article::Details and Templates::Catalog::Book::Details and list object for review information
 	* @param $hookName string
 	* @param $params array
@@ -442,15 +423,44 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 		$template =& $params[1];
 		$request = Application::get()->getRequest();
 
-		$gridHandlerJs = $this->getJavaScriptURL($request, false) . DIRECTORY_SEPARATOR . 'ObjectsForReviewGridHandler.js';
+		$gridHandlerJs = $this->getJavaScriptURL($request, false) . '/ObjectsForReviewGridHandler.js';
 		$templateMgr->addJavaScript(
 			'ObjectsForReviewGridHandlerJs',
 			$gridHandlerJs,
 			array('contexts' => 'backend')
 		);
+		// Configuration and registry extensions for the OJS 3.5 workflow page
+		$gridUrl = $request->getDispatcher()->url(
+			$request,
+			Application::ROUTE_COMPONENT,
+			null,
+			'plugins.generic.objectsForReview.controllers.grid.ObjectsForReviewGridHandler',
+			'fetchGrid',
+			null,
+			['submissionId' => '__submissionId__']
+		);
+		$templateMgr->addJavaScript(
+			'ObjectsForReviewWorkflowConfig',
+			'window.pkpObjectsForReview = ' . json_encode([
+				'gridUrl' => $gridUrl,
+				'label' => __('plugins.generic.objectsForReview.management.gridTitle'),
+			]) . ';',
+			[
+				'inline' => true,
+				'contexts' => 'backend',
+			]
+		);
+		$templateMgr->addJavaScript(
+			'ObjectsForReviewWorkflowJs',
+			$this->getJavaScriptURL($request, false) . '/Workflow.js',
+			[
+				'contexts' => 'backend',
+				'priority' => TemplateManager::STYLE_SEQUENCE_LAST,
+			]
+		);
 		$templateMgr->addStylesheet(
 			'ObjectsForReviewGridHandlerStyles',
-			'#objectsForReviewGridInWorkflow { margin-top: 32px; }',
+			'.objectsForReviewWorkflowGrid { margin: 1rem; }',
 			[
 				'inline' => true,
 				'contexts' => 'backend',
@@ -458,7 +468,7 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 		);
 
 		if (strpos($template, 'frontend/pages/forReview.tpl')) {
-			$tablesortJs = $this->getJavaScriptURL($request, false) . DIRECTORY_SEPARATOR . '/tablesort/src/tablesort.js';
+			$tablesortJs = $this->getJavaScriptURL($request, false) . '/tablesort/src/tablesort.js';
 			$templateMgr->addJavaScript(
 				'TableSortJs',
 				$tablesortJs,
@@ -476,7 +486,7 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 	 */
 	function getJavaScriptURL() {
 		$request = Application::get()->getRequest();
-		return $request->getBaseUrl() . DIRECTORY_SEPARATOR . $this->getPluginPath() . DIRECTORY_SEPARATOR . 'js';
+		return $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js';
 	}
 
 	/**
@@ -593,7 +603,10 @@ class ObjectsForReviewPlugin extends GenericPlugin {
         $emailParams = [
             'objectDescription' => htmlspecialchars($objectDescription),
             'senderUsername' => htmlspecialchars($user->getFullName()),
-			'senderEmail' => htmlspecialchars($user->getEmail())		
+            'senderEmail' => htmlspecialchars($user->getEmail()),
+            // variable names used by the original en/de templates
+            'userName' => htmlspecialchars($user->getFullName()),
+            'userEmail' => htmlspecialchars($user->getEmail()),
         ];
 
 		if ($mailTemplate == 'OFR_NEW_RESERVATION'){

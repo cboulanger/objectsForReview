@@ -208,7 +208,7 @@ class ObjectForReviewDAO extends DAO {
 	 * Get the additional field names.
 	 * @return array
 	 */
-	function getAdditionalFieldNames() {
+	function getAdditionalFieldNames(): array {
 		return array('authors', 'title', 'year', 'publisher');
 	}
 

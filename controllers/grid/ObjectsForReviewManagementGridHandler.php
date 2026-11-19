@@ -218,8 +218,7 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
  			return DAO::getDataChangedEvent($objectId);
 		} else {
 			// Present any errors
-			$json = new JSONMessage(true, $availableObjectsForReviewForm->fetch($request));
-			return $json->getString();
+			return new JSONMessage(true, $availableObjectsForReviewForm->fetch($request));
 		}
 	}
 

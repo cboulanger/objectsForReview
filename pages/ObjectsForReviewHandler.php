@@ -15,13 +15,14 @@
 namespace APP\plugins\generic\objectsForReview\pages;
 use APP\handler\Handler;
 use APP\core\Application;
-use APP\i18n\AppLocale;
+use PKP\facades\Locale;
 use PKP\db\DAORegistry;
 use APP\plugins\generic\objectsForReview\classes\ObjectForReviewDAO;
 use PKP\core\PKPRequest;
 use APP\template\TemplateManager;
 use PKP\plugins\PluginRegistry;
 use PKP\security\authorization\ContextRequiredPolicy;
+use PKP\security\Validation;
 
 class ObjectsForReviewHandler extends Handler {
 
@@ -68,11 +69,11 @@ class ObjectsForReviewHandler extends Handler {
 				);
 		}
 		
-		$ofrInstructions = $plugin->getSetting($contextId, 'ofrInstructions');
-		$currentLocale = AppLocale::getLocale();
-		$primaryLocale = $context?$context->getPrimaryLocale():$request->getSite()->getPrimaryLocale();
+		$ofrInstructions = (array) $plugin->getSetting($contextId, 'ofrInstructions');
+		$currentLocale = Locale::getLocale();
+		$primaryLocale = $context ? $context->getPrimaryLocale() : $request->getSite()->getPrimaryLocale();
 
-		$instructions = $ofrInstructions[$currentLocale] ? $ofrInstructions[$currentLocale] : $ofrInstructions[$contextPrimaryLocale];
+		$instructions = ($ofrInstructions[$currentLocale] ?? null) ?: ($ofrInstructions[$primaryLocale] ?? '');
 
 
 		$templateMgr->assign(array('objectsForReview' => $gridData, 'currentUser' => $currentUser));
@@ -88,6 +89,9 @@ class ObjectsForReviewHandler extends Handler {
 	 */
 	function reserveObject($args, $request) {
 		if (!$request->checkCSRF()) fatalError('CSRF check failed, please try again!');
+		if (!$request->getUser()) {
+			Validation::redirectLogin();
+		}
 		$objectId = (int) $request->getUserVar('objectId');
 		$currentUser = $request->getUser();
 		$currentContext = $request->getContext();
@@ -110,6 +114,9 @@ class ObjectsForReviewHandler extends Handler {
 	 */
 	function cancelObject($args, $request) {
 		if (!$request->checkCSRF()) fatalError('CSRF check failed, please try again!');
+		if (!$request->getUser()) {
+			Validation::redirectLogin();
+		}
 		$objectId = (int) $request->getUserVar('objectId');
 		$currentUser = $request->getUser();
 		$currentContext = $request->getContext();

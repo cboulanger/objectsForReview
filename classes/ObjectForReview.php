@@ -71,10 +71,11 @@ class ObjectForReview extends \PKP\core\DataObject {
 
 	/**
 	 * Get objectId.
-	 * @return string
+	 * @return int|null
 	 */
-	function getId() {
-		return $this->getData('objectId');
+	function getId(): ?int {
+		$objectId = $this->getData('objectId');
+		return $objectId === null ? null : (int) $objectId;
 	}
 
 	/**

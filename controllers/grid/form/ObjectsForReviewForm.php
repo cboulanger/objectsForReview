@@ -65,7 +65,10 @@ class ObjectsForReviewForm extends \PKP\form\Form {
 		$this->setData('submissionId', $this->submissionId);
 		if ($this->objectId) {
 			$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
-			$objectForReview = $objectForReviewDao->getById($this->objectId);
+			$objectForReview = $objectForReviewDao->getById($this->objectId, $this->submissionId);
+			if (!$objectForReview) {
+				throw new \Exception('Object for review not found in this submission.');
+			}
 			$this->setData('identifierType', $objectForReview->getIdentifierType());
 			$this->setData('resourceType', $objectForReview->getResourceType());
 			$this->setData('identifier', $objectForReview->getIdentifier());

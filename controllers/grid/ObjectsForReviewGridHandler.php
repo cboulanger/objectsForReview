@@ -29,6 +29,7 @@ use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\security\Role;
 use PKP\security\authorization\SubmissionAccessPolicy;
+use PKP\stageAssignment\StageAssignment;
 
 class ObjectsForReviewGridHandler extends GridHandler {
 	public $plugin;
@@ -204,6 +205,9 @@ class ObjectsForReviewGridHandler extends GridHandler {
 	 * @return string Serialized JSON object
 	 */
 	function editObjectForReview($args, $request) {
+		if (!$this->canAdminister($request->getUser())) {
+			return new JSONMessage(false, __('user.authorization.accessDenied'));
+		}
 		$objectId = $request->getUserVar('objectId');
 		$context = $request->getContext();
 		$submission = $this->getSubmission();
@@ -214,8 +218,7 @@ class ObjectsForReviewGridHandler extends GridHandler {
 		// Create and present the edit form
 		$objectsForReviewForm = new ObjectsForReviewForm($this->plugin, $context->getId(), $submissionId, $objectId);
 		$objectsForReviewForm->initData();
-		$json = new JSONMessage(true, $objectsForReviewForm->fetch($request));
-		return $json->getString();
+		return new JSONMessage(true, $objectsForReviewForm->fetch($request));
 	}
 
 	/**
@@ -225,6 +228,9 @@ class ObjectsForReviewGridHandler extends GridHandler {
 	 * @return string Serialized JSON object
 	 */
 	function updateObjectForReview($args, $request) {
+		if (!$this->canAdminister($request->getUser())) {
+			return new JSONMessage(false, __('user.authorization.accessDenied'));
+		}
 		$objectId = $request->getUserVar('objectId');
 		$context = $request->getContext();
 		$submission = $this->getSubmission();
@@ -248,8 +254,7 @@ class ObjectsForReviewGridHandler extends GridHandler {
 			}
 			return $json;
 		} else {
-			$json = new JSONMessage(true, $objectsForReviewForm->fetch($request));
-			return $json->getString();
+			return new JSONMessage(true, $objectsForReviewForm->fetch($request));
 		}
 	}
 
@@ -264,8 +269,15 @@ class ObjectsForReviewGridHandler extends GridHandler {
 		$submission = $this->getSubmission();
 		$submissionId = $submission->getId();
 
+		if (!$request->checkCSRF() || !$this->canAdminister($request->getUser())) {
+			return new JSONMessage(false, __('user.authorization.accessDenied'));
+		}
+
 		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
 		$objectForReview = $objectForReviewDao->getById($objectId, $submissionId);
+		if (!$objectForReview) {
+			return new JSONMessage(false, __('user.authorization.accessDenied'));
+		}
 
 		// If object is created by the manager, do not delete, just remove from submission
 		if ($objectForReview->getCreator() == "manager") {
@@ -290,13 +302,22 @@ class ObjectsForReviewGridHandler extends GridHandler {
 		$submissionId = $submission->getId();
 		$currentUser = $request->getUser();
 
-		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
-		$objectForReview = $objectForReviewDao->getById($objectId);
-
-		if ($currentUser->getId() == $objectForReview->getUserId()) {
-			$objectForReview->setSubmissionId($submissionId);
-			$objectForReviewDao->updateObject($objectForReview);
+		if (!$request->checkCSRF() || !$this->canAdminister($currentUser)) {
+			return new JSONMessage(false, __('user.authorization.accessDenied'));
 		}
+
+		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
+		$objectForReview = $objectForReviewDao->getById((int) $objectId);
+
+		// Only objects reserved by the current user, in this context, not yet attached to a submission
+		if (!$objectForReview
+			|| $currentUser->getId() != $objectForReview->getUserId()
+			|| $objectForReview->getContextId() != $context->getId()
+			|| $objectForReview->getSubmissionId()) {
+			return new JSONMessage(false, __('user.authorization.accessDenied'));
+		}
+		$objectForReview->setSubmissionId($submissionId);
+		$objectForReviewDao->updateObject($objectForReview);
 
 		$json = DAO::getDataChangedEvent($submissionId);
 		$json->setGlobalEvent('plugin:objectsForReview:added', $this->plugin->getObjectForReviewData($objectForReview));
@@ -311,20 +332,22 @@ class ObjectsForReviewGridHandler extends GridHandler {
 	function canAdminister($user) {
 		$submission = $this->getSubmission();
 
+		if (!$user) return false;
+
 		// Incomplete submissions can be edited. (Presumably author.)
-		if ($submission->getDateSubmitted() == null) return true;
+		if (!$submission->getData('dateSubmitted')) return true;
 
 		// Managers should always have access.
-		$userRoles = $this->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES);
-		if (array_intersect(array(Role::ROLE_ID_MANAGER), $userRoles)) return true;
+		$userRoles = (array) $this->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES);
+		if (array_intersect([Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN], $userRoles)) return true;
 
 		// Sub editors and assistants need to be assigned to the current stage.
-		$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-		$stageAssignments = $stageAssignmentDao->getBySubmissionAndStageId($submission->getId(), $submission->getStageId(), null, $user->getId());
-		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
-		while ($stageAssignment = $stageAssignments->next()) {
-			$userGroup = $userGroupDao->getById($stageAssignment->getUserGroupId());
-			if (in_array($userGroup->getRoleId(), array(Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_ASSISTANT))) return true;
+		if (StageAssignment::withSubmissionIds([$submission->getId()])
+			->withStageIds([$submission->getData('stageId')])
+			->withUserId($user->getId())
+			->withRoleIds([Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_ASSISTANT])
+			->exists()) {
+			return true;
 		}
 
 		// Default: Read-only.
