@@ -73,6 +73,16 @@ class CrossrefLookup {
 	}
 
 	/**
+	 * Get the resolver URL for a DOI.
+	 * @param string $input A DOI in any form accepted by normalizeDoi()
+	 * @return string|null https://doi.org/ URL, or null if the input is not a DOI
+	 */
+	public static function doiUrl($input) {
+		$doi = self::normalizeDoi($input);
+		return $doi ? 'https://doi.org/' . str_replace('%2F', '/', rawurlencode($doi)) : null;
+	}
+
+	/**
 	 * Look up a DOI at Crossref.
 	 * @param string $doi A normalized DOI
 	 * @return array Form field values (identifier, title, authors, publisher, year, resourceType)

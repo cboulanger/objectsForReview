@@ -37,7 +37,12 @@
       <tr>
 				<td data-sort='{$objectForReview.title|strip_tags}'>
             {$objectForReview.title|strip_unsafe_html}<br />
-            {$objectForReview.identifierType|escape}: {$objectForReview.identifier|escape}
+            {$objectForReview.identifierType|escape}:
+            {if $objectForReview.identifierUrl}
+              <a href="{$objectForReview.identifierUrl|escape}" target="_blank" rel="noopener noreferrer">{$objectForReview.identifier|escape}</a>
+            {else}
+              {$objectForReview.identifier|escape}
+            {/if}
 				</td>
         <td>
             {$objectForReview.authors}
