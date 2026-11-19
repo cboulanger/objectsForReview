@@ -18,6 +18,7 @@ use APP\core\Application;
 use PKP\facades\Locale;
 use PKP\db\DAORegistry;
 use APP\plugins\generic\objectsForReview\classes\ObjectForReviewDAO;
+use APP\plugins\generic\objectsForReview\classes\Reservation;
 use PKP\core\PKPRequest;
 use APP\template\TemplateManager;
 use PKP\plugins\PluginRegistry;
@@ -37,56 +38,68 @@ class ObjectsForReviewHandler extends Handler {
 	/**
 	 * View objects for review
 	 *
-	 * @param $args array [
-	 *		@option string Section ID
-	 *		@option string page number
- 	 * ]
+	 * Request var "reserve" (object ID) opens the reservation dialog for that object.
+	 *
+	 * @param $args array
 	 * @param $request PKPRequest
-	 * @return null|JSONMessage
+	 * @param $reserveState array Reservation form state after a failed submission (objectId, errors, input)
 	 */
-	public function index($args, $request) {
+	public function index($args, $request, array $reserveState = []) {
 		$context = $request->getContext();
-		$contextId = $context ? $context->getId() : Application::CONTEXT_ID_NONE;
+		$contextId = $context->getId();
 		$plugin = PluginRegistry::getPlugin('generic', 'ObjectsForReviewPlugin');
 		$templateMgr = TemplateManager::getManager($request);
 		$currentUser = $request->getUser();
 
-		// Get the items and add the data to the grid
 		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
-		$objectsForReview = $objectForReviewDao->getAll($context->getId(), true, true);
+		$objectsForReview = $objectForReviewDao->getAll($contextId, true, true);
 		$gridData = array();
 		while ($objectForReview = $objectsForReview->next()) {
-				$objectId = $objectForReview->getId();
-				$gridData[$objectId] = array(
-					'objectId' => $objectForReview->getId(),
-					'identifierType' => $objectForReview->getIdentifierType(),
-					'identifier' => $objectForReview->getIdentifier(),
-					'identifierUrl' => $objectForReview->getIdentifierUrl(),
-					'authors' => $objectForReview->getAuthors(),
-					'title' => $objectForReview->getTitle(),
-					'publisher' => $objectForReview->getPublisher(),
-					'year' => $objectForReview->getYear(),
-					'userId' => $objectForReview->getUserId()
-				);
+			$objectId = $objectForReview->getId();
+			$gridData[$objectId] = array(
+				'objectId' => $objectId,
+				'identifierType' => $objectForReview->getIdentifierType(),
+				'identifier' => $objectForReview->getIdentifier(),
+				'identifierUrl' => $objectForReview->getIdentifierUrl(),
+				'authors' => $objectForReview->getAuthors(),
+				'title' => $objectForReview->getTitle(),
+				'publisher' => $objectForReview->getPublisher(),
+				'year' => $objectForReview->getYear(),
+				'description' => $objectForReview->getDescription(),
+				'userId' => $objectForReview->getUserId(),
+				// Only shown to the reviewer who reserved the object
+				'dueDate' => ($currentUser && $currentUser->getId() == $objectForReview->getUserId()) ? $objectForReview->getData('dueDate') : null,
+			);
 		}
-		
+
 		$ofrInstructions = (array) $plugin->getSetting($contextId, 'ofrInstructions');
-		$currentLocale = Locale::getLocale();
-		$primaryLocale = $context ? $context->getPrimaryLocale() : $request->getSite()->getPrimaryLocale();
+		$instructions = ($ofrInstructions[Locale::getLocale()] ?? null) ?: ($ofrInstructions[$context->getPrimaryLocale()] ?? '');
 
-		$instructions = ($ofrInstructions[$currentLocale] ?? null) ?: ($ofrInstructions[$primaryLocale] ?? '');
+		// Reservation dialog: opened after a failed submission or via ?reserve=<objectId>
+		$openObjectId = (int) ($reserveState['objectId'] ?? $request->getUserVar('reserve'));
+		if ($openObjectId && (!isset($gridData[$openObjectId]) || $gridData[$openObjectId]['userId'] || !$currentUser)) {
+			$openObjectId = 0;
+		}
+		$dueDateRange = Reservation::getDueDateRange($plugin, $contextId);
 
-
-		$templateMgr->assign(array('objectsForReview' => $gridData, 'currentUser' => $currentUser));
-		$templateMgr->assign('instructions', $instructions);
+		$templateMgr->assign([
+			'objectsForReview' => $gridData,
+			'currentUser' => $currentUser,
+			'instructions' => $instructions,
+			'reserveDialogTemplate' => $plugin->getTemplateResource('frontend/reserveDialog.tpl'),
+			'reserveContract' => Reservation::getContract($plugin, $context),
+			'reserveDueDate' => $dueDateRange,
+			'reserveOpenObjectId' => $openObjectId,
+			'reserveErrors' => $reserveState['errors'] ?? [],
+			'reserveInput' => ($reserveState['input'] ?? []) + ['dueDate' => $dueDateRange['default'], 'copyPreference' => ''],
+		]);
 		return $templateMgr->display($plugin->getTemplateResource('frontend/pages/forReview.tpl'));
 	}
 
 	/**
-	 * Reserve an object.
+	 * Reserve an object (submission of the reservation dialog).
 	 * @param $args array
 	 * @param $request PKPRequest
-	 * @return JSONMessage JSON object
 	 */
 	function reserveObject($args, $request) {
 		if (!$request->checkCSRF()) fatalError('CSRF check failed, please try again!');
@@ -96,22 +109,34 @@ class ObjectsForReviewHandler extends Handler {
 		$objectId = (int) $request->getUserVar('objectId');
 		$currentUser = $request->getUser();
 		$currentContext = $request->getContext();
+		$plugin = PluginRegistry::getPlugin('generic', 'ObjectsForReviewPlugin');
 		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
 		$objectForReview = $objectForReviewDao->getById($objectId);
-		if ($objectForReview && !$objectForReview->getUserId() && $currentContext->getId() == $objectForReview->getContextId()) {
-			$objectForReview->setUserId($currentUser->getId());
-			$objectForReviewDao->updateObject($objectForReview);
-			$plugin = PluginRegistry::getPlugin('generic', 'ObjectsForReviewPlugin');
-			$plugin->notifyEditor($currentUser, $objectForReview->getDescription(), 'OFR_NEW_RESERVATION');
+		if (!$objectForReview || $objectForReview->getUserId() || $objectForReview->getSubmissionId()
+			|| $currentContext->getId() != $objectForReview->getContextId()) {
+			$request->redirect(null, 'for-review');
 		}
+
+		$input = [];
+		foreach (['acceptTerms', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote'] as $name) {
+			$input[$name] = $request->getUserVar($name);
+		}
+		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($plugin, $currentContext->getId()));
+		if ($errors) {
+			return $this->index($args, $request, ['objectId' => $objectId, 'errors' => $errors, 'input' => $input]);
+		}
+
+		Reservation::apply($objectForReview, $currentUser->getId(), $data);
+		$objectForReviewDao->updateObject($objectForReview);
+		$plugin->notifyEditor($currentUser, $objectForReview->getDescription(), 'OFR_NEW_RESERVATION',
+			Reservation::getEmailDetails($objectForReview, $currentContext));
 		$request->redirect(null, 'for-review');
 	}
 
 	/**
-	 * Reserve an object.
+	 * Cancel the current user's reservation of an object.
 	 * @param $args array
 	 * @param $request PKPRequest
-	 * @return JSONMessage JSON object
 	 */
 	function cancelObject($args, $request) {
 		if (!$request->checkCSRF()) fatalError('CSRF check failed, please try again!');
@@ -124,7 +149,7 @@ class ObjectsForReviewHandler extends Handler {
 		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
 		$objectForReview = $objectForReviewDao->getById($objectId);
 		if ($objectForReview && $objectForReview->getUserId() == $currentUser->getId() && $currentContext->getId() == $objectForReview->getContextId()) {
-			$objectForReview->setUserId(null);
+			Reservation::clear($objectForReview);
 			$objectForReviewDao->updateObject($objectForReview);
 			$plugin = PluginRegistry::getPlugin('generic', 'ObjectsForReviewPlugin');
 			$plugin->notifyEditor($currentUser, $objectForReview->getDescription(), 'OFR_CANCEL_RESERVATION');

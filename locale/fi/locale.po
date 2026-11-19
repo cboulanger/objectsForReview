@@ -211,3 +211,105 @@ msgstr "Varattuja julkaisuja ei ole."
 
 msgid "plugins.generic.objectsForReview.reviewedWorks.none"
 msgstr "Käsikirjoituksiin ei ole vielä liitetty julkaisuja."
+
+msgid "plugins.generic.objectsForReview.reserve.title"
+msgstr "Varaa arvioitavaksi"
+
+msgid "plugins.generic.objectsForReview.reserve.contract"
+msgstr "Varauksen ehdot"
+
+msgid "plugins.generic.objectsForReview.reserve.acceptTerms"
+msgstr "Olen lukenut ehdot ja hyväksyn ne."
+
+msgid "plugins.generic.objectsForReview.reserve.dueDate"
+msgstr "Arvion määräpäivä"
+
+msgid "plugins.generic.objectsForReview.reserve.dueDate.hint"
+msgstr "Sitoudut toimittamaan arviosi tähän päivään mennessä (viimeistään {$maxDate})."
+
+msgid "plugins.generic.objectsForReview.reserve.copy"
+msgstr "Julkaisun saatavuus"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.have"
+msgstr "Minulla on julkaisu jo"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.physical"
+msgstr "Toivon painettua kappaletta"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.electronic"
+msgstr "Toivon sähköistä kappaletta"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.other"
+msgstr "Muu"
+
+msgid "plugins.generic.objectsForReview.reserve.shippingAddress"
+msgstr "Toimitusosoite"
+
+msgid "plugins.generic.objectsForReview.reserve.phone"
+msgstr "Puhelinnumero"
+
+msgid "plugins.generic.objectsForReview.reserve.phone.hint"
+msgstr "Kuljetusliike tarvitsee tämän."
+
+msgid "plugins.generic.objectsForReview.reserve.copyNote"
+msgstr "Tarkenna"
+
+msgid "plugins.generic.objectsForReview.reserve.submit"
+msgstr "Varaa"
+
+msgid "plugins.generic.objectsForReview.reserve.yourDueDate"
+msgstr "Arviosi määräpäivä on {$dueDate}."
+
+msgid "plugins.generic.objectsForReview.reserve.error.summary"
+msgstr "Korjaa seuraavat kohdat:"
+
+msgid "plugins.generic.objectsForReview.reserve.error.acceptTerms"
+msgstr "Sinun on hyväksyttävä varauksen ehdot."
+
+msgid "plugins.generic.objectsForReview.reserve.error.dueDate"
+msgstr "Anna kelvollinen määräpäivä."
+
+msgid "plugins.generic.objectsForReview.reserve.error.dueDateRange"
+msgstr "Määräpäivän on oltava tulevaisuudessa ja sallitun ajan sisällä."
+
+msgid "plugins.generic.objectsForReview.reserve.error.copyPreference"
+msgstr "Valitse, miten saat julkaisun."
+
+msgid "plugins.generic.objectsForReview.reserve.error.shippingAddress"
+msgstr "Anna toimitusosoite."
+
+msgid "plugins.generic.objectsForReview.reserve.error.phone"
+msgstr "Anna kelvollinen puhelinnumero."
+
+msgid "plugins.generic.objectsForReview.reserve.error.copyNote"
+msgstr "Kerro, miten saat julkaisun."
+
+msgid "plugins.generic.objectsForReview.column.dates"
+msgstr "Päivämäärät"
+
+msgid "plugins.generic.objectsForReview.column.reservedOn"
+msgstr "Varattu"
+
+msgid "plugins.generic.objectsForReview.settings.contract"
+msgstr "Varauksen ehdot"
+
+msgid "plugins.generic.objectsForReview.settings.contract.description"
+msgstr "Näytetään varausikkunassa; arvioijien on hyväksyttävä ehdot."
+
+msgid "plugins.generic.objectsForReview.settings.dueMonths"
+msgstr "Arvion määräpäivä"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonths.description"
+msgstr "Kuukautta varauksen jälkeen"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonthsDefault"
+msgstr "Oletus"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonthsMax"
+msgstr "Enintään"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonths.invalid"
+msgstr "Anna kuukaudet kokonaislukuina (enintään 24); oletus ei saa ylittää enimmäisarvoa."
+
+msgid "plugins.generic.objectsForReview.contract.default"
+msgstr "<p>Varaamalla tämän julkaisun hyväksyt seuraavat ehdot:</p><ul><li>Kirjoitat julkaisusta arvion ja lähetät sen lehdelle valitsemaasi määräpäivään mennessä.</li><li>Jos et ehdi toimittaa arviota ajallaan, ilmoitat toimitukselle mahdollisimman pian.</li><li>Jos perut varauksen tai et toimita arviota, toimitus voi pyytää sinua palauttamaan saamasi arvostelukappaleen.</li><li>Arviosi käy läpi lehden tavanomaisen toimitusprosessin; lähettäminen ei takaa julkaisua.</li></ul>"

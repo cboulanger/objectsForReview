@@ -209,7 +209,7 @@ class ObjectForReviewDAO extends DAO {
 	 * @return array
 	 */
 	function getAdditionalFieldNames(): array {
-		return array('authors', 'title', 'year', 'publisher');
+		return array_merge(['authors', 'title', 'year', 'publisher'], Reservation::FIELDS);
 	}
 
 	/**

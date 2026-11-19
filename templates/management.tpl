@@ -40,6 +40,8 @@
 						<tr>
 							<th>{translate key="plugins.generic.objectsForReview.column.object"}</th>
 							<th>{translate key="plugins.generic.objectsForReview.column.reservedBy"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.dates"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.reserve.copy"}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -47,6 +49,16 @@
 							<tr>
 								<td>{include file=$ofrObjectCell row=$row}</td>
 								<td>{$row.user|escape}</td>
+								<td class="ofrNoWrap">
+									{if $row.dateReserved}{translate key="plugins.generic.objectsForReview.column.reservedOn"}: {$row.dateReserved|date_format:$dateFormatShort}<br />{/if}
+									{if $row.dueDate}<strong>{translate key="plugins.generic.objectsForReview.reserve.dueDate"}: {$row.dueDate|date_format:$dateFormatShort}</strong>{/if}
+								</td>
+								<td>
+									{$row.copyPreferenceLabel|escape}
+									{if $row.shippingAddress}<div class="ofrDetail">{$row.shippingAddress|escape|nl2br}</div>{/if}
+									{if $row.phone}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.reserve.phone"}: {$row.phone|escape}</div>{/if}
+									{if $row.copyNote}<div class="ofrDetail">{$row.copyNote|escape|nl2br}</div>{/if}
+								</td>
 							</tr>
 						{/foreach}
 					</tbody>

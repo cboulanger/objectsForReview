@@ -16,6 +16,7 @@ namespace APP\plugins\generic\objectsForReview\pages;
 use APP\core\Application;
 use APP\facades\Repo;
 use APP\handler\Handler;
+use APP\plugins\generic\objectsForReview\classes\Reservation;
 use APP\template\TemplateManager;
 use PKP\db\DAORegistry;
 use PKP\security\authorization\ContextAccessPolicy;
@@ -77,9 +78,10 @@ class ObjectsForReviewManagementHandler extends Handler {
 			if ($filterUserId && $filterUserId !== $userId) {
 				continue;
 			}
-			$rows[] = $this->objectRow($object) + ['user' => $users[$userId]];
+			$rows[] = $this->objectRow($object) + ['user' => $users[$userId]] + Reservation::getDisplayData($object);
 		}
 		asort($users);
+		usort($rows, fn ($a, $b) => strcmp((string) $a['dueDate'], (string) $b['dueDate']));
 		return $this->display($request, 'reservations', 'plugins.generic.objectsForReview.menu.reservations', [
 			'rows' => $rows,
 			'users' => $users,

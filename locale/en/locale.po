@@ -232,3 +232,105 @@ msgstr "No objects are currently reserved."
 
 msgid "plugins.generic.objectsForReview.reviewedWorks.none"
 msgstr "No objects have been attached to submissions yet."
+
+msgid "plugins.generic.objectsForReview.reserve.title"
+msgstr "Reserve for review"
+
+msgid "plugins.generic.objectsForReview.reserve.contract"
+msgstr "Terms of reservation"
+
+msgid "plugins.generic.objectsForReview.reserve.acceptTerms"
+msgstr "I have read the terms and agree to them."
+
+msgid "plugins.generic.objectsForReview.reserve.dueDate"
+msgstr "Review due date"
+
+msgid "plugins.generic.objectsForReview.reserve.dueDate.hint"
+msgstr "You commit to delivering your review by this date (at the latest {$maxDate})."
+
+msgid "plugins.generic.objectsForReview.reserve.copy"
+msgstr "Access to the work"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.have"
+msgstr "I already have the work"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.physical"
+msgstr "I prefer a physical copy"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.electronic"
+msgstr "I prefer an electronic copy"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.other"
+msgstr "Other"
+
+msgid "plugins.generic.objectsForReview.reserve.shippingAddress"
+msgstr "Shipping address"
+
+msgid "plugins.generic.objectsForReview.reserve.phone"
+msgstr "Phone number"
+
+msgid "plugins.generic.objectsForReview.reserve.phone.hint"
+msgstr "Required by the delivery service."
+
+msgid "plugins.generic.objectsForReview.reserve.copyNote"
+msgstr "Please explain"
+
+msgid "plugins.generic.objectsForReview.reserve.submit"
+msgstr "Reserve"
+
+msgid "plugins.generic.objectsForReview.reserve.yourDueDate"
+msgstr "Your review is due on {$dueDate}."
+
+msgid "plugins.generic.objectsForReview.reserve.error.summary"
+msgstr "Please correct the following:"
+
+msgid "plugins.generic.objectsForReview.reserve.error.acceptTerms"
+msgstr "You must accept the terms of reservation."
+
+msgid "plugins.generic.objectsForReview.reserve.error.dueDate"
+msgstr "Please enter a valid due date."
+
+msgid "plugins.generic.objectsForReview.reserve.error.dueDateRange"
+msgstr "The due date must be in the future and within the allowed period."
+
+msgid "plugins.generic.objectsForReview.reserve.error.copyPreference"
+msgstr "Please choose how you will get the work."
+
+msgid "plugins.generic.objectsForReview.reserve.error.shippingAddress"
+msgstr "Please enter a shipping address."
+
+msgid "plugins.generic.objectsForReview.reserve.error.phone"
+msgstr "Please enter a valid phone number."
+
+msgid "plugins.generic.objectsForReview.reserve.error.copyNote"
+msgstr "Please explain how you will get the work."
+
+msgid "plugins.generic.objectsForReview.column.dates"
+msgstr "Dates"
+
+msgid "plugins.generic.objectsForReview.column.reservedOn"
+msgstr "Reserved"
+
+msgid "plugins.generic.objectsForReview.settings.contract"
+msgstr "Terms of reservation"
+
+msgid "plugins.generic.objectsForReview.settings.contract.description"
+msgstr "Shown in the reservation dialog; reviewers must accept these terms."
+
+msgid "plugins.generic.objectsForReview.settings.dueMonths"
+msgstr "Review due date"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonths.description"
+msgstr "Months after the reservation"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonthsDefault"
+msgstr "Default"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonthsMax"
+msgstr "Maximum"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonths.invalid"
+msgstr "Please enter whole numbers of months (at most 24); the default must not exceed the maximum."
+
+msgid "plugins.generic.objectsForReview.contract.default"
+msgstr "<p>By reserving this work you agree to the following terms:</p><ul><li>You will write a review of the work and submit it to the journal by the due date you choose.</li><li>If you cannot deliver the review on time, you will inform the editors as early as possible.</li><li>If you cancel the reservation or do not deliver the review, the editors may ask you to return a review copy you received.</li><li>Your review goes through the journal's usual editorial process; submitting it does not guarantee publication.</li></ul>"

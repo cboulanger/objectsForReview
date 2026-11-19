@@ -23,6 +23,7 @@ msgstr ""
 "\t\t\tEin Rezensionsobjekt wurde reserviert.<br /><br />\n"
 "\t\t\tRezensionsobjekt: {$objectDescription}<br />\n"
 "\t\t\tNutzer/in: {$senderUsername} ({$senderEmail})<br />\n"
+"\t\t\t{$reservationDetails}\n"
 "\t\t"
 
 msgid "emails.ofrNewReservation.description"

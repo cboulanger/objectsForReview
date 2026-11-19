@@ -17,6 +17,7 @@ namespace APP\plugins\generic\objectsForReview;
 
 use APP\core\Application;
 use APP\template\TemplateManager;
+use APP\plugins\generic\objectsForReview\classes\Reservation;
 
 
 class ObjectsForReviewSettingsForm extends \PKP\form\Form {
@@ -38,6 +39,12 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 
 		parent::__construct($plugin->getTemplateResource('settingsForm.tpl'));
 
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'ofrDueMonthsMax', 'required',
+			'plugins.generic.objectsForReview.settings.dueMonths.invalid',
+			fn ($max) => ctype_digit((string) $max) && $max >= 1 && $max <= Reservation::MAX_DUE_MONTHS_LIMIT));
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'ofrDueMonthsDefault', 'required',
+			'plugins.generic.objectsForReview.settings.dueMonths.invalid',
+			fn ($default) => ctype_digit((string) $default) && $default >= 1 && $default <= (int) $this->getData('ofrDueMonthsMax')));
 		$this->addCheck(new \PKP\form\validation\FormValidatorPost($this));
 		$this->addCheck(new \PKP\form\validation\FormValidatorCSRF($this));
 	}
@@ -54,14 +61,24 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 			'onlyReserved' => $this->_plugin->getSetting($this->_journalId, 'onlyReserved'),
 			'ofrNotifyEmail' => $this->_plugin->getSetting($this->_journalId, 'ofrNotifyEmail'),
 			'ofrInstructions' => $this->_plugin->getSetting($this->_journalId, 'ofrInstructions'),
+			'ofrContract' => $this->_plugin->getSetting($this->_journalId, 'ofrContract'),
 		);
+		[$this->_data['ofrDueMonthsDefault'], $this->_data['ofrDueMonthsMax']] = Reservation::getDueMonths($this->_plugin, $this->_journalId);
+		// Prefill the contract with the default text
+		if (empty(array_filter((array) $this->_data['ofrContract']))) {
+			$contract = [];
+			foreach ($context->getSupportedFormLocales() as $locale) {
+				$contract[$locale] = __('plugins.generic.objectsForReview.contract.default', [], $locale);
+			}
+			$this->_data['ofrContract'] = $contract;
+		}
 	}
 
 	/**
 	 * Assign form data to user-submitted data.
 	 */
 	function readInputData() {
-		$this->readUserVars(array('displayAsSubtitle', 'displayAsList', 'onlyReserved', 'ofrNotifyEmail', 'ofrInstructions'));
+		$this->readUserVars(array('displayAsSubtitle', 'displayAsList', 'onlyReserved', 'ofrNotifyEmail', 'ofrInstructions', 'ofrContract', 'ofrDueMonthsDefault', 'ofrDueMonthsMax'));
 	}
 
 	/**
@@ -86,6 +103,9 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 		$this->_plugin->updateSetting($this->_journalId, 'onlyReserved', $this->getData('onlyReserved'), 'bool');
 		$this->_plugin->updateSetting($this->_journalId, 'ofrNotifyEmail', $this->getData('ofrNotifyEmail'), 'string');
 		$this->_plugin->updateSetting($this->_journalId, 'ofrInstructions', $this->getData('ofrInstructions'));
+		$this->_plugin->updateSetting($this->_journalId, 'ofrContract', $this->getData('ofrContract'));
+		$this->_plugin->updateSetting($this->_journalId, 'ofrDueMonthsDefault', (int) $this->getData('ofrDueMonthsDefault'), 'int');
+		$this->_plugin->updateSetting($this->_journalId, 'ofrDueMonthsMax', (int) $this->getData('ofrDueMonthsMax'), 'int');
 
 	}
 }

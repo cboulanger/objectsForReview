@@ -231,3 +231,105 @@ msgstr "Derzeit sind keine Objekte reserviert."
 
 msgid "plugins.generic.objectsForReview.reviewedWorks.none"
 msgstr "Bisher wurden keinen Einreichungen Objekte zugeordnet."
+
+msgid "plugins.generic.objectsForReview.reserve.title"
+msgstr "Zur Rezension reservieren"
+
+msgid "plugins.generic.objectsForReview.reserve.contract"
+msgstr "Bedingungen der Reservierung"
+
+msgid "plugins.generic.objectsForReview.reserve.acceptTerms"
+msgstr "Ich habe die Bedingungen gelesen und stimme ihnen zu."
+
+msgid "plugins.generic.objectsForReview.reserve.dueDate"
+msgstr "Abgabetermin der Rezension"
+
+msgid "plugins.generic.objectsForReview.reserve.dueDate.hint"
+msgstr "Sie verpflichten sich, Ihre Rezension bis zu diesem Datum einzureichen (spätestens {$maxDate})."
+
+msgid "plugins.generic.objectsForReview.reserve.copy"
+msgstr "Bezug des Werks"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.have"
+msgstr "Ich habe das Werk bereits"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.physical"
+msgstr "Ich bevorzuge ein gedrucktes Exemplar"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.electronic"
+msgstr "Ich bevorzuge ein elektronisches Exemplar"
+
+msgid "plugins.generic.objectsForReview.reserve.copy.other"
+msgstr "Sonstiges"
+
+msgid "plugins.generic.objectsForReview.reserve.shippingAddress"
+msgstr "Lieferadresse"
+
+msgid "plugins.generic.objectsForReview.reserve.phone"
+msgstr "Telefonnummer"
+
+msgid "plugins.generic.objectsForReview.reserve.phone.hint"
+msgstr "Wird vom Lieferdienst benötigt."
+
+msgid "plugins.generic.objectsForReview.reserve.copyNote"
+msgstr "Bitte erläutern"
+
+msgid "plugins.generic.objectsForReview.reserve.submit"
+msgstr "Verbindlich reservieren"
+
+msgid "plugins.generic.objectsForReview.reserve.yourDueDate"
+msgstr "Ihre Rezension ist fällig am {$dueDate}."
+
+msgid "plugins.generic.objectsForReview.reserve.error.summary"
+msgstr "Bitte korrigieren Sie Folgendes:"
+
+msgid "plugins.generic.objectsForReview.reserve.error.acceptTerms"
+msgstr "Sie müssen den Bedingungen der Reservierung zustimmen."
+
+msgid "plugins.generic.objectsForReview.reserve.error.dueDate"
+msgstr "Bitte geben Sie einen gültigen Abgabetermin an."
+
+msgid "plugins.generic.objectsForReview.reserve.error.dueDateRange"
+msgstr "Der Abgabetermin muss in der Zukunft und innerhalb des erlaubten Zeitraums liegen."
+
+msgid "plugins.generic.objectsForReview.reserve.error.copyPreference"
+msgstr "Bitte wählen Sie, wie Sie das Werk beziehen."
+
+msgid "plugins.generic.objectsForReview.reserve.error.shippingAddress"
+msgstr "Bitte geben Sie eine Lieferadresse an."
+
+msgid "plugins.generic.objectsForReview.reserve.error.phone"
+msgstr "Bitte geben Sie eine gültige Telefonnummer an."
+
+msgid "plugins.generic.objectsForReview.reserve.error.copyNote"
+msgstr "Bitte erläutern Sie, wie Sie das Werk beziehen."
+
+msgid "plugins.generic.objectsForReview.column.dates"
+msgstr "Termine"
+
+msgid "plugins.generic.objectsForReview.column.reservedOn"
+msgstr "Reserviert"
+
+msgid "plugins.generic.objectsForReview.settings.contract"
+msgstr "Bedingungen der Reservierung"
+
+msgid "plugins.generic.objectsForReview.settings.contract.description"
+msgstr "Wird im Reservierungsdialog angezeigt; Rezensierende müssen diesen Bedingungen zustimmen."
+
+msgid "plugins.generic.objectsForReview.settings.dueMonths"
+msgstr "Abgabetermin der Rezension"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonths.description"
+msgstr "Monate nach der Reservierung"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonthsDefault"
+msgstr "Voreinstellung"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonthsMax"
+msgstr "Höchstens"
+
+msgid "plugins.generic.objectsForReview.settings.dueMonths.invalid"
+msgstr "Bitte ganze Monatszahlen angeben (höchstens 24); die Voreinstellung darf das Maximum nicht überschreiten."
+
+msgid "plugins.generic.objectsForReview.contract.default"
+msgstr "<p>Mit der Reservierung dieses Werks stimmen Sie folgenden Bedingungen zu:</p><ul><li>Sie verfassen eine Rezension des Werks und reichen sie bis zu dem von Ihnen gewählten Abgabetermin bei der Zeitschrift ein.</li><li>Wenn Sie den Termin nicht einhalten können, informieren Sie die Redaktion so früh wie möglich.</li><li>Wenn Sie die Reservierung stornieren oder keine Rezension einreichen, kann die Redaktion Sie bitten, ein erhaltenes Rezensionsexemplar zurückzusenden.</li><li>Ihre Rezension durchläuft das übliche redaktionelle Verfahren der Zeitschrift; die Einreichung garantiert keine Veröffentlichung.</li></ul>"

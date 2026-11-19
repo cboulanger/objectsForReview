@@ -21,6 +21,7 @@ msgstr ""
 "\t\t\tUusi arvioinnin kohde varattu<br /><br />\n"
 "\t\t\tArvioinnin kohde: {$objectDescription}<br />\n"
 "\t\t\tKäyttäjä: {$senderUsername} ({$senderEmail})<br />\n"
+"\t\t\t{$reservationDetails}\n"
 "\t\t\n"
 "\t\t"
 

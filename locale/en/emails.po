@@ -21,6 +21,7 @@ msgstr ""
 "\t\t\tNew object for review reserved<br /><br />\n"
 "\t\t\tObject for review: {$objectDescription}<br />\n"
 "\t\t\tUser: {$userName} ({$userEmail})<br />\n"
+"\t\t\t{$reservationDetails}\n"
 "\t\t\n"
 "\t\t"
 

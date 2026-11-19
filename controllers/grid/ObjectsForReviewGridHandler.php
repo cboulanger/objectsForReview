@@ -18,6 +18,7 @@ namespace APP\plugins\generic\objectsForReview\controllers\grid;
 use APP\core\Application;
 
 use APP\plugins\generic\objectsForReview\classes\CrossrefLookup;
+use APP\plugins\generic\objectsForReview\classes\Reservation;
 use APP\plugins\generic\objectsForReview\controllers\grid\form\ObjectsForReviewForm;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridRow;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridCellProvider;
@@ -318,6 +319,8 @@ class ObjectsForReviewGridHandler extends GridHandler {
 			return new JSONMessage(false, __('user.authorization.accessDenied'));
 		}
 		$objectForReview->setSubmissionId($submissionId);
+		// Shipping address and phone are no longer needed
+		Reservation::erasePersonalData($objectForReview);
 		$objectForReviewDao->updateObject($objectForReview);
 
 		$json = DAO::getDataChangedEvent($submissionId);

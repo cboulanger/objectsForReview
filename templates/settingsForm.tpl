@@ -38,6 +38,15 @@
 			{fbvElement type="textarea" label="plugins.generic.objectsForReview.settings.instructions.description" name="ofrInstructions" id="ofrInstructions" value=$ofrInstructions multilingual="true" inline=true}
 		{/fbvFormSection}
 
+		{fbvFormSection label="plugins.generic.objectsForReview.settings.contract"}
+			{fbvElement type="textarea" label="plugins.generic.objectsForReview.settings.contract.description" name="ofrContract" id="ofrContract" value=$ofrContract multilingual=true rich=true}
+		{/fbvFormSection}
+
+		{fbvFormSection label="plugins.generic.objectsForReview.settings.dueMonths" description="plugins.generic.objectsForReview.settings.dueMonths.description"}
+			{fbvElement type="text" label="plugins.generic.objectsForReview.settings.dueMonthsDefault" id="ofrDueMonthsDefault" value=$ofrDueMonthsDefault maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
+			{fbvElement type="text" label="plugins.generic.objectsForReview.settings.dueMonthsMax" id="ofrDueMonthsMax" value=$ofrDueMonthsMax maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
+		{/fbvFormSection}
+
 		{if $standalone}
 			{fbvFormButtons hideCancel=true submitText="common.save"}
 		{else}

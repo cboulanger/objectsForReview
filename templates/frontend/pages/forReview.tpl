@@ -56,7 +56,10 @@
         <td>
           {if $currentUser} <!-- If logged in, show buttons -->
             {if $objectForReview.userId} <!-- If object reserved, show cancel or status -->
-              {if $currentUser->getId() == $objectForReview.userId} <!-- If reserved for current user, show cancel button -->
+              {if $currentUser->getId() == $objectForReview.userId} <!-- If reserved for current user, show due date and cancel button -->
+              {if $objectForReview.dueDate}
+                <p class="ofrDueDate">{translate key="plugins.generic.objectsForReview.reserve.yourDueDate" dueDate=$objectForReview.dueDate|date_format:$dateFormatShort}</p>
+              {/if}
               <form class="pkp_form" id="cancelObjectForm-{$objectForReview.objectId|escape}" method="post" action="{url op="cancelObject"}" onsubmit="return confirm('{translate|escape:"javascript"|escape key="plugins.generic.objectsForReview.cancel.confirm"}');">
                 {csrf}
                 <input type="hidden" name="objectId" value="{$objectForReview.objectId|escape}" />
@@ -66,11 +69,7 @@
                 {translate key='plugins.generic.objectsForReview.objectReserved'}
               {/if}
             {else} <!-- Else if not reserved, show reserve button -->
-              <form class="pkp_form" id="reserveObjectForm-{$objectForReview.objectId|escape}" method="post" action="{url op="reserveObject"}" onsubmit="return confirm('{translate|escape:"javascript"|escape key="plugins.generic.objectsForReview.reserve.confirm"}');">
-                {csrf}
-                <input type="hidden" name="objectId" value="{$objectForReview.objectId|escape}" />
-                <button type="submit" id="reserveObject-{$objectForReview.objectId|escape}" class="pkp_button">{translate key='plugins.generic.objectsForReview.reserve'}</button>
-              </form>
+              <a class="pkp_button ofrReserveButton" id="reserveObject-{$objectForReview.objectId|escape}" href="{url op="index" reserve=$objectForReview.objectId}" data-object-id="{$objectForReview.objectId|escape}" data-description="{$objectForReview.description|strip_tags|escape}">{translate key='plugins.generic.objectsForReview.reserve'}</a>
             {/if} <!-- END If object reserved, show cancel or status -->
           {else} <!-- If not logged in, just show the status -->
             {if $objectForReview.userId}
@@ -83,5 +82,8 @@
         </tr>
 			{/foreach}
 		</table>
+		{if $currentUser}
+			{include file=$reserveDialogTemplate}
+		{/if}
 </div>
 {include file="frontend/components/footer.tpl"}

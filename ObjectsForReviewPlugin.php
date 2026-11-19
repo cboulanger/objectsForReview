@@ -528,6 +528,8 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 				. ' .objectsForReviewManagement .ofrTable th, .objectsForReviewManagement .ofrTable td { text-align: left; vertical-align: top; padding: 0.75rem 1rem; border-bottom: 1px solid #ddd; }'
 				. ' .objectsForReviewManagement .ofrIdentifier { margin-top: 0.25rem; font-size: 0.875rem; }'
 				. ' .objectsForReviewManagement .ofrFilter { margin-bottom: 1rem; }'
+				. ' .objectsForReviewManagement .ofrNoWrap { white-space: nowrap; }'
+				. ' .objectsForReviewManagement .ofrDetail { margin-top: 0.25rem; font-size: 0.875rem; }'
 				. ' .objectsForReviewManagement .ofrFilter label { margin-right: 0.5rem; font-weight: bold; }',
 			[
 				'inline' => true,
@@ -664,7 +666,7 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 	 * @param $object
 	 * @param $template Send either the reserve or cancel mail
 	 */
-	public function notifyEditor($user, $objectDescription, $mailTemplate) {
+	public function notifyEditor($user, $objectDescription, $mailTemplate, $reservationDetails = '') {
 
 		$request = Application::get()->getRequest();
 		$context = $request->getContext();
@@ -680,6 +682,8 @@ class ObjectsForReviewPlugin extends GenericPlugin {
             // variable names used by the original en/de templates
             'userName' => htmlspecialchars($user->getFullName()),
             'userEmail' => htmlspecialchars($user->getEmail()),
+            // already escaped HTML (see Reservation::getEmailDetails())
+            'reservationDetails' => $reservationDetails,
         ];
 
 		if ($mailTemplate == 'OFR_NEW_RESERVATION'){
@@ -696,11 +700,16 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 
 		$template = Repo::emailTemplate()->getByKey($context->getId(), $mailable::getEmailTemplateKey());
 		$locale = $context->getPrimaryLocale();
+		$body = (string) $template->getLocalizedData('body', $locale);
+		// Templates installed before the reservation details existed have no placeholder for them
+		if ($reservationDetails !== '' && strpos($body, '{$reservationDetails}') === false) {
+			$body .= '<br />{$reservationDetails}';
+		}
 		$mailable
 			->sender($user)
 			->to($mailTo)
 			->subject($template->getLocalizedData('subject', $locale))
-			->body($template->getLocalizedData('body', $locale));
+			->body($body);
 
 		Mail::send($mailable);
 
