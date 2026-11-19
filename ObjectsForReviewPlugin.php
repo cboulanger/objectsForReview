@@ -368,6 +368,7 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 				$templateData[$objectId] = array(
 					'identifierType' => $objectForReview->getIdentifierType(),
 					'identifier' => $objectForReview->getIdentifier(),
+					'identifierUrl' => $objectForReview->getIdentifierUrl(),
 					'description' => $objectForReview->getDescription()
 				);
 			}

@@ -18,7 +18,6 @@ use APP\core\Application;
 use PKP\facades\Locale;
 use PKP\db\DAORegistry;
 use APP\plugins\generic\objectsForReview\classes\ObjectForReviewDAO;
-use APP\plugins\generic\objectsForReview\classes\CrossrefLookup;
 use PKP\core\PKPRequest;
 use APP\template\TemplateManager;
 use PKP\plugins\PluginRegistry;
@@ -62,7 +61,7 @@ class ObjectsForReviewHandler extends Handler {
 					'objectId' => $objectForReview->getId(),
 					'identifierType' => $objectForReview->getIdentifierType(),
 					'identifier' => $objectForReview->getIdentifier(),
-					'identifierUrl' => strtolower((string) $objectForReview->getIdentifierType()) === 'doi' ? CrossrefLookup::doiUrl($objectForReview->getIdentifier()) : null,
+					'identifierUrl' => $objectForReview->getIdentifierUrl(),
 					'authors' => $objectForReview->getAuthors(),
 					'title' => $objectForReview->getTitle(),
 					'publisher' => $objectForReview->getPublisher(),

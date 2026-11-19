@@ -150,6 +150,21 @@ class ObjectForReview extends \PKP\core\DataObject {
 	}
 
 	/**
+	 * Get a URL for the identifier, if it can be linked (DOI or web link).
+	 * @return string|null
+	 */
+	function getIdentifierUrl() {
+		$identifier = trim((string) $this->getData('identifier'));
+		switch (strtolower((string) $this->getData('identifierType'))) {
+			case 'doi':
+				return CrossrefLookup::doiUrl($identifier);
+			case 'link':
+				return preg_match('#^https?://#i', $identifier) ? $identifier : null;
+		}
+		return null;
+	}
+
+	/**
 	 * Get authors.
 	 * @return string
 	 */

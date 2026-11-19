@@ -17,10 +17,12 @@
 		<ul>
 			{foreach from=$objectsForReview item=objectForReview}
 				<li>
-          {if $objectForReview.identifierType == "link"}
-            <a href={$objectForReview.identifier}>{$objectForReview.description}</a>
+          {$objectForReview.description|strip_unsafe_html}
+          {$objectForReview.identifierType|escape}:
+          {if $objectForReview.identifierUrl}
+            <a href="{$objectForReview.identifierUrl|escape}" target="_blank" rel="noopener noreferrer">{$objectForReview.identifier|escape}</a>
           {else}
-            {$objectForReview.description} {$objectForReview.identifierType}: {$objectForReview.identifier}
+            {$objectForReview.identifier|escape}
           {/if}
 				</li>
 			{/foreach}

@@ -27,10 +27,10 @@
 
 		<table id="objects-for-review-table" style="width:100%">
       <tr data-sort-method='none'>
-        <th>Title</th>
-        <th>Authors</th>
-        <th>Publisher</th>
-        <th>Year</th>
+        <th>{translate key="plugins.generic.objectsForReview.itemTitle"}</th>
+        <th>{translate key="plugins.generic.objectsForReview.itemAuthors"}</th>
+        <th>{translate key="plugins.generic.objectsForReview.itemPublisher"}</th>
+        <th>{translate key="plugins.generic.objectsForReview.itemYear"}</th>
         <th></th> 
       </tr>
 			{foreach from=$objectsForReview item=objectForReview}
