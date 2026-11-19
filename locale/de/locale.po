@@ -12,7 +12,7 @@ msgstr ""
 "Language: \n"
 
 msgid "plugins.generic.objectsForReview.displayName"
-msgstr "Rezensierte Objekte"
+msgstr "Rezensionsangebote"
 
 msgid "plugins.generic.objectsForReview.description"
 msgstr "Erfasst rezensierte Objekte bei Einreichungen."
