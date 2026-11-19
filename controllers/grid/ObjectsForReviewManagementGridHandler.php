@@ -17,6 +17,7 @@
 namespace APP\plugins\generic\objectsForReview\controllers\grid;
 
 use APP\plugins\generic\objectsForReview\classes\ObjectForReviewDAO;
+use APP\plugins\generic\objectsForReview\classes\CrossrefLookup;
 
 use APP\plugins\generic\objectsForReview\controllers\grid\form\AvailableObjectsForReviewForm;
 use APP\plugins\generic\objectsForReview\controllers\grid\form\ObjectsForReviewForm;
@@ -49,7 +50,7 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 		$this->plugin = $plugin;
 		$this->addRoleAssignment(
 			array(Role::ROLE_ID_MANAGER),
-			array('fetchGrid', 'fetchRow', 'addAvailableObjectForReview', 'editAvailableObjectForReview', 'updateAvailableObjectForReview', 'deleteAvailableObjectForReview')
+			array('fetchGrid', 'fetchRow', 'addAvailableObjectForReview', 'editAvailableObjectForReview', 'updateAvailableObjectForReview', 'deleteAvailableObjectForReview', 'lookupDoi')
 		);
 	}
 
@@ -236,6 +237,16 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 
 		$objectForReviewDao->deleteObject($objectsForReview);
 		return DAO::getDataChangedEvent();
+	}
+
+	/**
+	 * Look up metadata for a DOI at Crossref
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage
+	 */
+	function lookupDoi($args, $request) {
+		return CrossrefLookup::handleRequest($request);
 	}
 
 }

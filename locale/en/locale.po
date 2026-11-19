@@ -172,3 +172,24 @@ msgstr "cartographic material"
 
 msgid "plugins.generic.objectsForReview.COAR.sound"
 msgstr "sound"
+
+msgid "plugins.generic.objectsForReview.doiLookup.button"
+msgstr "Look up DOI"
+
+msgid "plugins.generic.objectsForReview.doiLookup.loading"
+msgstr "Looking up metadata at Crossref…"
+
+msgid "plugins.generic.objectsForReview.doiLookup.done"
+msgstr "Metadata filled in from Crossref. Please check the fields before saving."
+
+msgid "plugins.generic.objectsForReview.doiLookup.failed"
+msgstr "The Crossref lookup failed. Please try again later or enter the metadata manually."
+
+msgid "plugins.generic.objectsForReview.doiLookup.notFound"
+msgstr "This DOI was not found at Crossref. It may be registered with another agency (e.g. DataCite); please enter the metadata manually."
+
+msgid "plugins.generic.objectsForReview.doiLookup.invalid"
+msgstr "Please enter a valid DOI, e.g. 10.1000/xyz123."
+
+msgid "plugins.generic.objectsForReview.doiLookup.editorSuffix"
+msgstr "Ed."

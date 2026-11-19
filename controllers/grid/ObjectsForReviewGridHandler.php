@@ -17,6 +17,7 @@ namespace APP\plugins\generic\objectsForReview\controllers\grid;
 
 use APP\core\Application;
 
+use APP\plugins\generic\objectsForReview\classes\CrossrefLookup;
 use APP\plugins\generic\objectsForReview\controllers\grid\form\ObjectsForReviewForm;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridRow;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridCellProvider;
@@ -46,7 +47,7 @@ class ObjectsForReviewGridHandler extends GridHandler {
 
 		$this->addRoleAssignment(
 			array(Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_ASSISTANT, Role::ROLE_ID_AUTHOR),
-			array('fetchGrid', 'fetchRow', 'addObjectForReview', 'editObjectForReview', 'updateObjectForReview', 'deleteObjectForReview','addReservedObjectForReview')
+			array('fetchGrid', 'fetchRow', 'addObjectForReview', 'editObjectForReview', 'updateObjectForReview', 'deleteObjectForReview','addReservedObjectForReview', 'lookupDoi')
 		);
 	}
 
@@ -352,6 +353,16 @@ class ObjectsForReviewGridHandler extends GridHandler {
 
 		// Default: Read-only.
 		return false;
+	}
+
+	/**
+	 * Look up metadata for a DOI at Crossref
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage
+	 */
+	function lookupDoi($args, $request) {
+		return CrossrefLookup::handleRequest($request);
 	}
 
 }

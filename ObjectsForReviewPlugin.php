@@ -460,7 +460,7 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 		);
 		$templateMgr->addStylesheet(
 			'ObjectsForReviewGridHandlerStyles',
-			'.objectsForReviewWorkflowGrid { margin: 1rem; }',
+			'.objectsForReviewWorkflowGrid { margin: 1rem; } .orDoiLookup .orDoiLookupButton, .orDoiLookup .orDoiLookupStatus { margin-left: 0.5em; }',
 			[
 				'inline' => true,
 				'contexts' => 'backend',

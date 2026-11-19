@@ -121,6 +121,7 @@ class ObjectsForReviewForm extends \PKP\form\Form {
 		$templateMgr->assign('submissionId', $this->submissionId);
 		$templateMgr->assign('identifierTypes', $identifierTypes);
 		$templateMgr->assign('resourceTypes', $resourceTypes);
+		$templateMgr->assign('doiLookupTemplate', $this->plugin->getTemplateResource('doiLookup.tpl'));
 
 		return parent::fetch($request);
 	}

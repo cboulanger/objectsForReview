@@ -172,3 +172,23 @@ msgstr "Kartografisches Material"
 
 msgid "plugins.generic.objectsForReview.COAR.sound"
 msgstr "Tonaufnahme"
+msgid "plugins.generic.objectsForReview.doiLookup.button"
+msgstr "DOI nachschlagen"
+
+msgid "plugins.generic.objectsForReview.doiLookup.loading"
+msgstr "Metadaten werden bei Crossref abgerufen…"
+
+msgid "plugins.generic.objectsForReview.doiLookup.done"
+msgstr "Metadaten von Crossref übernommen. Bitte prüfen Sie die Felder vor dem Speichern."
+
+msgid "plugins.generic.objectsForReview.doiLookup.failed"
+msgstr "Die Abfrage bei Crossref ist fehlgeschlagen. Bitte versuchen Sie es später erneut oder geben Sie die Metadaten manuell ein."
+
+msgid "plugins.generic.objectsForReview.doiLookup.notFound"
+msgstr "Diese DOI wurde bei Crossref nicht gefunden. Möglicherweise ist sie bei einer anderen Registrierungsagentur (z. B. DataCite) registriert; bitte geben Sie die Metadaten manuell ein."
+
+msgid "plugins.generic.objectsForReview.doiLookup.invalid"
+msgstr "Bitte geben Sie eine gültige DOI ein, z. B. 10.1000/xyz123."
+
+msgid "plugins.generic.objectsForReview.doiLookup.editorSuffix"
+msgstr "Hrsg."
