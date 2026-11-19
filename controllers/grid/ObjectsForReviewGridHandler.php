@@ -336,7 +336,9 @@ class ObjectsForReviewGridHandler extends GridHandler {
 		if (!$user) return false;
 
 		// Incomplete submissions can be edited. (Presumably author.)
-		if (!$submission->getData('dateSubmitted')) return true;
+		// Since OJS 3.5 dateSubmitted is already set when the submission is created;
+		// submissionProgress is emptied only when the submission is actually submitted.
+		if ($submission->getData('submissionProgress')) return true;
 
 		// Managers should always have access.
 		$userRoles = (array) $this->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES);
