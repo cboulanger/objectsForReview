@@ -196,3 +196,39 @@ msgstr "Ed."
 
 msgid "plugins.generic.objectsForReview.itemYearShort"
 msgstr "Year"
+
+msgid "plugins.generic.objectsForReview.menu.available"
+msgstr "Available objects"
+
+msgid "plugins.generic.objectsForReview.menu.reservations"
+msgstr "Reservations"
+
+msgid "plugins.generic.objectsForReview.menu.reviewedWorks"
+msgstr "Reviewed works"
+
+msgid "plugins.generic.objectsForReview.menu.settings"
+msgstr "Settings"
+
+msgid "plugins.generic.objectsForReview.menu.publicPage"
+msgstr "Public page"
+
+msgid "plugins.generic.objectsForReview.column.object"
+msgstr "Object"
+
+msgid "plugins.generic.objectsForReview.column.reservedBy"
+msgstr "Reserved by"
+
+msgid "plugins.generic.objectsForReview.column.submission"
+msgstr "Submission"
+
+msgid "plugins.generic.objectsForReview.filter.allUsers"
+msgstr "All users"
+
+msgid "plugins.generic.objectsForReview.filter.apply"
+msgstr "Filter"
+
+msgid "plugins.generic.objectsForReview.reservations.none"
+msgstr "No objects are currently reserved."
+
+msgid "plugins.generic.objectsForReview.reviewedWorks.none"
+msgstr "No objects have been attached to submissions yet."

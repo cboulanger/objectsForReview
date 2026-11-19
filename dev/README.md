@@ -24,7 +24,7 @@ Open <http://localhost:8080/index.php/test>. Set `OJS_PORT` to use a different p
 
 On first start, the container installs the plugin's database tables and enables the plugin in the test journal. Where to find it:
 
-- Manager: Settings › Website › Objects for review
+- Manager: left menu › Objects for Review (Rezensionsangebote)
 - Author: submission wizard, "For the Editors" step
 
 Changes to the plugin's database schema (`ObjectsForReviewSchemaMigration.php`) or `version.xml` take effect only in a fresh container (`dev/ojs-dev.sh reset`).

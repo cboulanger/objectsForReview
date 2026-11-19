@@ -24,6 +24,7 @@ use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridHa
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewManagementGridHandler;
 use APP\plugins\generic\objectsForReview\ObjectsForReviewSchemaMigration;
 use APP\plugins\generic\objectsForReview\pages\ObjectsForReviewHandler;
+use APP\plugins\generic\objectsForReview\pages\ObjectsForReviewManagementHandler;
 
 use APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewNew;
 use APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewCancel;
@@ -32,10 +33,13 @@ use APP\facades\Repo;
 use PKP\linkAction\request\AjaxModal;
 use PKP\linkAction\LinkAction;
 use PKP\core\JSONMessage;
+use APP\notification\NotificationManager;
+use PKP\notification\Notification;
 use APP\template\TemplateManager;
 use PKP\db\DAORegistry;
 use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
+use PKP\security\Role;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -116,12 +120,19 @@ class ObjectsForReviewPlugin extends GenericPlugin {
                 $context = $request->getContext();
                 $templateMgr = TemplateManager::getManager($request);
                 $templateMgr->registerPlugin('function', 'plugin_url', [$this, 'smartyPluginUrl']);
+                // Standalone: embedded in the backend settings page instead of a modal
+                $templateMgr->assign('standalone', (bool) $request->getUserVar('standalone'));
                 $form = new ObjectsForReviewSettingsForm($this, $context->getId());
 
                 if ($request->getUserVar('save')) {
                     $form->readInputData();
                     if ($form->validate()) {
                         $form->execute();
+                        (new NotificationManager())->createTrivialNotification(
+                            $request->getUser()->getId(),
+                            Notification::NOTIFICATION_TYPE_SUCCESS,
+                            ['contents' => __('common.changesSaved')]
+                        );
                         return new JSONMessage(true);
                     }
                 } else {
@@ -158,7 +169,7 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 			Hook::Add('LoadComponentHandler', array($this, 'setupGridHandler'));
 			Hook::Add('TemplateManager::display',array($this, 'addJs'));
 
-			Hook::Add('Template::Settings::website', array($this, 'callbackShowWebsiteSettingsTabs'));
+			Hook::add('TemplateManager::setupBackendPage', [$this, 'addBackendMenu']);
 
 			// if list display is enabled
 			if ($this->getSetting($context->getId(), 'displayAsList')) {
@@ -181,15 +192,49 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * Extend the website settings tabs to include objects for review tab
-	 * @param $hookName string The name of the invoked hook
-	 * @param $args array Hook parameters
-	 * @return boolean Hook handling status
+	 * Add the "Objects for Review" section to the backend's left menu.
+	 * Hooked to TemplateManager::setupBackendPage.
 	 */
-	function callbackShowWebsiteSettingsTabs($hookName, $args) {
-		$templateMgr = $args[1];
-		$output =& $args[2];
-		$output .= $templateMgr->fetch($this->getTemplateResource('objectsForReviewTab.tpl'));
+	public function addBackendMenu($hookName, $args) {
+		$request = Application::get()->getRequest();
+		$router = $request->getRouter();
+		if (!$request->getContext() || !$request->getUser() || !$router || !$router->getHandler()) {
+			return false;
+		}
+		$userRoles = (array) $router->getHandler()->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES);
+		if (!array_intersect([Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN], $userRoles)) {
+			return false;
+		}
+
+		$page = ObjectsForReviewManagementHandler::PAGE;
+		$onPage = $request->getRequestedPage() === $page;
+		$requestedOp = $request->getRequestedOp() ?: 'index';
+		$submenu = [];
+		foreach (['index' => 'available', 'reservations' => 'reservations', 'reviewedWorks' => 'reviewedWorks', 'settings' => 'settings'] as $op => $key) {
+			$submenu[$key] = [
+				'name' => __('plugins.generic.objectsForReview.menu.' . $key),
+				'url' => $router->url($request, null, $page, $op),
+				'isCurrent' => $onPage && $requestedOp === $op,
+			];
+		}
+		$submenu['publicPage'] = [
+			'name' => __('plugins.generic.objectsForReview.menu.publicPage'),
+			'url' => $router->url($request, null, 'for-review'),
+		];
+		$entry = [
+			'name' => __('plugins.generic.objectsForReview.managementLink'),
+			'icon' => 'Book',
+			'submenu' => $submenu,
+		];
+
+		// Place the section before "Settings" (or at the end)
+		$templateMgr = TemplateManager::getManager($request);
+		$menu = (array) $templateMgr->getState('menu');
+		$pos = array_search('settings', array_keys($menu), true);
+		$menu = $pos === false
+			? $menu + ['objectsForReview' => $entry]
+			: array_slice($menu, 0, $pos, true) + ['objectsForReview' => $entry] + array_slice($menu, $pos, null, true);
+		$templateMgr->setState(['menu' => $menu]);
 		return false;
 	}
 
@@ -461,7 +506,12 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 		);
 		$templateMgr->addStylesheet(
 			'ObjectsForReviewGridHandlerStyles',
-			'.objectsForReviewWorkflowGrid { margin: 1rem; } .orDoiLookup .orDoiLookupButton, .orDoiLookup .orDoiLookupStatus { margin-left: 0.5em; }',
+			'.objectsForReviewWorkflowGrid { margin: 1rem; } .orDoiLookup .orDoiLookupButton, .orDoiLookup .orDoiLookupStatus { margin-left: 0.5em; }'
+				. ' .objectsForReviewManagement .ofrTable { width: 100%; border-collapse: collapse; }'
+				. ' .objectsForReviewManagement .ofrTable th, .objectsForReviewManagement .ofrTable td { text-align: left; vertical-align: top; padding: 0.75rem 1rem; border-bottom: 1px solid #ddd; }'
+				. ' .objectsForReviewManagement .ofrIdentifier { margin-top: 0.25rem; font-size: 0.875rem; }'
+				. ' .objectsForReviewManagement .ofrFilter { margin-bottom: 1rem; }'
+				. ' .objectsForReviewManagement .ofrFilter label { margin-right: 0.5rem; font-weight: bold; }',
 			[
 				'inline' => true,
 				'contexts' => 'backend',
@@ -506,6 +556,11 @@ class ObjectsForReviewPlugin extends GenericPlugin {
         if ($this->getEnabled() && $page === 'for-review') {
 			$handler =& $args[3];
             $handler = new ObjectsForReviewHandler($this);
+            return true;
+        }
+        if ($this->getEnabled() && $page === ObjectsForReviewManagementHandler::PAGE) {
+			$handler =& $args[3];
+            $handler = new ObjectsForReviewManagementHandler($this);
             return true;
         }
         return false;

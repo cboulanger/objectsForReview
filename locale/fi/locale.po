@@ -175,3 +175,39 @@ msgstr "äänite"
 
 msgid "plugins.generic.objectsForReview.itemYearShort"
 msgstr "Vuosi"
+
+msgid "plugins.generic.objectsForReview.menu.available"
+msgstr "Tarjolla olevat julkaisut"
+
+msgid "plugins.generic.objectsForReview.menu.reservations"
+msgstr "Varaukset"
+
+msgid "plugins.generic.objectsForReview.menu.reviewedWorks"
+msgstr "Arvioidut julkaisut"
+
+msgid "plugins.generic.objectsForReview.menu.settings"
+msgstr "Asetukset"
+
+msgid "plugins.generic.objectsForReview.menu.publicPage"
+msgstr "Julkinen sivu"
+
+msgid "plugins.generic.objectsForReview.column.object"
+msgstr "Julkaisu"
+
+msgid "plugins.generic.objectsForReview.column.reservedBy"
+msgstr "Varaaja"
+
+msgid "plugins.generic.objectsForReview.column.submission"
+msgstr "Käsikirjoitus"
+
+msgid "plugins.generic.objectsForReview.filter.allUsers"
+msgstr "Kaikki käyttäjät"
+
+msgid "plugins.generic.objectsForReview.filter.apply"
+msgstr "Suodata"
+
+msgid "plugins.generic.objectsForReview.reservations.none"
+msgstr "Varattuja julkaisuja ei ole."
+
+msgid "plugins.generic.objectsForReview.reviewedWorks.none"
+msgstr "Käsikirjoituksiin ei ole vielä liitetty julkaisuja."

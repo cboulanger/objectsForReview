@@ -195,3 +195,39 @@ msgstr "Hrsg."
 
 msgid "plugins.generic.objectsForReview.itemYearShort"
 msgstr "Jahr"
+
+msgid "plugins.generic.objectsForReview.menu.available"
+msgstr "Angebotene Werke"
+
+msgid "plugins.generic.objectsForReview.menu.reservations"
+msgstr "Reservierungen"
+
+msgid "plugins.generic.objectsForReview.menu.reviewedWorks"
+msgstr "Rezensierte Werke"
+
+msgid "plugins.generic.objectsForReview.menu.settings"
+msgstr "Einstellungen"
+
+msgid "plugins.generic.objectsForReview.menu.publicPage"
+msgstr "Öffentliche Seite"
+
+msgid "plugins.generic.objectsForReview.column.object"
+msgstr "Objekt"
+
+msgid "plugins.generic.objectsForReview.column.reservedBy"
+msgstr "Reserviert von"
+
+msgid "plugins.generic.objectsForReview.column.submission"
+msgstr "Einreichung"
+
+msgid "plugins.generic.objectsForReview.filter.allUsers"
+msgstr "Alle Personen"
+
+msgid "plugins.generic.objectsForReview.filter.apply"
+msgstr "Filtern"
+
+msgid "plugins.generic.objectsForReview.reservations.none"
+msgstr "Derzeit sind keine Objekte reserviert."
+
+msgid "plugins.generic.objectsForReview.reviewedWorks.none"
+msgstr "Bisher wurden keinen Einreichungen Objekte zugeordnet."

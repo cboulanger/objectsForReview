@@ -15,7 +15,7 @@
 	{rdelim});
 </script>
 
-<form class="pkp_form" id="orSettingsForm" method="post" action="{url router=\PKP\core\PKPApplication::ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="settings" save=true}">
+<form class="pkp_form" id="orSettingsForm" method="post" action="{url router=\PKP\core\PKPApplication::ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="settings" save=true standalone=$standalone}">
 	{csrf}
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="orSettingsFormNotification"}
 
@@ -38,7 +38,11 @@
 			{fbvElement type="textarea" label="plugins.generic.objectsForReview.settings.instructions.description" name="ofrInstructions" id="ofrInstructions" value=$ofrInstructions multilingual="true" inline=true}
 		{/fbvFormSection}
 
-		{fbvFormButtons}
+		{if $standalone}
+			{fbvFormButtons hideCancel=true submitText="common.save"}
+		{else}
+			{fbvFormButtons}
+		{/if}
 
 	{/fbvFormArea}
 
