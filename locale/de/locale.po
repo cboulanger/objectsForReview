@@ -18,13 +18,13 @@ msgid "plugins.generic.objectsForReview.description"
 msgstr "Erfasst rezensierte Objekte bei Einreichungen."
 
 msgid "plugins.generic.objectsForReview.tabTitle"
-msgstr "Rezensierte Objekte"
+msgstr "Rezensionsangebote"
 
 msgid "plugins.generic.objectsForReview.managementLink"
-msgstr "Rezensierte Objekte"
+msgstr "Rezensionsangebote"
 
 msgid "plugins.generic.objectsForReview.management.gridTitle"
-msgstr "Rezensierte Objekte"
+msgstr "Rezensionsangebote"
 
 msgid "plugins.generic.objectsForReview.addAvailableObjectForReview"
 msgstr "Verfügbares Objekt hinzufügen"
@@ -60,10 +60,10 @@ msgid "plugins.generic.objectsForReview.settings.instructions.description"
 msgstr "Diese Anweisungen sind auf der öffentlichen OFR-Seite sichtbar"
 
 msgid "plugins.generic.objectsForReview.navMenuItem.description"
-msgstr "Link zur öffentlichen Seite der rezensierten Objekte"
+msgstr "Link zur öffentlichen Seite der Rezensionsangebote"
 
 msgid "plugins.generic.objectsForReview.navMenuItem"
-msgstr "Rezensierte Objekte"
+msgstr "Rezensionsangebote"
 
 msgid "plugins.generic.objectsForReview.objectsForReviewTitle"
 msgstr "Rezensierte Objekte in dieser Einreichung"
@@ -117,7 +117,7 @@ msgid "plugins.generic.objectsForReview.objectsForReviewData.plural"
 msgstr "Rezensierte Werke"
 
 msgid "plugins.generic.objectsForReview.frontendTitle"
-msgstr "Zur Rezension"
+msgstr "Rezensionsangebote"
 
 msgid "plugins.generic.objectsForReview.reserve"
 msgstr "Zur Rezension anbieten"
