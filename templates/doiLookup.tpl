@@ -50,7 +50,7 @@
 		}
 
 		function toggle() {
-			$box.toggle($type.val() === 'doi');
+			$box.toggle(String($type.val()).toLowerCase() === 'doi');
 			$status.text('');
 		}
 		$type.on('change', toggle);
