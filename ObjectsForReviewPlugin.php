@@ -496,6 +496,23 @@ class ObjectsForReviewPlugin extends GenericPlugin {
 				'contexts' => 'backend',
 			]
 		);
+		// The backend side menu ignores link targets: open the "Public page" entry in a new tab
+		if ($request->getContext()) {
+			$publicUrl = $request->getDispatcher()->url($request, Application::ROUTE_PAGE, null, 'for-review');
+			$templateMgr->addJavaScript(
+				'ObjectsForReviewPublicPageLink',
+				'document.addEventListener("click", function (e) {'
+					. ' var a = e.target.closest && e.target.closest("a[href]");'
+					. ' if (!a || a.getAttribute("href") !== ' . json_encode($publicUrl) . ' || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;'
+					. ' e.preventDefault(); e.stopPropagation();'
+					. ' window.open(a.href, "_blank", "noopener");'
+					. '}, true);',
+				[
+					'inline' => true,
+					'contexts' => 'backend',
+				]
+			);
+		}
 		$templateMgr->addJavaScript(
 			'ObjectsForReviewWorkflowJs',
 			$this->getJavaScriptURL($request, false) . '/Workflow.js',
