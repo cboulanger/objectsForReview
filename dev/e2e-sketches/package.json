@@ -1,0 +1,8 @@
+{
+  "name": "objectsforreview-e2e-sketches",
+  "private": true,
+  "description": "Ad-hoc Playwright scripts used during development; see README.md",
+  "dependencies": {
+    "playwright-core": "1.56"
+  }
+}

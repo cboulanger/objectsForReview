@@ -59,3 +59,4 @@ podman machine start
 - `build-install.sh`: runs at build time; creates the database, installs OJS, creates the journal and users
 - `devSetup.php`: OJS CLI tool used by the scripts (install, journal, enable-plugin)
 - `entrypoint.sh`: container start; sets `base_url`/`allowed_hosts`, installs the plugin, runs Apache
+- `e2e-sketches/`: ad-hoc Playwright scripts from development, raw material for a future test suite (see its README)
