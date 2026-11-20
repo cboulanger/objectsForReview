@@ -24,11 +24,13 @@ Editors offer works for review; the public page "Books for review" lists them.
   - if no review will come: request the return of a printed copy, to the journal (the responsible book review editor's address) or to the publisher contact. A copy returned to the journal is available for the next reviewer. Copies never go from one reviewer to the next.
   - after publication: notify the publisher, if they asked for it.
   The offer form checks that the addresses needed for returns are entered in the users' profiles.
-- **One-click links** in emails (accept or decline the contract, leave the list) need no login. Opening a link never changes anything; the page asks for confirmation. Links expire and can be used once.
-- A daily task reminds reviewers before their review is due, reminds selected bidders who have not answered the contract offer, and expires unanswered offers.
+  Publishers and reviewers can also take their steps with one click from the emails: the publisher confirms "copy sent" and "returned copy arrived", the reviewer "received" and "sent back"; each confirmation sends the next person their email and link. Unanswered copy requests are repeated to the publisher every 14 days (configurable).
+- **Reviewers** get a confirmation with the agreement details after accepting it, with an "I can't write this review" link (also in the due date reminder). Overdue reviews are listed on the To-do page.
+- **One-click links** in emails (accept or decline the contract, leave the list, the review copy steps, withdraw from a review) need no login. Opening a link never changes anything; the page asks for confirmation. Links expire and can be used once.
+- A daily task reminds reviewers before their review is due, reminds selected bidders who have not answered the contract offer, expires unanswered offers, and reminds publishers of unanswered copy requests.
 - Every step is recorded in the offer's history (audit trail), and all emails are editable templates under Settings › Emails.
 
-See issue #1 for the full concept. Planned next: one-click links for publishers and reviewers in the copy workflow, reminders to publishers, and flags for overdue reviews.
+See issue #1 for the full concept and its discussion.
 
 The frontend object listing uses https://github.com/tristen/tablesort for table sorting.
 

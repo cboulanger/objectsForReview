@@ -111,6 +111,13 @@ class ReservationLog {
 	}
 
 	/**
+	 * Event data for a step taken through a one-click link: the actor's name is marked "via link".
+	 */
+	public static function viaLink(?User $actor): array {
+		return ['userFullName' => trim(($actor?->getFullName() ?? '') . ' (' . __('plugins.generic.objectsForReview.history.viaLink') . ')')];
+	}
+
+	/**
 	 * Log a sent email (like Repo::emailLogEntry()->logMailable(), but for an object for review).
 	 */
 	public static function logEmail($object, ReservationEmailEventType $eventType, ?User $sender, User|string $recipient,

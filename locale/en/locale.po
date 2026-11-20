@@ -429,7 +429,7 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Objects for review: reminders before the due date"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "For {$context}: {$reminders} due date reminder(s), {$contractReminders} contract offer reminder(s), {$expired} expired contract offer(s)."
+msgstr "For {$context}: {$reminders} due date reminder(s), {$contractReminders} contract offer reminder(s), {$expired} expired contract offer(s), {$publisherReminders} publisher reminder(s)."
 
 msgid "plugins.generic.objectsForReview.identifierTypeRequired"
 msgstr "Please select an identifier type."
@@ -1138,3 +1138,105 @@ msgstr "Copy back at the publisher (from {$recipientName})"
 
 msgid "plugins.generic.objectsForReview.history.event.publisherNotified"
 msgstr "Publisher notified of the review by {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.link.copySent"
+msgstr "I have sent the copy"
+
+msgid "plugins.generic.objectsForReview.link.copySent.title"
+msgstr "Review copy sent"
+
+msgid "plugins.generic.objectsForReview.link.copySent.description"
+msgstr "Please confirm that you have sent the review copy to {$reviewer}. {$reviewer} will be informed."
+
+msgid "plugins.generic.objectsForReview.link.copySent.submit"
+msgstr "Confirm: copy sent"
+
+msgid "plugins.generic.objectsForReview.link.copySent.done"
+msgstr "Thank you! We have recorded that the copy is on its way."
+
+msgid "plugins.generic.objectsForReview.link.received"
+msgstr "I have received the copy"
+
+msgid "plugins.generic.objectsForReview.link.received.title"
+msgstr "Review copy received"
+
+msgid "plugins.generic.objectsForReview.link.received.description"
+msgstr "Please confirm that the review copy has arrived. Your delivery address and phone number will then be deleted."
+
+msgid "plugins.generic.objectsForReview.link.received.submit"
+msgstr "Confirm receipt"
+
+msgid "plugins.generic.objectsForReview.link.received.done"
+msgstr "Thank you! We have recorded that you received the copy."
+
+msgid "plugins.generic.objectsForReview.link.returnSent"
+msgstr "I have sent the copy back"
+
+msgid "plugins.generic.objectsForReview.link.returnSent.title"
+msgstr "Review copy sent back"
+
+msgid "plugins.generic.objectsForReview.link.returnSent.description"
+msgstr "Please confirm that you have sent the review copy back."
+
+msgid "plugins.generic.objectsForReview.link.returnSent.submit"
+msgstr "Confirm: copy sent back"
+
+msgid "plugins.generic.objectsForReview.link.returnSent.done"
+msgstr "Thank you! We have recorded that the copy is on its way back."
+
+msgid "plugins.generic.objectsForReview.link.returnReceived"
+msgstr "The returned copy has arrived"
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.title"
+msgstr "Returned copy received"
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.description"
+msgstr "Please confirm that the review copy returned by {$reviewer} has arrived."
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.submit"
+msgstr "Confirm receipt"
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.done"
+msgstr "Thank you! We have recorded that the copy is back with you."
+
+msgid "plugins.generic.objectsForReview.link.retract"
+msgstr "I cannot write this review"
+
+msgid "plugins.generic.objectsForReview.link.retract.title"
+msgstr "Withdraw from the review"
+
+msgid "plugins.generic.objectsForReview.link.retract.description"
+msgstr "Dear {$reviewer}, do you want to withdraw from reviewing this work? The editors will be informed. If you have received a printed copy, they may ask you to return it."
+
+msgid "plugins.generic.objectsForReview.link.retract.submit"
+msgstr "Withdraw from the review"
+
+msgid "plugins.generic.objectsForReview.link.retract.done"
+msgstr "You have withdrawn from the review. The editors have been informed."
+
+msgid "plugins.generic.objectsForReview.response.done.title"
+msgstr "Thank you!"
+
+msgid "plugins.generic.objectsForReview.history.viaLink"
+msgstr "via email link"
+
+msgid "plugins.generic.objectsForReview.history.email.copyRequestReminder"
+msgstr "Publisher reminded of the copy request"
+
+msgid "plugins.generic.objectsForReview.history.email.confirmation"
+msgstr "Confirmation sent to the reviewer"
+
+msgid "plugins.generic.objectsForReview.desk.overdue"
+msgstr "Overdue reviews"
+
+msgid "plugins.generic.objectsForReview.copy.reminders"
+msgstr "{$number} reminder(s) to the publisher, last on {$date}"
+
+msgid "plugins.generic.objectsForReview.settings.publisherReminderDays"
+msgstr "Reminders to publishers"
+
+msgid "plugins.generic.objectsForReview.settings.publisherReminderDays.description"
+msgstr "Days after which an unanswered copy request is repeated to the publisher contact, and the interval between reminders (0: no reminders)."
+
+msgid "plugins.generic.objectsForReview.settings.publisherReminderDays.invalid"
+msgstr "Please enter a number of days between 0 and 90."

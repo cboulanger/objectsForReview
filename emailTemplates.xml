@@ -26,4 +26,6 @@
   <email key="OFR_RETURN_REQUEST" subject="emails.ofrReturnRequest.subject" name="emails.ofrReturnRequest.name" body="emails.ofrReturnRequest.body"/>
   <email key="OFR_RETURN_SENT" subject="emails.ofrReturnSent.subject" name="emails.ofrReturnSent.name" body="emails.ofrReturnSent.body"/>
   <email key="OFR_PUBLISHER_NOTIFICATION" subject="emails.ofrPublisherNotification.subject" name="emails.ofrPublisherNotification.name" body="emails.ofrPublisherNotification.body"/>
+  <email key="OFR_COPY_REQUEST_REMINDER" subject="emails.ofrCopyRequestReminder.subject" name="emails.ofrCopyRequestReminder.name" body="emails.ofrCopyRequestReminder.body"/>
+  <email key="OFR_CONFIRMATION" subject="emails.ofrConfirmation.subject" name="emails.ofrConfirmation.name" body="emails.ofrConfirmation.body"/>
 </emails>

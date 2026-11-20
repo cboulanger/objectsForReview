@@ -9,8 +9,9 @@
  * @ingroup plugins_generic_objectsForReview
  *
  * @brief One-click links in emails, for people who should not have to log in
- *  (reviewers responding to a contract offer, bidders leaving the list, and in
- *  later phases publisher contacts).
+ *  (reviewers responding to a contract offer, confirming receipt or return of a
+ *  review copy or retracting; bidders leaving the list; publisher contacts
+ *  confirming that they sent a copy or got it back).
  *
  *  Only a hash of the key is stored. A link expires, can be used once, and
  *  opening it never changes anything: the page it leads to shows what will
@@ -35,6 +36,16 @@ class ActionLink {
 	const ACTION_CONTRACT = 'contract';
 	/** Remove oneself from the list of bidders */
 	const ACTION_LEAVE = 'leave';
+	/** Publisher contact: the review copy has been sent */
+	const ACTION_COPY_SENT = 'copySent';
+	/** Reviewer: the review copy has arrived */
+	const ACTION_RECEIVED = 'received';
+	/** Reviewer: the copy has been sent back */
+	const ACTION_RETURN_SENT = 'returnSent';
+	/** Publisher contact: the returned copy has arrived */
+	const ACTION_RETURN_RECEIVED = 'returnReceived';
+	/** Reviewer: "I can't write this review" */
+	const ACTION_RETRACT = 'retract';
 
 	/** Days a link without its own deadline stays valid */
 	const DEFAULT_VALIDITY_DAYS = 365;

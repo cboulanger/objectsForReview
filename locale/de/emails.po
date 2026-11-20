@@ -80,7 +80,7 @@ msgid "emails.ofrReminder.subject"
 msgstr "Erinnerung: Ihre Rezension ist am {$dueDate} fällig"
 
 msgid "emails.ofrReminder.body"
-msgstr "<p>Liebe/r {$recipientName},</p><p>wir möchten Sie freundlich daran erinnern, dass Ihre Rezension des folgenden Werks am <strong>{$dueDate}</strong> fällig ist:<br />{$objectDescription}</p><p>Wenn Sie mehr Zeit benötigen, wenden Sie sich bitte so bald wie möglich an die Redaktion.</p><p>Mit freundlichen Grüßen<br />{$contextName}</p>"
+msgstr "<p>Liebe/r {$recipientName},</p><p>wir möchten Sie freundlich daran erinnern, dass Ihre Rezension des folgenden Werks am <strong>{$dueDate}</strong> fällig ist:<br />{$objectDescription}</p><p>Wenn Sie mehr Zeit benötigen, wenden Sie sich bitte so bald wie möglich an die Redaktion.</p><p>Falls Sie die Rezension doch nicht schreiben können, teilen Sie uns dies bitte mit:<br /><a href=\"{$retractUrl}\">{$retractUrl}</a></p><p>Mit freundlichen Grüßen<br />{$contextName}</p>"
 
 msgid "emails.ofrContractOffer.name"
 msgstr "Rezensionsvereinbarung: Vertragsangebot"
@@ -164,7 +164,7 @@ msgid "emails.ofrCopyRequest.subject"
 msgstr "Bitte um ein Rezensionsexemplar: {$objectDescription}"
 
 msgid "emails.ofrCopyRequest.body"
-msgstr "<p>Liebe:r {$recipientName},</p><p>{$reviewerName} wird das folgende Werk für {$contextName} rezensieren:<br />{$objectDescription}</p><p>Wir wären Ihnen dankbar, wenn Sie ein Rezensionsexemplar ({$copyType}) zur Verfügung stellen könnten.</p><p>{$deliveryDetails}</p><p>Vielen Dank und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"
+msgstr "<p>Liebe:r {$recipientName},</p><p>{$reviewerName} wird das folgende Werk für {$contextName} rezensieren:<br />{$objectDescription}</p><p>Wir wären Ihnen dankbar, wenn Sie ein Rezensionsexemplar ({$copyType}) zur Verfügung stellen könnten.</p><p>{$deliveryDetails}</p><p>Sobald Sie das Exemplar verschickt haben, teilen Sie uns dies bitte mit einem Klick mit:<br /><a href=\"{$copySentUrl}\">{$copySentUrl}</a></p><p>Vielen Dank und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"
 
 msgid "emails.ofrCopySent.name"
 msgstr "Rezensionsexemplar versandt (an Rezensent:in)"
@@ -176,7 +176,7 @@ msgid "emails.ofrCopySent.subject"
 msgstr "Ihr Rezensionsexemplar ist unterwegs"
 
 msgid "emails.ofrCopySent.body"
-msgstr "<p>Liebe:r {$recipientName},</p><p>ein Rezensionsexemplar ({$copyType}) des folgenden Werks wurde {$copySource} an Sie geschickt:<br />{$objectDescription}</p><p>Bitte bestätigen Sie den Eingang auf der Seite der Rezensionsangebote: <a href=\"{$forReviewUrl}\">{$forReviewUrl}</a></p><p>Ihre Rezension ist am {$dueDate} fällig.</p><p>Mit freundlichen Grüßen<br />{$senderName}<br />{$contextName}</p>"
+msgstr "<p>Liebe:r {$recipientName},</p><p>ein Rezensionsexemplar ({$copyType}) des folgenden Werks wurde {$copySource} an Sie geschickt:<br />{$objectDescription}</p><p>Ihre Rezension ist am {$dueDate} fällig.</p><p>Bitte bestätigen Sie den Eingang mit einem Klick, sobald es angekommen ist:<br /><a href=\"{$receivedUrl}\">{$receivedUrl}</a></p><p>Mit freundlichen Grüßen<br />{$senderName}<br />{$contextName}</p>"
 
 msgid "emails.ofrReturnRequest.name"
 msgstr "Rücksendung eines Rezensionsexemplars (an Rezensent:in)"
@@ -188,7 +188,7 @@ msgid "emails.ofrReturnRequest.subject"
 msgstr "Bitte schicken Sie das Rezensionsexemplar zurück"
 
 msgid "emails.ofrReturnRequest.body"
-msgstr "<p>Liebe:r {$recipientName},</p><p>da die Rezension des folgenden Werks nicht geschrieben wird, bitten wir Sie, das Rezensionsexemplar zurückzuschicken:<br />{$objectDescription}</p><p>Bitte senden Sie es an:<br />{$returnAddress}</p><p>Vielen Dank und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"
+msgstr "<p>Liebe:r {$recipientName},</p><p>da die Rezension des folgenden Werks nicht geschrieben wird, bitten wir Sie, das Rezensionsexemplar zurückzuschicken:<br />{$objectDescription}</p><p>Bitte senden Sie es an:<br />{$returnAddress}</p><p>Sobald Sie es zurückgeschickt haben, teilen Sie uns dies bitte mit einem Klick mit:<br /><a href=\"{$returnSentUrl}\">{$returnSentUrl}</a></p><p>Vielen Dank und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"
 
 msgid "emails.ofrReturnSent.name"
 msgstr "Rezensionsexemplar zurück (an den Verlag)"
@@ -200,7 +200,7 @@ msgid "emails.ofrReturnSent.subject"
 msgstr "Rezensionsexemplar auf dem Rückweg: {$objectDescription}"
 
 msgid "emails.ofrReturnSent.body"
-msgstr "<p>Liebe:r {$recipientName},</p><p>leider wird die Rezension des folgenden Werks nicht erscheinen:<br />{$objectDescription}</p><p>Das Rezensionsexemplar, das Sie freundlicherweise zur Verfügung gestellt haben, wurde an Sie zurückgeschickt.</p><p>Nochmals vielen Dank und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"
+msgstr "<p>Liebe:r {$recipientName},</p><p>leider wird die Rezension des folgenden Werks nicht erscheinen:<br />{$objectDescription}</p><p>Das Rezensionsexemplar, das Sie freundlicherweise zur Verfügung gestellt haben, wurde an Sie zurückgeschickt.</p><p>Bitte bestätigen Sie den Eingang mit einem Klick, sobald es angekommen ist:<br /><a href=\"{$returnReceivedUrl}\">{$returnReceivedUrl}</a></p><p>Nochmals vielen Dank und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"
 
 msgid "emails.ofrPublisherNotification.name"
 msgstr "Rezension erschienen (an den Verlag)"
@@ -213,3 +213,27 @@ msgstr "Rezension erschienen: {$objectDescription}"
 
 msgid "emails.ofrPublisherNotification.body"
 msgstr "<p>Liebe:r {$recipientName},</p><p>wir freuen uns, Ihnen mitteilen zu können, dass die Rezension des folgenden Werks von {$reviewerName} in {$contextName} erschienen ist:<br />{$objectDescription}</p><p><a href=\"{$reviewUrl}\">{$reviewUrl}</a></p><p>Vielen Dank für das Rezensionsexemplar und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrCopyRequestReminder.name"
+msgstr "Erinnerung an Exemplaranforderung (an den Verlag)"
+
+msgid "emails.ofrCopyRequestReminder.description"
+msgstr "Wird automatisch an den Verlagskontakt gesendet, solange eine Exemplaranforderung unbeantwortet ist."
+
+msgid "emails.ofrCopyRequestReminder.subject"
+msgstr "Erinnerung: Bitte um ein Rezensionsexemplar: {$objectDescription}"
+
+msgid "emails.ofrCopyRequestReminder.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>wir hatten Sie kürzlich um ein Rezensionsexemplar ({$copyType}) des folgenden Werks gebeten, das {$reviewerName} für {$contextName} rezensieren wird:<br />{$objectDescription}</p><p>{$deliveryDetails}</p><p>Falls Sie es bereits verschickt haben, teilen Sie uns dies bitte mit einem Klick mit:<br /><a href=\"{$copySentUrl}\">{$copySentUrl}</a></p><p>Mit freundlichen Grüßen<br />{$contextName}</p>"
+
+msgid "emails.ofrConfirmation.name"
+msgstr "Bestätigung der Rezensionsvereinbarung (an Rezensent:in)"
+
+msgid "emails.ofrConfirmation.description"
+msgstr "Wird nach Annahme der Rezensionsvereinbarung automatisch an die Rezensentin/den Rezensenten gesendet, mit einem Link zum Rücktritt."
+
+msgid "emails.ofrConfirmation.subject"
+msgstr "Ihre Rezension für {$contextName}: Bestätigung"
+
+msgid "emails.ofrConfirmation.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>vielen Dank, dass Sie die Rezension des folgenden Werks übernehmen:<br />{$objectDescription}</p><p>{$reservationDetails}</p><p>Falls Sie die Rezension doch nicht schreiben können, teilen Sie uns dies bitte so früh wie möglich mit:<br /><a href=\"{$retractUrl}\">{$retractUrl}</a></p><p>Mit freundlichen Grüßen<br />{$contextName}</p>"

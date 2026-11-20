@@ -28,6 +28,8 @@ enum ReservationEmailEventType: int implements EmailLogEventType
 	case RETURN_REQUEST = 0x1F0F10C;
 	case RETURN_SENT = 0x1F0F10D;
 	case PUBLISHER_NOTIFICATION = 0x1F0F10E;
+	case COPY_REQUEST_REMINDER = 0x1F0F10F;
+	case CONFIRMATION = 0x1F0F110;
 
 	public function labelKey(): string
 	{
@@ -46,6 +48,8 @@ enum ReservationEmailEventType: int implements EmailLogEventType
 			self::RETURN_REQUEST => 'plugins.generic.objectsForReview.history.email.returnRequest',
 			self::RETURN_SENT => 'plugins.generic.objectsForReview.history.email.returnSent',
 			self::PUBLISHER_NOTIFICATION => 'plugins.generic.objectsForReview.history.email.publisherNotification',
+			self::COPY_REQUEST_REMINDER => 'plugins.generic.objectsForReview.history.email.copyRequestReminder',
+			self::CONFIRMATION => 'plugins.generic.objectsForReview.history.email.confirmation',
 		};
 	}
 }

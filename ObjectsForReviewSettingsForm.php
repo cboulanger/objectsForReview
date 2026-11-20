@@ -57,6 +57,9 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'ofrContractReminderDays', 'required',
 			'plugins.generic.objectsForReview.settings.contractDays.invalid',
 			fn ($days) => ctype_digit((string) $days) && $days < (int) $this->getData('ofrContractDays')));
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'ofrPublisherReminderDays', 'required',
+			'plugins.generic.objectsForReview.settings.publisherReminderDays.invalid',
+			fn ($days) => ctype_digit((string) $days) && $days <= \APP\plugins\generic\objectsForReview\classes\CopyWorkflow::MAX_PUBLISHER_REMINDER_DAYS));
 		$this->addCheck(new \PKP\form\validation\FormValidatorInSet($this, 'ofrDefaultMode', 'required',
 			'plugins.generic.objectsForReview.offer.modeRequired', ObjectForReview::MODES));
 		$this->addCheck(new \PKP\form\validation\FormValidatorPost($this));
@@ -80,6 +83,7 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 		[$this->_data['ofrDueMonthsDefault'], $this->_data['ofrDueMonthsMax']] = Reservation::getDueMonths($this->_plugin, $this->_journalId);
 		$this->_data['ofrReminderDays'] = Reservation::getReminderDays($this->_plugin, $this->_journalId);
 		[$this->_data['ofrContractDays'], $this->_data['ofrContractReminderDays']] = AssignmentWorkflow::getContractDays($this->_plugin, $this->_journalId);
+		$this->_data['ofrPublisherReminderDays'] = \APP\plugins\generic\objectsForReview\classes\CopyWorkflow::getPublisherReminderDays($this->_plugin, $this->_journalId);
 		$this->_data['ofrDefaultMode'] = $this->_plugin->getSetting($this->_journalId, 'ofrDefaultMode') ?: ObjectForReview::MODE_DIRECT;
 		$this->_data['ofrDefaultEditorId'] = $this->_plugin->getSetting($this->_journalId, 'ofrDefaultEditorId');
 		// Prefill the contract with the default text
@@ -97,7 +101,7 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 	 */
 	function readInputData() {
 		$this->readUserVars(array('displayAsSubtitle', 'displayAsList', 'onlyReserved', 'ofrNotifyEmail', 'ofrInstructions', 'ofrContract', 'ofrDueMonthsDefault', 'ofrDueMonthsMax', 'ofrReminderDays',
-			'ofrContractDays', 'ofrContractReminderDays', 'ofrDefaultMode', 'ofrDefaultEditorId'));
+			'ofrContractDays', 'ofrContractReminderDays', 'ofrDefaultMode', 'ofrDefaultEditorId', 'ofrPublisherReminderDays'));
 	}
 
 	/**
@@ -135,6 +139,7 @@ class ObjectsForReviewSettingsForm extends \PKP\form\Form {
 		$this->_plugin->updateSetting($this->_journalId, 'ofrContractDays', (int) $this->getData('ofrContractDays'), 'int');
 		$this->_plugin->updateSetting($this->_journalId, 'ofrContractReminderDays', (int) $this->getData('ofrContractReminderDays'), 'int');
 		$this->_plugin->updateSetting($this->_journalId, 'ofrDefaultMode', $this->getData('ofrDefaultMode'), 'string');
+		$this->_plugin->updateSetting($this->_journalId, 'ofrPublisherReminderDays', (int) $this->getData('ofrPublisherReminderDays'), 'int');
 		$this->_plugin->updateSetting($this->_journalId, 'ofrDefaultEditorId', (int) $this->getData('ofrDefaultEditorId') ?: null, 'int');
 
 	}

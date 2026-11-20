@@ -22,6 +22,7 @@ use APP\plugins\generic\objectsForReview\classes\Assignment;
 use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
 use APP\plugins\generic\objectsForReview\classes\CopyWorkflow;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
+use APP\plugins\generic\objectsForReview\classes\ReservationEmailEventType;
 use APP\template\TemplateManager;
 use PKP\db\DAORegistry;
 use PKP\facades\Locale;
@@ -212,8 +213,12 @@ class ObjectsForReviewHandler extends Handler {
 		if (!$link) {
 			return $this->showResponsePage($request, 'invalid');
 		}
-		$view = $link->action === ActionLink::ACTION_CONTRACT ? 'contract' : 'leave';
-		return $this->showResponsePage($request, $view, $object, $assignment, ['key' => $args[0]]);
+		$view = match ($link->action) {
+			ActionLink::ACTION_CONTRACT => 'contract',
+			ActionLink::ACTION_LEAVE => 'leave',
+			default => 'confirm',
+		};
+		return $this->showResponsePage($request, $view, $object, $assignment, ['key' => $args[0], 'linkAction' => $link->action]);
 	}
 
 	/**
@@ -245,6 +250,9 @@ class ObjectsForReviewHandler extends Handler {
 		$extra = $key !== '' ? ['key' => $key] : [];
 		$decision = (string) $request->getUserVar('decision');
 
+		if ($link && in_array($link->action, array_keys(self::COPY_LINK_STEPS), true) || $link?->action === ActionLink::ACTION_RETRACT) {
+			return $this->confirmLink($request, $link, $object, $assignment);
+		}
 		if ($decision === 'leave' && $assignment->isBidder()) {
 			AssignmentWorkflow::withdrawBid($object, $assignment, Repo::user()->get($assignment->getUserId(), true));
 			$link && ActionLink::markUsed((int) $link->link_id);
@@ -267,6 +275,40 @@ class ObjectsForReviewHandler extends Handler {
 		return $this->showResponsePage($request, 'accepted', $object, $assignment);
 	}
 
+	/** Copy steps taken through one-click links: link action => [copy step, who uses the link] */
+	const COPY_LINK_STEPS = [
+		ActionLink::ACTION_COPY_SENT => ['publisherSent', 'publisher'],
+		ActionLink::ACTION_RECEIVED => ['markReceived', 'reviewer'],
+		ActionLink::ACTION_RETURN_SENT => ['returnSent', 'reviewer'],
+		ActionLink::ACTION_RETURN_RECEIVED => ['returned', 'publisher'],
+	];
+
+	/**
+	 * Confirmation of a copy step or retraction through a one-click link.
+	 */
+	protected function confirmLink($request, object $link, $object, Assignment $assignment) {
+		$plugin = $this->plugin();
+		$context = $request->getContext();
+		$reviewer = Repo::user()->get($assignment->getUserId(), true);
+		ActionLink::markUsed((int) $link->link_id);
+		if ($link->action === ActionLink::ACTION_RETRACT) {
+			AssignmentWorkflow::retract($plugin, $object, $assignment, $reviewer, true);
+			return $this->showResponsePage($request, 'done', $object, $assignment, ['linkAction' => $link->action]);
+		}
+		[$step, $who] = self::COPY_LINK_STEPS[$link->action];
+		$actor = $who === 'publisher' ? CopyWorkflow::getPublisherContact($object) : $reviewer;
+		CopyWorkflow::apply($plugin, $context, $object, $assignment, $step, $actor, [], true);
+		// Tell the next person, with their one-click link
+		if ($step === 'publisherSent' && $reviewer) {
+			CopyWorkflow::sendAutomatic($plugin, $context, $object, $assignment, ReservationEmailEventType::COPY_SENT, $reviewer, $step);
+		}
+		if ($step === 'returnSent' && $assignment->getData('returnTarget') === CopyWorkflow::BY_PUBLISHER
+				&& ($contact = CopyWorkflow::getPublisherContact($object))) {
+			CopyWorkflow::sendAutomatic($plugin, $context, $object, $assignment, ReservationEmailEventType::RETURN_SENT, $contact, $step);
+		}
+		return $this->showResponsePage($request, 'done', $object, $assignment, ['linkAction' => $link->action]);
+	}
+
 	//
 	// Helpers
 	//
@@ -281,15 +323,23 @@ class ObjectsForReviewHandler extends Handler {
 		if (!$object) {
 			return [null, null, null];
 		}
-		$expected = $link->action === ActionLink::ACTION_CONTRACT ? [Assignment::STATUS_OFFERED] : Assignment::BIDDER_STATUSES;
-		if (!in_array($assignment->getStatus(), $expected, true)) {
-			return [null, null, null];
-		}
-		return [$link, $assignment, $object];
+		$copyStatus = CopyWorkflow::getStatus($assignment);
+		$valid = match ($link->action) {
+			ActionLink::ACTION_CONTRACT => $assignment->getStatus() === Assignment::STATUS_OFFERED,
+			ActionLink::ACTION_LEAVE => $assignment->isBidder(),
+			ActionLink::ACTION_RETRACT => $assignment->getStatus() === Assignment::STATUS_ACCEPTED,
+			ActionLink::ACTION_COPY_SENT => $copyStatus === CopyWorkflow::REQUESTED && $object->getPublisherContactId(),
+			ActionLink::ACTION_RECEIVED => $copyStatus === CopyWorkflow::SENT,
+			ActionLink::ACTION_RETURN_SENT => $copyStatus === CopyWorkflow::RETURN_REQUESTED,
+			ActionLink::ACTION_RETURN_RECEIVED => in_array($copyStatus, [CopyWorkflow::RETURN_REQUESTED, CopyWorkflow::RETURN_SENT], true)
+				&& $assignment->getData('returnTarget') === CopyWorkflow::BY_PUBLISHER && $object->getPublisherContactId(),
+			default => false,
+		};
+		return $valid ? [$link, $assignment, $object] : [null, null, null];
 	}
 
 	/**
-	 * @param string $view contract | leave | invalid | accepted | declined | left
+	 * @param string $view contract | leave | confirm | done | invalid | accepted | declined | left
 	 */
 	protected function showResponsePage($request, string $view, $object = null, ?Assignment $assignment = null,
 			array $extra = [], array $formState = []) {
@@ -300,6 +350,7 @@ class ObjectsForReviewHandler extends Handler {
 			'objectId' => $object?->getId(),
 			'objectDescription' => $object?->getDescription(),
 			'reviewerName' => $assignment ? Repo::user()->get($assignment->getUserId(), true)?->getFullName() : null,
+			'publisherName' => $object ? CopyWorkflow::getPublisherContact($object)?->getFullName() : null,
 			'contractDeadline' => $assignment?->getData('contractDeadline'),
 			'dueDate' => $assignment?->getData('dueDate'),
 			'contractFieldsTemplate' => $plugin->getTemplateResource('frontend/contractFields.tpl'),

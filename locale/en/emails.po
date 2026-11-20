@@ -83,7 +83,7 @@ msgid "emails.ofrReminder.subject"
 msgstr "Reminder: your review is due on {$dueDate}"
 
 msgid "emails.ofrReminder.body"
-msgstr "<p>Dear {$recipientName},</p><p>this is a friendly reminder that your review of the following work is due on <strong>{$dueDate}</strong>:<br />{$objectDescription}</p><p>If you need more time, please contact the editors as soon as possible.</p><p>Kind regards,<br />{$contextName}</p>"
+msgstr "<p>Dear {$recipientName},</p><p>this is a friendly reminder that your review of the following work is due on <strong>{$dueDate}</strong>:<br />{$objectDescription}</p><p>If you need more time, please contact the editors as soon as possible.</p><p>If you cannot write the review after all, please let us know:<br /><a href=\"{$retractUrl}\">{$retractUrl}</a></p><p>Kind regards,<br />{$contextName}</p>"
 
 msgid "emails.ofrContractOffer.name"
 msgstr "Review agreement: contract offer"
@@ -167,7 +167,7 @@ msgid "emails.ofrCopyRequest.subject"
 msgstr "Request for a review copy: {$objectDescription}"
 
 msgid "emails.ofrCopyRequest.body"
-msgstr "<p>Dear {$recipientName},</p><p>{$reviewerName} will review the following work for {$contextName}:<br />{$objectDescription}</p><p>We would be grateful if you could provide a review copy ({$copyType}).</p><p>{$deliveryDetails}</p><p>Thank you very much, and kind regards,<br />{$senderName}<br />{$contextName}</p>"
+msgstr "<p>Dear {$recipientName},</p><p>{$reviewerName} will review the following work for {$contextName}:<br />{$objectDescription}</p><p>We would be grateful if you could provide a review copy ({$copyType}).</p><p>{$deliveryDetails}</p><p>Once you have sent the copy, please let us know with one click:<br /><a href=\"{$copySentUrl}\">{$copySentUrl}</a></p><p>Thank you very much, and kind regards,<br />{$senderName}<br />{$contextName}</p>"
 
 msgid "emails.ofrCopySent.name"
 msgstr "Review copy sent (to the reviewer)"
@@ -179,7 +179,7 @@ msgid "emails.ofrCopySent.subject"
 msgstr "Your review copy is on its way"
 
 msgid "emails.ofrCopySent.body"
-msgstr "<p>Dear {$recipientName},</p><p>a review copy ({$copyType}) of the following work has been sent to you {$copySource}:<br />{$objectDescription}</p><p>Once it has arrived, please confirm receipt on the page of works for review: <a href=\"{$forReviewUrl}\">{$forReviewUrl}</a></p><p>Your review is due on {$dueDate}.</p><p>Kind regards,<br />{$senderName}<br />{$contextName}</p>"
+msgstr "<p>Dear {$recipientName},</p><p>a review copy ({$copyType}) of the following work has been sent to you {$copySource}:<br />{$objectDescription}</p><p>Your review is due on {$dueDate}.</p><p>Once it has arrived, please confirm receipt with one click:<br /><a href=\"{$receivedUrl}\">{$receivedUrl}</a></p><p>Kind regards,<br />{$senderName}<br />{$contextName}</p>"
 
 msgid "emails.ofrReturnRequest.name"
 msgstr "Return of a review copy (to the reviewer)"
@@ -191,7 +191,7 @@ msgid "emails.ofrReturnRequest.subject"
 msgstr "Please return the review copy"
 
 msgid "emails.ofrReturnRequest.body"
-msgstr "<p>Dear {$recipientName},</p><p>as the review of the following work will not be written, we kindly ask you to return the review copy:<br />{$objectDescription}</p><p>Please send it to:<br />{$returnAddress}</p><p>Thank you, and kind regards,<br />{$senderName}<br />{$contextName}</p>"
+msgstr "<p>Dear {$recipientName},</p><p>as the review of the following work will not be written, we kindly ask you to return the review copy:<br />{$objectDescription}</p><p>Please send it to:<br />{$returnAddress}</p><p>Once you have sent it back, please let us know with one click:<br /><a href=\"{$returnSentUrl}\">{$returnSentUrl}</a></p><p>Thank you, and kind regards,<br />{$senderName}<br />{$contextName}</p>"
 
 msgid "emails.ofrReturnSent.name"
 msgstr "Review copy returned (to the publisher)"
@@ -203,7 +203,7 @@ msgid "emails.ofrReturnSent.subject"
 msgstr "Review copy on its way back: {$objectDescription}"
 
 msgid "emails.ofrReturnSent.body"
-msgstr "<p>Dear {$recipientName},</p><p>unfortunately, the review of the following work will not appear:<br />{$objectDescription}</p><p>The review copy you kindly provided has been sent back to you.</p><p>Thank you again, and kind regards,<br />{$senderName}<br />{$contextName}</p>"
+msgstr "<p>Dear {$recipientName},</p><p>unfortunately, the review of the following work will not appear:<br />{$objectDescription}</p><p>The review copy you kindly provided has been sent back to you.</p><p>Once it has arrived, please confirm receipt with one click:<br /><a href=\"{$returnReceivedUrl}\">{$returnReceivedUrl}</a></p><p>Thank you again, and kind regards,<br />{$senderName}<br />{$contextName}</p>"
 
 msgid "emails.ofrPublisherNotification.name"
 msgstr "Review published (to the publisher)"
@@ -216,3 +216,27 @@ msgstr "Review published: {$objectDescription}"
 
 msgid "emails.ofrPublisherNotification.body"
 msgstr "<p>Dear {$recipientName},</p><p>we are pleased to let you know that the review of the following work by {$reviewerName} has been published in {$contextName}:<br />{$objectDescription}</p><p><a href=\"{$reviewUrl}\">{$reviewUrl}</a></p><p>Thank you for providing the review copy, and kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrCopyRequestReminder.name"
+msgstr "Review copy request reminder (to the publisher)"
+
+msgid "emails.ofrCopyRequestReminder.description"
+msgstr "Sent automatically to the publisher contact while a review copy request is unanswered."
+
+msgid "emails.ofrCopyRequestReminder.subject"
+msgstr "Reminder: request for a review copy: {$objectDescription}"
+
+msgid "emails.ofrCopyRequestReminder.body"
+msgstr "<p>Dear {$recipientName},</p><p>we recently asked you for a review copy ({$copyType}) of the following work, which {$reviewerName} will review for {$contextName}:<br />{$objectDescription}</p><p>{$deliveryDetails}</p><p>If you have already sent it, please let us know with one click:<br /><a href=\"{$copySentUrl}\">{$copySentUrl}</a></p><p>Kind regards,<br />{$contextName}</p>"
+
+msgid "emails.ofrConfirmation.name"
+msgstr "Review agreement confirmation (to the reviewer)"
+
+msgid "emails.ofrConfirmation.description"
+msgstr "Sent automatically to the reviewer after accepting the review agreement, with a link to withdraw."
+
+msgid "emails.ofrConfirmation.subject"
+msgstr "Your review for {$contextName}: confirmation"
+
+msgid "emails.ofrConfirmation.body"
+msgstr "<p>Dear {$recipientName},</p><p>thank you for agreeing to review the following work:<br />{$objectDescription}</p><p>{$reservationDetails}</p><p>If you find that you cannot write the review after all, please let us know as early as possible:<br /><a href=\"{$retractUrl}\">{$retractUrl}</a></p><p>Kind regards,<br />{$contextName}</p>"

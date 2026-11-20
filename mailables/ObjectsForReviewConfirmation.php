@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file plugins/generic/objectsForReview/mailables/ObjectsForReviewConfirmation.php
+ *
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
+ *
+ * @class ObjectsForReviewConfirmation
+ *
+ * @brief Automatic confirmation to the reviewer after accepting the review agreement, with a link to withdraw.
+ *  Sent from the journal contact (no Sender trait, so from() can be used).
+ */
+
+namespace APP\plugins\generic\objectsForReview\mailables;
+
+use APP\journal\Journal;
+use PKP\mail\Mailable;
+use PKP\mail\traits\Configurable;
+use PKP\mail\traits\Recipient;
+use PKP\security\Role;
+
+class ObjectsForReviewConfirmation extends Mailable
+{
+    use Configurable;
+    use Recipient;
+
+    protected static ?string $name = 'emails.ofrConfirmation.name';
+    protected static ?string $description = 'emails.ofrConfirmation.description';
+    protected static ?string $emailTemplateKey = 'OFR_CONFIRMATION';
+    protected static array $fromRoleIds = [self::FROM_SYSTEM];
+    protected static array $toRoleIds = [Role::ROLE_ID_READER, Role::ROLE_ID_AUTHOR];
+
+    public function __construct(Journal $context, array $emailParams)
+    {
+        parent::__construct([$context]);
+        $this->addData($emailParams);
+    }
+}

@@ -408,7 +408,7 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Arvioitavat julkaisut: muistutukset ennen määräpäivää"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "{$context}: {$reminders} määräpäivämuistutus(ta), {$contractReminders} sopimustarjousmuistutus(ta), {$expired} vanhentunut(ta) sopimustarjous(ta)."
+msgstr "{$context}: {$reminders} määräpäivämuistutus(ta), {$contractReminders} sopimustarjousmuistutus(ta), {$expired} vanhentunut(ta) sopimustarjous(ta), {$publisherReminders} kustantajamuistutus(ta)."
 
 msgid "plugins.generic.objectsForReview.identifierTypeRequired"
 msgstr "Valitse tunnisteen tyyppi."
@@ -1117,3 +1117,105 @@ msgstr "Kappale palautunut kustantajalle (henkilöltä {$recipientName})"
 
 msgid "plugins.generic.objectsForReview.history.event.publisherNotified"
 msgstr "Kustantajalle ilmoitettu henkilön {$recipientName} arviosta"
+
+msgid "plugins.generic.objectsForReview.link.copySent"
+msgstr "Olen lähettänyt kappaleen"
+
+msgid "plugins.generic.objectsForReview.link.copySent.title"
+msgstr "Arvostelukappale lähetetty"
+
+msgid "plugins.generic.objectsForReview.link.copySent.description"
+msgstr "Vahvista, että olet lähettänyt arvostelukappaleen henkilölle {$reviewer}. Hänelle ilmoitetaan asiasta."
+
+msgid "plugins.generic.objectsForReview.link.copySent.submit"
+msgstr "Vahvista: kappale lähetetty"
+
+msgid "plugins.generic.objectsForReview.link.copySent.done"
+msgstr "Kiitos! Olemme kirjanneet, että kappale on matkalla."
+
+msgid "plugins.generic.objectsForReview.link.received"
+msgstr "Olen vastaanottanut kappaleen"
+
+msgid "plugins.generic.objectsForReview.link.received.title"
+msgstr "Arvostelukappale vastaanotettu"
+
+msgid "plugins.generic.objectsForReview.link.received.description"
+msgstr "Vahvista, että arvostelukappale on saapunut. Toimitusosoitteesi ja puhelinnumerosi poistetaan sen jälkeen."
+
+msgid "plugins.generic.objectsForReview.link.received.submit"
+msgstr "Vahvista vastaanotto"
+
+msgid "plugins.generic.objectsForReview.link.received.done"
+msgstr "Kiitos! Olemme kirjanneet, että olet vastaanottanut kappaleen."
+
+msgid "plugins.generic.objectsForReview.link.returnSent"
+msgstr "Olen lähettänyt kappaleen takaisin"
+
+msgid "plugins.generic.objectsForReview.link.returnSent.title"
+msgstr "Arvostelukappale palautettu"
+
+msgid "plugins.generic.objectsForReview.link.returnSent.description"
+msgstr "Vahvista, että olet lähettänyt arvostelukappaleen takaisin."
+
+msgid "plugins.generic.objectsForReview.link.returnSent.submit"
+msgstr "Vahvista: kappale lähetetty takaisin"
+
+msgid "plugins.generic.objectsForReview.link.returnSent.done"
+msgstr "Kiitos! Olemme kirjanneet, että kappale on palautumassa."
+
+msgid "plugins.generic.objectsForReview.link.returnReceived"
+msgstr "Palautettu kappale on saapunut"
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.title"
+msgstr "Palautettu kappale vastaanotettu"
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.description"
+msgstr "Vahvista, että henkilön {$reviewer} palauttama arvostelukappale on saapunut."
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.submit"
+msgstr "Vahvista vastaanotto"
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.done"
+msgstr "Kiitos! Olemme kirjanneet, että kappale on palautunut teille."
+
+msgid "plugins.generic.objectsForReview.link.retract"
+msgstr "En voi kirjoittaa tätä arviota"
+
+msgid "plugins.generic.objectsForReview.link.retract.title"
+msgstr "Luovu arvioinnista"
+
+msgid "plugins.generic.objectsForReview.link.retract.description"
+msgstr "Hyvä {$reviewer}, haluatko luopua tämän teoksen arvioinnista? Toimitukselle ilmoitetaan. Jos olet saanut painetun kappaleen, sinua voidaan pyytää palauttamaan se."
+
+msgid "plugins.generic.objectsForReview.link.retract.submit"
+msgstr "Luovu arvioinnista"
+
+msgid "plugins.generic.objectsForReview.link.retract.done"
+msgstr "Olet luopunut arvioinnista. Toimitukselle on ilmoitettu."
+
+msgid "plugins.generic.objectsForReview.response.done.title"
+msgstr "Kiitos!"
+
+msgid "plugins.generic.objectsForReview.history.viaLink"
+msgstr "sähköpostilinkin kautta"
+
+msgid "plugins.generic.objectsForReview.history.email.copyRequestReminder"
+msgstr "Kustantajaa muistutettu kappalepyynnöstä"
+
+msgid "plugins.generic.objectsForReview.history.email.confirmation"
+msgstr "Vahvistus lähetetty arvioijalle"
+
+msgid "plugins.generic.objectsForReview.desk.overdue"
+msgstr "Myöhässä olevat arviot"
+
+msgid "plugins.generic.objectsForReview.copy.reminders"
+msgstr "{$number} muistutus(ta) kustantajalle, viimeksi {$date}"
+
+msgid "plugins.generic.objectsForReview.settings.publisherReminderDays"
+msgstr "Muistutukset kustantajille"
+
+msgid "plugins.generic.objectsForReview.settings.publisherReminderDays.description"
+msgstr "Montako päivää vastaamattoman kappalepyynnön jälkeen kustantajan yhteyshenkilöä muistutetaan, ja muistutusten väli (0: ei muistutuksia)."
+
+msgid "plugins.generic.objectsForReview.settings.publisherReminderDays.invalid"
+msgstr "Anna päivien määrä väliltä 0–90."

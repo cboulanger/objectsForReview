@@ -16,19 +16,17 @@ use APP\journal\Journal;
 use PKP\mail\Mailable;
 use PKP\mail\traits\Configurable;
 use PKP\mail\traits\Recipient;
-use PKP\mail\traits\Sender;
 use PKP\security\Role;
 
 class ObjectsForReviewReturnSent extends Mailable
 {
     use Configurable;
     use Recipient;
-    use Sender;
 
     protected static ?string $name = 'emails.ofrReturnSent.name';
     protected static ?string $description = 'emails.ofrReturnSent.description';
     protected static ?string $emailTemplateKey = 'OFR_RETURN_SENT';
-    protected static array $fromRoleIds = [Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR];
+    protected static array $fromRoleIds = [Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR, self::FROM_SYSTEM];
     protected static array $toRoleIds = [Role::ROLE_ID_READER];
 
     public function __construct(Journal $context, array $emailParams)

@@ -428,7 +428,7 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Rezensionsangebote: Erinnerungen vor dem Abgabetermin"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "Für {$context}: {$reminders} Erinnerung(en) an Fälligkeiten, {$contractReminders} Erinnerung(en) an Vertragsangebote, {$expired} abgelaufene(s) Vertragsangebot(e)."
+msgstr "Für {$context}: {$reminders} Erinnerung(en) an Fälligkeiten, {$contractReminders} Erinnerung(en) an Vertragsangebote, {$expired} abgelaufene(s) Vertragsangebot(e), {$publisherReminders} Erinnerung(en) an Verlage."
 
 msgid "plugins.generic.objectsForReview.identifierTypeRequired"
 msgstr "Bitte wählen Sie einen Identifikatortyp."
@@ -1137,3 +1137,105 @@ msgstr "Exemplar zurück beim Verlag (von {$recipientName})"
 
 msgid "plugins.generic.objectsForReview.history.event.publisherNotified"
 msgstr "Verlag über die Rezension von {$recipientName} informiert"
+
+msgid "plugins.generic.objectsForReview.link.copySent"
+msgstr "Ich habe das Exemplar verschickt"
+
+msgid "plugins.generic.objectsForReview.link.copySent.title"
+msgstr "Rezensionsexemplar verschickt"
+
+msgid "plugins.generic.objectsForReview.link.copySent.description"
+msgstr "Bitte bestätigen Sie, dass Sie das Rezensionsexemplar an {$reviewer} geschickt haben. {$reviewer} wird informiert."
+
+msgid "plugins.generic.objectsForReview.link.copySent.submit"
+msgstr "Bestätigen: Exemplar verschickt"
+
+msgid "plugins.generic.objectsForReview.link.copySent.done"
+msgstr "Vielen Dank! Wir haben festgehalten, dass das Exemplar unterwegs ist."
+
+msgid "plugins.generic.objectsForReview.link.received"
+msgstr "Ich habe das Exemplar erhalten"
+
+msgid "plugins.generic.objectsForReview.link.received.title"
+msgstr "Rezensionsexemplar erhalten"
+
+msgid "plugins.generic.objectsForReview.link.received.description"
+msgstr "Bitte bestätigen Sie, dass das Rezensionsexemplar angekommen ist. Ihre Lieferadresse und Telefonnummer werden dann gelöscht."
+
+msgid "plugins.generic.objectsForReview.link.received.submit"
+msgstr "Eingang bestätigen"
+
+msgid "plugins.generic.objectsForReview.link.received.done"
+msgstr "Vielen Dank! Wir haben festgehalten, dass Sie das Exemplar erhalten haben."
+
+msgid "plugins.generic.objectsForReview.link.returnSent"
+msgstr "Ich habe das Exemplar zurückgeschickt"
+
+msgid "plugins.generic.objectsForReview.link.returnSent.title"
+msgstr "Rezensionsexemplar zurückgeschickt"
+
+msgid "plugins.generic.objectsForReview.link.returnSent.description"
+msgstr "Bitte bestätigen Sie, dass Sie das Rezensionsexemplar zurückgeschickt haben."
+
+msgid "plugins.generic.objectsForReview.link.returnSent.submit"
+msgstr "Bestätigen: Exemplar zurückgeschickt"
+
+msgid "plugins.generic.objectsForReview.link.returnSent.done"
+msgstr "Vielen Dank! Wir haben festgehalten, dass das Exemplar zurückgeschickt wurde."
+
+msgid "plugins.generic.objectsForReview.link.returnReceived"
+msgstr "Das zurückgeschickte Exemplar ist angekommen"
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.title"
+msgstr "Zurückgeschicktes Exemplar erhalten"
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.description"
+msgstr "Bitte bestätigen Sie, dass das von {$reviewer} zurückgeschickte Rezensionsexemplar angekommen ist."
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.submit"
+msgstr "Eingang bestätigen"
+
+msgid "plugins.generic.objectsForReview.link.returnReceived.done"
+msgstr "Vielen Dank! Wir haben festgehalten, dass das Exemplar wieder bei Ihnen ist."
+
+msgid "plugins.generic.objectsForReview.link.retract"
+msgstr "Ich kann diese Rezension nicht schreiben"
+
+msgid "plugins.generic.objectsForReview.link.retract.title"
+msgstr "Von der Rezension zurücktreten"
+
+msgid "plugins.generic.objectsForReview.link.retract.description"
+msgstr "Liebe:r {$reviewer}, möchten Sie von der Rezension dieses Werks zurücktreten? Die Redaktion wird informiert. Falls Sie ein gedrucktes Exemplar erhalten haben, kann sie Sie um Rücksendung bitten."
+
+msgid "plugins.generic.objectsForReview.link.retract.submit"
+msgstr "Von der Rezension zurücktreten"
+
+msgid "plugins.generic.objectsForReview.link.retract.done"
+msgstr "Sie sind von der Rezension zurückgetreten. Die Redaktion wurde informiert."
+
+msgid "plugins.generic.objectsForReview.response.done.title"
+msgstr "Vielen Dank!"
+
+msgid "plugins.generic.objectsForReview.history.viaLink"
+msgstr "per E-Mail-Link"
+
+msgid "plugins.generic.objectsForReview.history.email.copyRequestReminder"
+msgstr "Verlag an die Exemplaranforderung erinnert"
+
+msgid "plugins.generic.objectsForReview.history.email.confirmation"
+msgstr "Bestätigung an Rezensent:in gesendet"
+
+msgid "plugins.generic.objectsForReview.desk.overdue"
+msgstr "Überfällige Rezensionen"
+
+msgid "plugins.generic.objectsForReview.copy.reminders"
+msgstr "{$number} Erinnerung(en) an den Verlag, zuletzt am {$date}"
+
+msgid "plugins.generic.objectsForReview.settings.publisherReminderDays"
+msgstr "Erinnerungen an Verlage"
+
+msgid "plugins.generic.objectsForReview.settings.publisherReminderDays.description"
+msgstr "Tage, nach denen eine unbeantwortete Exemplaranforderung beim Verlagskontakt wiederholt wird, und der Abstand zwischen Erinnerungen (0: keine Erinnerungen)."
+
+msgid "plugins.generic.objectsForReview.settings.publisherReminderDays.invalid"
+msgstr "Bitte geben Sie eine Anzahl von Tagen zwischen 0 und 90 ein."

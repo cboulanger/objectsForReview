@@ -47,7 +47,7 @@ class Assignment extends DataObject {
 	 * contract offer, and the review copy (see CopyWorkflow).
 	 */
 	const FIELDS = ['statement', 'dateOffered', 'contractDeadline', 'contractReminderSent', 'declineReason',
-		'copyStatus', 'copyStatusDate', 'copySentBy', 'returnTarget'];
+		'copyStatus', 'copyStatusDate', 'copySentBy', 'returnTarget', 'copyReminderSent', 'copyReminderCount'];
 
 	function getObjectId(): int {
 		return (int) $this->getData('objectId');

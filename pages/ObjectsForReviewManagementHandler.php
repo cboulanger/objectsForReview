@@ -92,7 +92,8 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$context = $request->getContext();
 		$contextId = $context->getId();
 		$assignmentsByObject = AssignmentWorkflow::dao()->getByContextId($contextId);
-		$selection = $offers = $unsuccessful = $closed = $copies = $notifications = [];
+		$selection = $offers = $unsuccessful = $closed = $copies = $notifications = $overdue = [];
+		$today = date('Y-m-d');
 		$userCache = [];
 
 		foreach ($this->getObjects($request) as $object) {
@@ -142,6 +143,19 @@ class ObjectsForReviewManagementHandler extends Handler {
 			}
 
 			foreach ($assignments as $assignment) {
+				// Due date passed and no review attached
+				if ($assignment->getStatus() === Assignment::STATUS_ACCEPTED && $assignment->getData('dueDate') && $assignment->getData('dueDate') < $today) {
+					$overdue[] = $row + [
+						'reviewer' => $this->userName($assignment->getUserId(), $userCache),
+						'dueDate' => $assignment->getData('dueDate'),
+						'reminderSent' => $assignment->getData('reminderSent'),
+						'copyStatusLabel' => CopyWorkflow::getStatus($assignment) === CopyWorkflow::NOT_NEEDED ? '' : CopyWorkflow::getStatusLabel($assignment),
+						'actions' => array_merge(
+							$this->copyActions($request, $object, $assignment),
+							$this->assignmentActions($request, $object, $assignment, ['email', 'cancel', 'history'])
+						),
+					];
+				}
 				if (CopyWorkflow::isOpen($object, $assignment)) {
 					$copies[] = $row + $this->copyRow($request, $object, $assignment, $userCache);
 				}
@@ -175,6 +189,7 @@ class ObjectsForReviewManagementHandler extends Handler {
 			'closed' => $closed,
 			'copies' => $copies,
 			'notifications' => $notifications,
+			'overdue' => $overdue,
 		]);
 	}
 
@@ -326,6 +341,8 @@ class ObjectsForReviewManagementHandler extends Handler {
 			'copyPreferenceLabel' => __('plugins.generic.objectsForReview.reserve.copy.' . $assignment->getData('copyPreference')),
 			'copyStatusLabel' => CopyWorkflow::getStatusLabel($assignment),
 			'copyStatusDate' => $assignment->getData('copyStatusDate'),
+			'copyReminderCount' => (int) $assignment->getData('copyReminderCount'),
+			'copyReminderSent' => $assignment->getData('copyReminderSent'),
 			'journalHoldsCopy' => (bool) $object->getData('journalHoldsCopy'),
 			'publisherContact' => $contact ? $contact->getFullName() . ($contact->getLocalizedData('affiliation') ? ', ' . $contact->getLocalizedData('affiliation') : '') : null,
 			'copyActions' => $this->copyActions($request, $object, $assignment),

@@ -11,8 +11,9 @@
  * @brief Daily task:
  *  - remind reviewers a configurable number of days before their review is due,
  *  - remind selected bidders who have not answered a contract offer,
- *  - expire unanswered contract offers (the book review editor is notified).
- *  Each email is sent once and recorded in the audit trail.
+ *  - expire unanswered contract offers (the book review editor is notified),
+ *  - remind publisher contacts of unanswered review copy requests, every N days.
+ *  Emails are recorded in the audit trail.
  */
 
 namespace APP\plugins\generic\objectsForReview\classes;
@@ -48,6 +49,7 @@ class ReservationReminder extends ScheduledTask {
 			ReservationMailer::ensureTemplates($plugin, $context->getId());
 			$counts = [
 				'reminders' => $this->sendDueDateReminders($plugin, $context),
+				'publisherReminders' => $this->sendPublisherReminders($plugin, $context),
 			] + $this->processContractOffers($plugin, $context);
 			if (array_sum($counts)) {
 				$this->addExecutionLogEntry(__('plugins.generic.objectsForReview.reminder.sent', $counts + ['context' => $context->getLocalizedName()]));
@@ -78,8 +80,37 @@ class ReservationReminder extends ScheduledTask {
 				continue;
 			}
 			[$subject, $body] = ReservationMailer::compose($context, ReservationEmailEventType::REMINDER, $object, $assignment, $reviewer, null);
-			ReservationMailer::send($context, ReservationEmailEventType::REMINDER, $object, $reviewer, null, $subject, $body);
+			ReservationMailer::send($context, ReservationEmailEventType::REMINDER, $object, $reviewer, null, $subject, $body, [], $assignment);
 			$assignment->setData('reminderSent', Core::getCurrentDate());
+			AssignmentWorkflow::dao()->updateObject($assignment);
+			$sent++;
+		}
+		return $sent;
+	}
+
+	/**
+	 * Remind publisher contacts of copy requests that are still open after N days (and every N days after that).
+	 * @return int Number of reminders sent
+	 */
+	protected function sendPublisherReminders($plugin, $context): int {
+		$days = CopyWorkflow::getPublisherReminderDays($plugin, $context->getId());
+		if ($days <= 0) {
+			return 0;
+		}
+		$cutoff = (new \DateTimeImmutable('today'))->modify("-{$days} days")->format('Y-m-d');
+		$sent = 0;
+		foreach ($this->assignments($context, [Assignment::STATUS_ACCEPTED]) as [$object, $assignment]) {
+			if (CopyWorkflow::getStatus($assignment) !== CopyWorkflow::REQUESTED) {
+				continue;
+			}
+			$last = substr((string) ($assignment->getData('copyReminderSent') ?: $assignment->getData('copyStatusDate')), 0, 10);
+			$contact = CopyWorkflow::getPublisherContact($object);
+			if (!$last || $last > $cutoff || !$contact) {
+				continue;
+			}
+			CopyWorkflow::sendAutomatic($plugin, $context, $object, $assignment, ReservationEmailEventType::COPY_REQUEST_REMINDER, $contact);
+			$assignment->setData('copyReminderSent', Core::getCurrentDate());
+			$assignment->setData('copyReminderCount', (int) $assignment->getData('copyReminderCount') + 1);
 			AssignmentWorkflow::dao()->updateObject($assignment);
 			$sent++;
 		}

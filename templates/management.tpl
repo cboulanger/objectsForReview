@@ -22,7 +22,7 @@
 			{load_url_in_div id="objectsForReviewSettingsContainer" url=$settingsUrl}
 
 		{elseif $view == 'desk'}
-			{if !$selection && !$offers && !$unsuccessful && !$copies && !$notifications}
+			{if !$selection && !$offers && !$unsuccessful && !$copies && !$notifications && !$overdue}
 				<p class="ofrDeskEmpty">{translate key="plugins.generic.objectsForReview.desk.empty"}</p>
 			{/if}
 
@@ -142,6 +142,37 @@
 				</table>
 			{/if}
 
+			{if $overdue}
+				<h2>{translate key="plugins.generic.objectsForReview.desk.overdue"}</h2>
+				<table class="ofrTable ofrOverdue">
+					<thead>
+						<tr>
+							<th>{translate key="plugins.generic.objectsForReview.column.object"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.reviewer"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.dates"}</th>
+							<th><span class="pkp_screen_reader">{translate key="grid.columns.actions"}</span></th>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach from=$overdue item=row}
+							<tr>
+								<td>{include file=$ofrObjectCell row=$row}</td>
+								<td>{$row.reviewer|escape}{if $row.copyStatusLabel}<div class="ofrDetail">{$row.copyStatusLabel|escape}</div>{/if}</td>
+								<td class="ofrNoWrap">
+									<strong class="ofrWarning">{translate key="plugins.generic.objectsForReview.reserve.dueDate"}: {$row.dueDate|date_format:$dateFormatShort}</strong>
+									{if $row.reminderSent}<br />{translate key="plugins.generic.objectsForReview.column.reminderSent"}: {$row.reminderSent|date_format:$dateFormatShort}{/if}
+								</td>
+								<td class="ofrActions">
+									{foreach from=$row.actions item=action}
+										{include file="linkAction/linkAction.tpl" action=$action contextId="ofrDesk"}
+									{/foreach}
+								</td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			{/if}
+
 			{if $copies}
 				<h2>{translate key="plugins.generic.objectsForReview.desk.copies"}</h2>
 				<table class="ofrTable ofrCopies">
@@ -166,6 +197,7 @@
 									{$row.copyPreferenceLabel|escape}<br />
 									<strong>{$row.copyStatusLabel|escape}</strong>
 									<div class="ofrDetail">{$row.copyStatusDate|date_format:$dateFormatShort}</div>
+									{if $row.copyReminderCount}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.copy.reminders" number=$row.copyReminderCount date=$row.copyReminderSent|date_format:$dateFormatShort}</div>{/if}
 								</td>
 								<td>
 									{if $row.journalHoldsCopy}<div>{translate key="plugins.generic.objectsForReview.copy.journalHoldsCopy"}</div>{/if}

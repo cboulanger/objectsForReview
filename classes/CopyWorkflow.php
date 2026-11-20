@@ -43,6 +43,9 @@ class CopyWorkflow {
 	const RETURN_SENT = 'returnSent';
 	const RETURNED = 'returned';
 
+	const DEFAULT_PUBLISHER_REMINDER_DAYS = 14;
+	const MAX_PUBLISHER_REMINDER_DAYS = 90;
+
 	const BY_JOURNAL = 'journal';
 	const BY_PUBLISHER = 'publisher';
 
@@ -93,6 +96,14 @@ class CopyWorkflow {
 			$assignment->setData('copyStatus', self::NOT_NEEDED);
 			$assignment->setData('copyStatusDate', Core::getCurrentDate());
 		}
+	}
+
+	/**
+	 * Days after which (and between which) the publisher is reminded of an unanswered copy request (0: never).
+	 */
+	public static function getPublisherReminderDays($plugin, int $contextId): int {
+		$days = $plugin->getSetting($contextId, 'ofrPublisherReminderDays');
+		return $days === null ? self::DEFAULT_PUBLISHER_REMINDER_DAYS : (int) $days;
 	}
 
 	public static function getStatus(Assignment $assignment): ?string {
@@ -153,7 +164,7 @@ class CopyWorkflow {
 	 * @param array $options ['returnTarget' => journal|publisher] for requestReturn
 	 */
 	public static function apply($plugin, $context, ObjectForReview $object, Assignment $assignment, string $step, User $actor,
-			array $options = []): void {
+			array $options = [], bool $viaLink = false): void {
 		if (!in_array($step, self::getAllowedSteps($plugin, $object, $assignment), true)) {
 			throw new \InvalidArgumentException("Copy step {$step} is not possible for assignment " . $assignment->getId());
 		}
@@ -202,8 +213,10 @@ class CopyWorkflow {
 		}
 		$assignment->setData('copyStatus', self::STEPS[$step]['to']);
 		$assignment->setData('copyStatusDate', Core::getCurrentDate());
+		$assignment->unsetData('copyReminderSent');
+		$assignment->unsetData('copyReminderCount');
 		AssignmentWorkflow::dao()->updateObject($assignment);
-		ReservationLog::logEvent($object, $event, $actor, $reviewer);
+		ReservationLog::logEvent($object, $event, $actor, $reviewer, $viaLink ? ReservationLog::viaLink($actor) : []);
 
 		// No review will come: requesting the return ends a current reservation
 		if ($step === 'requestReturn' && $assignment->getStatus() === Assignment::STATUS_ACCEPTED) {
@@ -216,6 +229,39 @@ class CopyWorkflow {
 	 */
 	public static function confirmReceipt($plugin, $context, ObjectForReview $object, Assignment $assignment, User $reviewer): void {
 		self::apply($plugin, $context, $object, $assignment, 'markReceived', $reviewer);
+	}
+
+	/**
+	 * Template variables of the copy emails.
+	 * @param ?string $step The step the email belongs to (determines who sent the copy)
+	 */
+	public static function getEmailParams($context, ObjectForReview $object, Assignment $assignment, ?string $step): array {
+		$locale = $context->getPrimaryLocale();
+		$reviewer = Repo::user()->get($assignment->getUserId(), true);
+		$preference = $assignment->getData('copyPreference');
+		$sentBy = match ($step) {
+			'sendFromStock' => self::BY_JOURNAL,
+			'publisherSent' => self::BY_PUBLISHER,
+			default => $assignment->getData('copySentBy'),
+		};
+		return [
+			'reviewerName' => htmlspecialchars($reviewer?->getFullName() ?? ''),
+			'copyType' => $preference ? htmlspecialchars(__('plugins.generic.objectsForReview.copy.type.' . $preference, [], $locale)) : '',
+			'copySource' => $sentBy ? htmlspecialchars(__('plugins.generic.objectsForReview.copy.source.' . $sentBy, [], $locale)) : '',
+			'deliveryDetails' => self::getDeliveryDetails($assignment, $reviewer, $locale),
+		];
+	}
+
+	/**
+	 * Send a copy email automatically (from the journal contact), e.g. after a
+	 * one-click link was used, including the next one-click link.
+	 */
+	public static function sendAutomatic($plugin, $context, ObjectForReview $object, Assignment $assignment,
+			ReservationEmailEventType $type, User $recipient, ?string $step = null): void {
+		ReservationMailer::ensureTemplates($plugin, $context->getId());
+		[$subject, $body] = ReservationMailer::compose($context, $type, $object, $assignment, $recipient, null,
+			self::getEmailParams($context, $object, $assignment, $step));
+		ReservationMailer::send($context, $type, $object, $recipient, null, $subject, $body, [], $assignment);
 	}
 
 	/**

@@ -6,7 +6,8 @@
  * Page behind the one-click links and the contract page for selected bidders.
  * Opening it never changes anything; every action needs a confirmation button.
  *
- * $view: contract | leave | invalid | accepted | declined | left
+ * $view: contract | leave | confirm | done | invalid | accepted | declined | left
+ * $linkAction: the link's action (confirm, done)
  * $key: link key (when reached through an email link)
  *}
 {include file="frontend/components/header.tpl" pageTitle="plugins.generic.objectsForReview.frontendTitle"}
@@ -57,6 +58,21 @@
 			<input type="hidden" name="key" value="{$key|escape}" />
 			<button type="submit" class="pkp_button">{translate key="plugins.generic.objectsForReview.leave.submit"}</button>
 		</form>
+
+	{elseif $view == 'confirm'}
+		<h1>{translate key="plugins.generic.objectsForReview.link.$linkAction.title"}</h1>
+		<p class="ofrReserveObject">{$objectDescription|strip_unsafe_html}</p>
+		<p>{translate key="plugins.generic.objectsForReview.link.$linkAction.description" reviewer=$reviewerName|escape publisher=$publisherName|escape}</p>
+		<form method="post" action="{url op="respond"}">
+			{csrf}
+			<input type="hidden" name="key" value="{$key|escape}" />
+			<button type="submit" class="pkp_button">{translate key="plugins.generic.objectsForReview.link.$linkAction.submit"}</button>
+		</form>
+
+	{elseif $view == 'done'}
+		<h1>{translate key="plugins.generic.objectsForReview.response.done.title"}</h1>
+		<p class="ofrReserveObject">{$objectDescription|strip_unsafe_html}</p>
+		<p class="ofrResponseMessage">{translate key="plugins.generic.objectsForReview.link.$linkAction.done"}</p>
 
 	{else}
 		<h1>{translate key="plugins.generic.objectsForReview.response.$view.title"}</h1>

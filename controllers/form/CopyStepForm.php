@@ -111,18 +111,8 @@ class CopyStepForm extends \PKP\form\Form {
 	 * Template variables of the copy emails.
 	 */
 	protected function emailParams(): array {
-		$locale = $this->context->getPrimaryLocale();
-		$preference = $this->assignment->getData('copyPreference');
-		$sentBy = $this->step === 'sendFromStock' ? CopyWorkflow::BY_JOURNAL
-			: ($this->step === 'publisherSent' ? CopyWorkflow::BY_PUBLISHER : $this->assignment->getData('copySentBy'));
-		$params = [
-			'reviewerName' => htmlspecialchars($this->reviewer?->getFullName() ?? ''),
-			'copyType' => $preference ? htmlspecialchars(__('plugins.generic.objectsForReview.copy.type.' . $preference, [], $locale)) : '',
-			'copySource' => $sentBy ? htmlspecialchars(__('plugins.generic.objectsForReview.copy.source.' . $sentBy, [], $locale)) : '',
-		];
-		if ($this->step === 'requestCopy') {
-			$params['deliveryDetails'] = CopyWorkflow::getDeliveryDetails($this->assignment, $this->reviewer, $locale);
-		}
+		$params = CopyWorkflow::getEmailParams($this->context, $this->object, $this->assignment,
+			$this->step === self::NOTIFY_PUBLISHER ? null : $this->step);
 		if ($this->step === self::NOTIFY_PUBLISHER) {
 			$params['reviewUrl'] = $this->getReviewUrl();
 		}
@@ -188,7 +178,7 @@ class CopyStepForm extends \PKP\form\Form {
 				$late['returnAddress'] = nl2br(htmlspecialchars($this->returnTargets[$this->getData('returnTarget')] ?? ''));
 			}
 			ReservationMailer::send($this->context, $this->emailType, $this->object, $this->recipient, $sender,
-				trim((string) $this->getData('subject')), (string) $this->getData('body'), $late);
+				trim((string) $this->getData('subject')), (string) $this->getData('body'), $late, $this->assignment);
 		}
 		parent::execute(...$functionArgs);
 	}

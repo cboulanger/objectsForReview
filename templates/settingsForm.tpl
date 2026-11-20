@@ -64,6 +64,10 @@
 			{fbvElement type="text" label="plugins.generic.objectsForReview.settings.contractDays.reminder" id="ofrContractReminderDays" value=$ofrContractReminderDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
 		{/fbvFormSection}
 
+		{fbvFormSection label="plugins.generic.objectsForReview.settings.publisherReminderDays" description="plugins.generic.objectsForReview.settings.publisherReminderDays.description"}
+			{fbvElement type="text" id="ofrPublisherReminderDays" value=$ofrPublisherReminderDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
+		{/fbvFormSection}
+
 		{if $standalone}
 			{fbvFormButtons hideCancel=true submitText="common.save"}
 		{else}

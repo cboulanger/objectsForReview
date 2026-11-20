@@ -143,6 +143,7 @@ class AssignmentWorkflow {
 		self::syncReviewer($object);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_RESERVED, $user, $user, ['reviewDueDate' => $data['dueDate']]);
 		$plugin->notifyEditor($user, $object, 'OFR_NEW_RESERVATION', Reservation::getEmailDetails($assignment, $context));
+		self::sendConfirmation($plugin, $context, $object, $assignment, $user);
 		return $assignment;
 	}
 
@@ -165,6 +166,18 @@ class AssignmentWorkflow {
 			'bidStatement' => $statement !== '' ? nl2br(htmlspecialchars($statement)) : '–',
 		]);
 		return $assignment;
+	}
+
+	/**
+	 * Confirmation to the reviewer, with the agreement details and the
+	 * "I can't write this review" link.
+	 */
+	protected static function sendConfirmation($plugin, $context, ObjectForReview $object, Assignment $assignment, User $reviewer): void {
+		ReservationMailer::ensureTemplates($plugin, $context->getId());
+		[$subject, $body] = ReservationMailer::compose($context, ReservationEmailEventType::CONFIRMATION, $object, $assignment, $reviewer, null, [
+			'reservationDetails' => Reservation::getEmailDetails($assignment, $context),
+		]);
+		ReservationMailer::send($context, ReservationEmailEventType::CONFIRMATION, $object, $reviewer, null, $subject, $body, [], $assignment);
 	}
 
 	/**
@@ -214,6 +227,7 @@ class AssignmentWorkflow {
 		$reviewer = Repo::user()->get($assignment->getUserId(), true);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_CONTRACT_ACCEPTED, $reviewer, $reviewer, ['reviewDueDate' => $data['dueDate']]);
 		$plugin->notifyEditor($reviewer, $object, 'OFR_NEW_RESERVATION', Reservation::getEmailDetails($assignment, $context));
+		self::sendConfirmation($plugin, $context, $object, $assignment, $reviewer);
 	}
 
 	/**
@@ -269,14 +283,14 @@ class AssignmentWorkflow {
 	/**
 	 * The reviewer retracts (cancels the reservation on the public page).
 	 */
-	public static function retract($plugin, ObjectForReview $object, Assignment $assignment, User $user): void {
+	public static function retract($plugin, ObjectForReview $object, Assignment $assignment, User $user, bool $viaLink = false): void {
 		self::requireStatus($assignment, [Assignment::STATUS_ACCEPTED]);
 		Reservation::erasePersonalData($assignment);
 		CopyWorkflow::onAssignmentEnded($assignment);
 		self::setStatus($assignment, Assignment::STATUS_RETRACTED);
 		ActionLink::invalidate($assignment->getId());
 		self::syncReviewer($object);
-		ReservationLog::logEvent($object, ReservationLog::EVENT_CANCELLED_BY_REVIEWER, $user, $user);
+		ReservationLog::logEvent($object, ReservationLog::EVENT_CANCELLED_BY_REVIEWER, $user, $user, $viaLink ? ReservationLog::viaLink($user) : []);
 		$plugin->notifyEditor($user, $object, 'OFR_CANCEL_RESERVATION');
 	}
 
