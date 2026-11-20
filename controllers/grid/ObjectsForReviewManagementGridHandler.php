@@ -55,7 +55,7 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 		$this->plugin = $plugin;
 		$this->addRoleAssignment(
 			array(Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN, Role::ROLE_ID_SUB_EDITOR),
-			array('fetchGrid', 'fetchRow', 'addAvailableObjectForReview', 'editAvailableObjectForReview', 'updateAvailableObjectForReview', 'deleteAvailableObjectForReview', 'lookupDoi', 'lookupIsbn')
+			array('fetchGrid', 'fetchRow', 'addAvailableObjectForReview', 'editAvailableObjectForReview', 'updateAvailableObjectForReview', 'deleteAvailableObjectForReview', 'toggleHidden', 'lookupDoi', 'lookupIsbn')
 		);
 	}
 
@@ -107,12 +107,16 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 				$userName .= ' (' . __('plugins.generic.objectsForReview.offerState.bidCount',
 					['number' => count(AssignmentWorkflow::filter($assignments, Assignment::BIDDER_STATUSES))]) . ')';
 			}
+			if ($objectForReview->isHidden()) {
+				$userName .= ' · ' . __('plugins.generic.objectsForReview.hidden');
+			}
 
 			$gridData[$objectId] = array(
 				'identifierType' => $objectForReview->getIdentifierType(),
 				'identifier' => $objectForReview->getIdentifier(),
 				'description' => $objectForReview->getDescription(),
-				'user' => $userName
+				'user' => $userName,
+				'hidden' => $objectForReview->isHidden(),
 			);
 		}
 
@@ -250,6 +254,24 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 
 		$objectForReviewDao->deleteObject($objectsForReview);
 		return DAO::getDataChangedEvent();
+	}
+
+	/**
+	 * Hide an object from the public list, or show it again.
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage
+	 */
+	function toggleHidden($args, $request) {
+		if (!$request->isPost() || !$request->checkCSRF()) {
+			return new JSONMessage(false);
+		}
+		$object = (new ObjectForReviewDAO())->getById((int) $request->getUserVar('objectId'));
+		if (!$object || $object->getContextId() != $request->getContext()->getId()) {
+			return new JSONMessage(false);
+		}
+		AssignmentWorkflow::setHidden($object, !$object->isHidden(), $request->getUser());
+		return DAO::getDataChangedEvent($object->getId());
 	}
 
 	/**

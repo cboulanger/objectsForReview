@@ -382,6 +382,18 @@ class AssignmentWorkflow {
 		self::discardList($object, null, $editor);
 	}
 
+	/**
+	 * Hide the offer from the public list, or show it again.
+	 */
+	public static function setHidden(ObjectForReview $object, bool $hidden, User $editor): void {
+		if ($object->isHidden() === $hidden) {
+			return;
+		}
+		$object->setOfferSetting('hidden', $hidden);
+		(new ObjectForReviewDAO())->updateObject($object);
+		ReservationLog::logEvent($object, $hidden ? ReservationLog::EVENT_OFFER_HIDDEN : ReservationLog::EVENT_OFFER_SHOWN, $editor, null);
+	}
+
 	public static function reopenOffer(ObjectForReview $object, User $editor): void {
 		$object->setOfferSetting('offerClosed', null);
 		$object->setOfferSetting('biddingClosed', null);

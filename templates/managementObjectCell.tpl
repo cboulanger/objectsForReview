@@ -5,9 +5,10 @@
  *
  * Object description with (linked) identifier, used in the backend tables.
  *
- * $row: objectId, description, identifierType, identifier, identifierUrl
+ * $row: objectId, description, identifierType, identifier, identifierUrl, hidden
  *}
 {$row.description|strip_unsafe_html}
+{if $row.hidden} <span class="ofrBadge">{translate key="plugins.generic.objectsForReview.hidden"}</span>{/if}
 <div class="ofrIdentifier">
 	{$row.identifierType|escape}:
 	{if $row.identifierUrl}

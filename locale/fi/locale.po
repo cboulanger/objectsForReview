@@ -1219,3 +1219,18 @@ msgstr "Montako päivää vastaamattoman kappalepyynnön jälkeen kustantajan yh
 
 msgid "plugins.generic.objectsForReview.settings.publisherReminderDays.invalid"
 msgstr "Anna päivien määrä väliltä 0–90."
+
+msgid "plugins.generic.objectsForReview.hide"
+msgstr "Piilota"
+
+msgid "plugins.generic.objectsForReview.show"
+msgstr "Näytä"
+
+msgid "plugins.generic.objectsForReview.hidden"
+msgstr "Piilotettu"
+
+msgid "plugins.generic.objectsForReview.history.event.offerHidden"
+msgstr "Piilotettu julkisesta luettelosta"
+
+msgid "plugins.generic.objectsForReview.history.event.offerShown"
+msgstr "Näytetään taas julkisessa luettelossa"

@@ -1239,3 +1239,18 @@ msgstr "Tage, nach denen eine unbeantwortete Exemplaranforderung beim Verlagskon
 
 msgid "plugins.generic.objectsForReview.settings.publisherReminderDays.invalid"
 msgstr "Bitte geben Sie eine Anzahl von Tagen zwischen 0 und 90 ein."
+
+msgid "plugins.generic.objectsForReview.hide"
+msgstr "Verbergen"
+
+msgid "plugins.generic.objectsForReview.show"
+msgstr "Anzeigen"
+
+msgid "plugins.generic.objectsForReview.hidden"
+msgstr "Verborgen"
+
+msgid "plugins.generic.objectsForReview.history.event.offerHidden"
+msgstr "Aus der öffentlichen Liste genommen"
+
+msgid "plugins.generic.objectsForReview.history.event.offerShown"
+msgstr "Wieder in der öffentlichen Liste angezeigt"

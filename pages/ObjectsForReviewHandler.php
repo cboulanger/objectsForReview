@@ -80,6 +80,12 @@ class ObjectsForReviewHandler extends Handler {
 				}
 			}
 			$myStatus = $mine?->getStatus();
+			$myActiveStatus = in_array($myStatus, [Assignment::STATUS_BID, Assignment::STATUS_UNSUCCESSFUL, Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED], true) ? $myStatus : null;
+			// Hidden offers are only listed for the people who have a bid, offer or reservation
+			$hidden = $objectForReview->isHidden();
+			if ($hidden && !$myActiveStatus) {
+				continue;
+			}
 			$gridData[$objectId] = [
 				'objectId' => $objectId,
 				'identifierType' => $objectForReview->getIdentifierType(),
@@ -92,11 +98,11 @@ class ObjectsForReviewHandler extends Handler {
 				'description' => $objectForReview->getDescription(),
 				'state' => AssignmentWorkflow::getState($objectForReview, $assignments),
 				'bidding' => $objectForReview->isBidding(),
-				'biddingOpen' => AssignmentWorkflow::isBiddingOpen($objectForReview, $assignments),
+				'biddingOpen' => !$hidden && AssignmentWorkflow::isBiddingOpen($objectForReview, $assignments),
 				'bidDeadline' => $objectForReview->getData('bidDeadline'),
-				'reservable' => AssignmentWorkflow::isReservable($objectForReview, $assignments),
+				'reservable' => !$hidden && AssignmentWorkflow::isReservable($objectForReview, $assignments),
 				// Only shown to the user concerned
-				'myStatus' => in_array($myStatus, [Assignment::STATUS_BID, Assignment::STATUS_UNSUCCESSFUL, Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED], true) ? $myStatus : null,
+				'myStatus' => $myActiveStatus,
 				'myDate' => $mine?->getDateCreated(),
 				'dueDate' => $myStatus === Assignment::STATUS_ACCEPTED ? $mine->getData('dueDate') : null,
 				'contractDeadline' => $myStatus === Assignment::STATUS_OFFERED ? $mine->getData('contractDeadline') : null,
@@ -129,7 +135,7 @@ class ObjectsForReviewHandler extends Handler {
 	function reserveObject($args, $request) {
 		[$object, $user, $context] = $this->requirePost($request);
 		$assignments = AssignmentWorkflow::dao()->getByObjectId($object->getId());
-		if (!AssignmentWorkflow::isReservable($object, $assignments)) {
+		if ($object->isHidden() || !AssignmentWorkflow::isReservable($object, $assignments)) {
 			$request->redirect(null, 'for-review');
 		}
 		$input = $this->contractInput($request);
@@ -173,7 +179,7 @@ class ObjectsForReviewHandler extends Handler {
 		$assignments = AssignmentWorkflow::dao()->getByObjectId($object->getId());
 		$hasBid = AssignmentWorkflow::dao()->getByObjectAndUser($object->getId(), $user->getId(),
 			array_merge(Assignment::BIDDER_STATUSES, [Assignment::STATUS_OFFERED], Assignment::REVIEWER_STATUSES));
-		if (AssignmentWorkflow::isBiddingOpen($object, $assignments) && !$hasBid) {
+		if (!$object->isHidden() && AssignmentWorkflow::isBiddingOpen($object, $assignments) && !$hasBid) {
 			$statement = mb_substr(trim((string) $request->getUserVar('statement')), 0, self::MAX_STATEMENT_LENGTH);
 			AssignmentWorkflow::bid($this->plugin(), $context, $object, $user, $statement);
 		}

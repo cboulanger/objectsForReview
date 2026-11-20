@@ -17,6 +17,7 @@ namespace APP\plugins\generic\objectsForReview\controllers\grid;
 
 use PKP\controllers\grid\GridRow;
 use PKP\linkAction\LinkAction;
+use PKP\linkAction\request\AjaxAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\linkAction\request\RemoteActionConfirmationModal;
 
@@ -53,6 +54,22 @@ class ObjectsForReviewManagementGridRow extends GridRow {
 						true),
 					__('grid.action.edit'),
 					'edit'
+				)
+			);
+
+			// Hide from the public list, or show again
+			$hidden = !empty($this->getData()['hidden']);
+			$label = __($hidden ? 'plugins.generic.objectsForReview.show' : 'plugins.generic.objectsForReview.hide');
+			$this->addAction(
+				new LinkAction(
+					'toggleHidden',
+					new AjaxAction(
+						$router->url($request, null, null, 'toggleHidden', null, ['objectId' => $objectId]),
+						AjaxAction::AJAX_REQUEST_TYPE_POST,
+						['csrfToken' => $request->getSession()->token()]
+					),
+					$label,
+					$hidden ? 'unhide' : 'hide'
 				)
 			);
 

@@ -158,6 +158,14 @@ The work now appears on the public page and in your list of offers.
 
 ![Available objects](images/available-objects.png)
 
+**Hiding an offer.** To take a work off the public page without ending anything, use **Hide** in the row's actions (the arrow at the start of the row). The status column and To-do then mark the offer "Hidden", and the action changes to **Show**. While an offer is hidden:
+
+- nobody can reserve it or apply for it on the public page;
+- reviewers and bidders who already hold a reservation, an application or a contract offer still see it there, with their own actions;
+- everything else keeps working: contract offers, review copies, reminders and email links.
+
+Unlike **Close offer**, hiding keeps the list of bidders. Hiding and showing are recorded in the history.
+
 ### 2. Direct reservation
 
 On the public page, works with direct reservation show **Offer to review**, and bidding works show **Apply**. Visitors who are not logged in are asked to log in. No one sees how many people have applied.

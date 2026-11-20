@@ -29,6 +29,7 @@ class ObjectForReview extends \PKP\core\DataObject {
 	 * - biddingClosed: set when the editor selects a bidder; unset to reopen bidding
 	 * - responsibleEditorId: book review editor who receives the notifications
 	 * - offerClosed: the editor has withdrawn the offer
+	 * - hidden: not on the public list (everything else keeps working)
 	 * Review copy (see CopyWorkflow):
 	 * - publisherContactId: user in the "Publisher contact" group
 	 * - journalHoldsCopy: the journal has a copy in stock
@@ -37,8 +38,12 @@ class ObjectForReview extends \PKP\core\DataObject {
 	 * - notifyPublisher: the publisher wants to be notified of the published review
 	 * - publisherNotified: date the publisher was notified
 	 */
-	const OFFER_FIELDS = ['assignmentMode', 'bidDeadline', 'biddingClosed', 'responsibleEditorId', 'offerClosed',
+	const OFFER_FIELDS = ['assignmentMode', 'bidDeadline', 'biddingClosed', 'responsibleEditorId', 'offerClosed', 'hidden',
 		'publisherContactId', 'journalHoldsCopy', 'returnRequired', 'notifyPublisher', 'publisherNotified'];
+
+	function isHidden(): bool {
+		return (bool) $this->getData('hidden');
+	}
 
 	function isReturnRequired(): bool {
 		return $this->getData('returnRequired') === null || (bool) $this->getData('returnRequired');

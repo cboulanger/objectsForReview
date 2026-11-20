@@ -407,6 +407,7 @@ class ObjectsForReviewManagementHandler extends Handler {
 			'identifierType' => $object->getIdentifierType(),
 			'identifier' => $object->getIdentifier(),
 			'identifierUrl' => $object->getIdentifierUrl(),
+			'hidden' => $object->isHidden(),
 		];
 	}
 

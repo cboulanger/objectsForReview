@@ -608,6 +608,7 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 				. ' .objectsForReviewManagement .ofrClosed { margin-top: 2rem; }'
 				. ' .objectsForReviewManagement .ofrClosed summary { cursor: pointer; font-weight: bold; }'
 				. ' .objectsForReviewManagement .ofrWarning { color: #b00; }'
+				. ' .ofrBadge { display: inline-block; margin-left: 0.25rem; padding: 0 0.4rem; border: 1px solid #888; border-radius: 3px; font-size: 0.75rem; line-height: 1.4; color: #555; vertical-align: middle; }'
 				. ' .ofrReturnTarget { display: block; margin: 0.5rem 0; } .ofrReturnTarget .ofrDetail { display: block; margin-left: 1.5rem; font-size: 0.875rem; }',
 			[
 				'inline' => true,

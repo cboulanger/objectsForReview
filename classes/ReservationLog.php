@@ -54,6 +54,8 @@ class ReservationLog {
 	const EVENT_RETURNED_JOURNAL = 0x1F0F21B;
 	const EVENT_RETURNED_PUBLISHER = 0x1F0F21C;
 	const EVENT_PUBLISHER_NOTIFIED = 0x1F0F21D;
+	const EVENT_OFFER_HIDDEN = 0x1F0F21E;
+	const EVENT_OFFER_SHOWN = 0x1F0F21F;
 
 	const EVENT_MESSAGES = [
 		self::EVENT_RESERVED => 'plugins.generic.objectsForReview.history.event.reserved',
@@ -72,6 +74,8 @@ class ReservationLog {
 		self::EVENT_MODE_DIRECT => 'plugins.generic.objectsForReview.history.event.modeDirect',
 		self::EVENT_OFFER_CLOSED => 'plugins.generic.objectsForReview.history.event.offerClosed',
 		self::EVENT_OFFER_REOPENED => 'plugins.generic.objectsForReview.history.event.offerReopened',
+		self::EVENT_OFFER_HIDDEN => 'plugins.generic.objectsForReview.history.event.offerHidden',
+		self::EVENT_OFFER_SHOWN => 'plugins.generic.objectsForReview.history.event.offerShown',
 		self::EVENT_LIST_DISCARDED => 'plugins.generic.objectsForReview.history.event.listDiscarded',
 		self::EVENT_COMPLETED => 'plugins.generic.objectsForReview.history.event.completed',
 		self::EVENT_COPY_REQUESTED => 'plugins.generic.objectsForReview.history.event.copyRequested',
