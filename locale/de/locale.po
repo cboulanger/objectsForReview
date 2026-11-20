@@ -1328,10 +1328,10 @@ msgid "plugins.generic.objectsForReview.invitation.send.description.bid"
 msgstr "{$name} einladen, sich um diese Rezension zu bewerben. Bewerbung oder Absage ist bis zum {$deadline} möglich."
 
 msgid "plugins.generic.objectsForReview.invitation.title"
-msgstr "Rezensent*innen einladen"
+msgstr "Rezensent:innen einladen"
 
 msgid "plugins.generic.objectsForReview.invitation.inviteReviewers"
-msgstr "Rezensent*innen einladen"
+msgstr "Rezensent:innen einladen"
 
 msgid "plugins.generic.objectsForReview.invitation.kind.reserve"
 msgstr "Eingeladene können das Werk reservieren (wer zuerst kommt)"
@@ -1370,7 +1370,7 @@ msgid "plugins.generic.objectsForReview.invitation.remove"
 msgstr "Entfernen"
 
 msgid "plugins.generic.objectsForReview.invitation.empty"
-msgstr "Noch niemand auf der Liste. Fügen Sie unten Personen aus dem Adressbuch oder als neue Nutzer*innen hinzu."
+msgstr "Noch niemand auf der Liste. Fügen Sie unten Personen aus dem Adressbuch oder als neue Nutzer:innen hinzu."
 
 msgid "plugins.generic.objectsForReview.invitation.addressBook"
 msgstr "Aus dem Adressbuch hinzufügen"
@@ -1385,13 +1385,13 @@ msgid "plugins.generic.objectsForReview.invitation.cannotAdd"
 msgstr "Bereits auf der Liste oder mit Bewerbung bzw. Reservierung"
 
 msgid "plugins.generic.objectsForReview.invitation.noResults"
-msgstr "Keine Nutzer*innen dieser Zeitschrift gefunden."
+msgstr "Keine Nutzer:innen dieser Zeitschrift gefunden."
 
 msgid "plugins.generic.objectsForReview.invitation.new"
 msgstr "Neue Person hinzufügen"
 
 msgid "plugins.generic.objectsForReview.invitation.new.description"
-msgstr "Legt ein Nutzerkonto in der Gruppe Autor*in dieser Zeitschrift an, damit die Person die Rezension einreichen kann. Es wird keine E-Mail gesendet; die Person erhält nur die Einladung. Gibt es bereits ein Konto mit dieser E-Mail-Adresse, wird dieses verwendet."
+msgstr "Legt ein Nutzerkonto in der Gruppe Autor:in dieser Zeitschrift an, damit die Person die Rezension einreichen kann. Es wird keine E-Mail gesendet; die Person erhält nur die Einladung. Gibt es bereits ein Konto mit dieser E-Mail-Adresse, wird dieses verwendet."
 
 msgid "plugins.generic.objectsForReview.invitation.new.givenName"
 msgstr "Vorname"
@@ -1596,3 +1596,6 @@ msgstr "Bisher wurden keine Werke angeboten."
 
 msgid "plugins.generic.objectsForReview.workflow.tabLabel"
 msgstr "Rezensierte Werke"
+
+msgid "plugins.generic.objectsForReview.invitation.search.hint"
+msgstr "Lassen Sie das Feld leer, um die Nutzer:innen dieser Zeitschrift alphabetisch aufzulisten."

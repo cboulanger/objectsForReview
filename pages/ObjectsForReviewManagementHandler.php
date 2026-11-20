@@ -332,14 +332,17 @@ class ObjectsForReviewManagementHandler extends Handler {
 			];
 		}
 
-		// Address book search (users of this journal)
+		// Address book search (users of this journal); an empty search lists them alphabetically
+		$searched = $request->getUserVar('q') !== null;
 		$query = trim((string) $request->getUserVar('q'));
 		$results = [];
-		if ($query !== '') {
+		if ($searched) {
 			$users = Repo::user()->getCollector()
 				->filterByContextIds([$contextId])
-				->searchPhrase($query)
-				->limit(20)
+				->searchPhrase($query !== '' ? $query : null)
+				->orderBy(\PKP\user\Collector::ORDERBY_FAMILYNAME, \PKP\user\Collector::ORDER_DIR_ASC,
+					array_unique([\PKP\facades\Locale::getLocale(), $context->getPrimaryLocale()]))
+				->limit($query !== '' ? 20 : 50)
 				->getMany();
 			foreach ($users as $user) {
 				$results[] = $personData($user->getId()) + ['canAdd' => InvitationWorkflow::canAdd($object, $user->getId())];
@@ -378,6 +381,7 @@ class ObjectsForReviewManagementHandler extends Handler {
 				: null,
 			'rows' => $rows,
 			'query' => $query,
+			'searched' => $searched,
 			'results' => $results,
 			'newInvitee' => $formState['input'] ?? array_fill_keys(self::NEW_INVITEE_FIELDS, ''),
 			'newInviteeErrors' => $formState['errors'] ?? [],

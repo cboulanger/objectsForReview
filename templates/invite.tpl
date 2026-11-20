@@ -109,7 +109,8 @@
 		<input type="search" id="ofrInviteSearch" name="q" value="{$query|escape}" />
 		<button type="submit" class="pkp_button">{translate key="common.search"}</button>
 	</form>
-	{if $query !== ''}
+	<p class="ofrDetail">{translate key="plugins.generic.objectsForReview.invitation.search.hint"}</p>
+	{if $searched}
 		{if $results}
 			<table class="ofrTable">
 				<tbody>

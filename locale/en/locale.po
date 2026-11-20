@@ -1597,3 +1597,6 @@ msgstr "No works have been offered yet."
 
 msgid "plugins.generic.objectsForReview.workflow.tabLabel"
 msgstr "Reviewed works"
+
+msgid "plugins.generic.objectsForReview.invitation.search.hint"
+msgstr "Leave the field empty to list the users of this journal alphabetically."

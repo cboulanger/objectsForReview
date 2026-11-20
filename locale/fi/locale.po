@@ -1576,3 +1576,6 @@ msgstr "Julkaisuja ei ole vielä tarjottu."
 
 msgid "plugins.generic.objectsForReview.workflow.tabLabel"
 msgstr "Arvioidut julkaisut"
+
+msgid "plugins.generic.objectsForReview.invitation.search.hint"
+msgstr "Jätä kenttä tyhjäksi, niin julkaisun käyttäjät luetellaan aakkosjärjestyksessä."
