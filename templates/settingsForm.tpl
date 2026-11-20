@@ -51,6 +51,19 @@
 			{fbvElement type="text" id="ofrReminderDays" value=$ofrReminderDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
 		{/fbvFormSection}
 
+		{fbvFormSection label="plugins.generic.objectsForReview.settings.defaultMode" description="plugins.generic.objectsForReview.settings.defaultMode.description"}
+			{fbvElement type="select" id="ofrDefaultMode" from=$assignmentModes selected=$ofrDefaultMode translate=false size=$fbvStyles.size.MEDIUM}
+		{/fbvFormSection}
+
+		{fbvFormSection label="plugins.generic.objectsForReview.settings.defaultEditor" description="plugins.generic.objectsForReview.settings.defaultEditor.description"}
+			{fbvElement type="select" id="ofrDefaultEditorId" from=$bookReviewEditors selected=$ofrDefaultEditorId translate=false size=$fbvStyles.size.MEDIUM}
+		{/fbvFormSection}
+
+		{fbvFormSection label="plugins.generic.objectsForReview.settings.contractDays" description="plugins.generic.objectsForReview.settings.contractDays.description"}
+			{fbvElement type="text" label="plugins.generic.objectsForReview.settings.contractDays.deadline" id="ofrContractDays" value=$ofrContractDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
+			{fbvElement type="text" label="plugins.generic.objectsForReview.settings.contractDays.reminder" id="ofrContractReminderDays" value=$ofrContractReminderDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
+		{/fbvFormSection}
+
 		{if $standalone}
 			{fbvFormButtons hideCancel=true submitText="common.save"}
 		{else}

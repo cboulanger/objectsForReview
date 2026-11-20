@@ -16,7 +16,11 @@ namespace APP\plugins\generic\objectsForReview\pages;
 use APP\core\Application;
 use APP\facades\Repo;
 use APP\handler\Handler;
+use APP\plugins\generic\objectsForReview\classes\Assignment;
+use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
+use APP\plugins\generic\objectsForReview\classes\Roles;
+use PKP\linkAction\request\RemoteActionConfirmationModal;
 use APP\template\TemplateManager;
 use PKP\db\DAORegistry;
 use PKP\linkAction\LinkAction;
@@ -41,55 +45,173 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$this->plugin = $plugin;
 		$this->addRoleAssignment(
 			[Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN],
-			['index', 'reservations', 'reviewedWorks', 'settings']
+			['index', 'desk', 'assignments', 'reservations', 'reviewedWorks', 'settings']
+		);
+		$this->addRoleAssignment(
+			[Role::ROLE_ID_SUB_EDITOR],
+			['index', 'desk', 'assignments', 'reservations', 'reviewedWorks']
 		);
 	}
 
 	/**
 	 * @copydoc PKPHandler::authorize()
+	 * Section editors need to be book review editors.
 	 */
 	public function authorize($request, &$args, $roleAssignments) {
 		$this->addPolicy(new ContextAccessPolicy($request, $roleAssignments));
-		return parent::authorize($request, $args, $roleAssignments);
+		if (!parent::authorize($request, $args, $roleAssignments)) {
+			return false;
+		}
+		$userRoles = (array) $this->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES);
+		return Roles::canManage($this->plugin, $request->getContext()->getId(), $request->getUser()?->getId(), $userRoles);
 	}
 
 	/**
 	 * Available objects: the management grid (formerly under Settings > Website).
 	 */
 	public function index($args, $request) {
+		Roles::ensureGroups($this->plugin, $request->getContext()->getId());
 		$gridUrl = $request->getDispatcher()->url($request, Application::ROUTE_COMPONENT, null,
 			'plugins.generic.objectsForReview.controllers.grid.ObjectsForReviewManagementGridHandler', 'fetchGrid');
 		return $this->display($request, 'available', 'plugins.generic.objectsForReview.menu.available', ['gridUrl' => $gridUrl]);
 	}
 
 	/**
-	 * Reservations: objects reserved by a user and not yet attached to a submission.
+	 * Old URL of the assignments page.
 	 */
 	public function reservations($args, $request) {
+		$request->redirect(null, null, 'assignments');
+	}
+
+	/**
+	 * Desk: what needs the book review editor's attention.
+	 */
+	public function desk($args, $request) {
+		$context = $request->getContext();
+		$contextId = $context->getId();
+		$assignmentsByObject = AssignmentWorkflow::dao()->getByContextId($contextId);
+		$selection = $offers = $unsuccessful = $closed = [];
+		$userCache = [];
+
+		foreach ($this->getObjects($request) as $object) {
+			$assignments = $assignmentsByObject[$object->getId()] ?? [];
+			$state = AssignmentWorkflow::getState($object, $assignments);
+			$bidders = AssignmentWorkflow::filter($assignments, Assignment::BIDDER_STATUSES);
+			$row = $this->objectRow($object);
+
+			if ($state === AssignmentWorkflow::STATE_CLOSED) {
+				$closed[] = $row + ['offerActions' => $this->offerActions($request, $object, ['reopenOffer'])];
+				continue;
+			}
+
+			// Selection: bids to decide on, or a closed bidding round without a reviewer
+			if ($object->isBidding() && in_array($state, [AssignmentWorkflow::STATE_OPEN, AssignmentWorkflow::STATE_SELECTION], true)
+				&& ($bidders || $state === AssignmentWorkflow::STATE_SELECTION)) {
+				$dropouts = AssignmentWorkflow::filter($assignments, Assignment::DROPOUT_STATUSES);
+				$lastDropout = $dropouts ? end($dropouts) : null;
+				$selection[] = $row + [
+					'state' => $state,
+					'biddingOpen' => AssignmentWorkflow::isBiddingOpen($object, $assignments),
+					'bidDeadline' => $object->getData('bidDeadline'),
+					'deadlinePassed' => AssignmentWorkflow::isBidDeadlinePassed($object),
+					'dropout' => $lastDropout ? [
+						'name' => $this->userName($lastDropout->getUserId(), $userCache),
+						'status' => $lastDropout->getStatus(),
+						'date' => $lastDropout->getDateStatus(),
+						'reason' => $lastDropout->getData('declineReason'),
+					] : null,
+					'bidders' => array_map(fn ($a) => $this->bidderRow($request, $object, $a, $userCache), $bidders),
+					'offerActions' => $this->offerActions($request, $object, array_merge(
+						$state === AssignmentWorkflow::STATE_SELECTION ? ['reopenBidding'] : [],
+						['switchToDirect', 'closeOffer']
+					)),
+					'historyAction' => $this->assignmentActions($request, $object, null, ['history'])['history'],
+				];
+			}
+
+			foreach (AssignmentWorkflow::filter($assignments, [Assignment::STATUS_OFFERED]) as $assignment) {
+				$offers[] = $row + [
+					'user' => $this->userName($assignment->getUserId(), $userCache),
+					'dateOffered' => $assignment->getData('dateOffered'),
+					'contractDeadline' => $assignment->getData('contractDeadline'),
+					'contractReminderSent' => $assignment->getData('contractReminderSent'),
+					'actions' => $this->assignmentActions($request, $object, $assignment, ['email', 'cancel', 'history']),
+				];
+			}
+
+			$remaining = AssignmentWorkflow::filter($assignments, [Assignment::STATUS_BID]);
+			if ($remaining && in_array($state, [AssignmentWorkflow::STATE_ASSIGNED, AssignmentWorkflow::STATE_SUBMITTED], true)) {
+				$reviewer = AssignmentWorkflow::filter($assignments, Assignment::REVIEWER_STATUSES);
+				$unsuccessful[] = $row + [
+					'reviewer' => $reviewer ? $this->userName(end($reviewer)->getUserId(), $userCache) : '',
+					'names' => array_map(fn ($a) => $this->userName($a->getUserId(), $userCache), $remaining),
+					'action' => $this->linkAction($request, 'unsuccessfulForm', ['objectId' => $object->getId()],
+						'plugins.generic.objectsForReview.unsuccessful.action', 'modal_email', 'unsuccessful-' . $object->getId()),
+				];
+			}
+		}
+
+		return $this->display($request, 'desk', 'plugins.generic.objectsForReview.menu.desk', [
+			'selection' => $selection,
+			'offers' => $offers,
+			'unsuccessful' => $unsuccessful,
+			'closed' => $closed,
+		]);
+	}
+
+	/**
+	 * Assignments: all bidders and reviewers, filterable by status and person.
+	 */
+	public function assignments($args, $request) {
+		$contextId = $request->getContext()->getId();
+		$statusFilter = (string) ($request->getUserVar('status') ?? 'active');
 		$filterUserId = (int) $request->getUserVar('userId');
+		$statuses = match ($statusFilter) {
+			'active' => [Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED],
+			'all' => null,
+			default => [$statusFilter],
+		};
+		$objects = [];
+		foreach ($this->getObjects($request) as $object) {
+			$objects[$object->getId()] = $object;
+		}
 		$rows = [];
 		$users = [];
-		foreach ($this->getObjects($request) as $object) {
-			if (!$object->getUserId() || $object->getSubmissionId()) {
+		$userCache = [];
+		foreach (AssignmentWorkflow::dao()->getByContextId($contextId, $statuses) as $objectId => $assignments) {
+			if (!isset($objects[$objectId])) {
 				continue;
 			}
-			$userId = (int) $object->getUserId();
-			if (!isset($users[$userId])) {
-				$user = Repo::user()->get($userId, true);
-				$users[$userId] = $user ? $user->getFullName() . ' (' . $user->getEmail() . ')' : '#' . $userId;
+			foreach ($assignments as $assignment) {
+				$userId = $assignment->getUserId();
+				$users[$userId] = $this->userName($userId, $userCache);
+				if ($filterUserId && $filterUserId !== $userId) {
+					continue;
+				}
+				$active = in_array($assignment->getStatus(), [Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED], true);
+				$rows[] = $this->objectRow($objects[$objectId]) + [
+					'user' => $users[$userId],
+					'status' => $assignment->getStatus(),
+					'dateCreated' => $assignment->getDateCreated(),
+					'dateStatus' => $assignment->getDateStatus(),
+					'contractDeadline' => $assignment->getStatus() === Assignment::STATUS_OFFERED ? $assignment->getData('contractDeadline') : null,
+					'actions' => $this->assignmentActions($request, $objects[$objectId], $assignment, $active ? ['email', 'cancel', 'history'] : ['history']),
+				] + Reservation::getDisplayData($assignment);
 			}
-			if ($filterUserId && $filterUserId !== $userId) {
-				continue;
-			}
-			$rows[] = $this->objectRow($object) + ['user' => $users[$userId], 'actions' => $this->reservationActions($request, $object)]
-				+ Reservation::getDisplayData($object);
 		}
 		asort($users);
-		usort($rows, fn ($a, $b) => strcmp((string) $a['dueDate'], (string) $b['dueDate']));
-		return $this->display($request, 'reservations', 'plugins.generic.objectsForReview.menu.reservations', [
+		usort($rows, fn ($a, $b) => strcmp((string) ($a['dueDate'] ?: $a['contractDeadline'] ?: '9999'), (string) ($b['dueDate'] ?: $b['contractDeadline'] ?: '9999'))
+			?: strcmp((string) $b['dateStatus'], (string) $a['dateStatus']));
+		return $this->display($request, 'assignments', 'plugins.generic.objectsForReview.menu.assignments', [
 			'rows' => $rows,
 			'users' => $users,
 			'filterUserId' => $filterUserId,
+			'statusFilter' => $statusFilter,
+			'statusOptions' => array_merge(['active', 'all'], [
+				Assignment::STATUS_BID, Assignment::STATUS_UNSUCCESSFUL, Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED,
+				Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED, Assignment::STATUS_WITHDRAWN, Assignment::STATUS_DECLINED,
+				Assignment::STATUS_EXPIRED, Assignment::STATUS_RETRACTED, Assignment::STATUS_CANCELLED, Assignment::STATUS_DISCARDED,
+			]),
 		]);
 	}
 
@@ -128,22 +250,76 @@ class ObjectsForReviewManagementHandler extends Handler {
 	}
 
 	/**
-	 * Modal actions for a reservation: email the reviewer, cancel, show the audit trail.
+	 * Modal actions for an assignment (or, without one, for the object): email, cancel, audit trail.
 	 * @return LinkAction[]
 	 */
-	protected function reservationActions($request, $object): array {
-		$actions = [];
-		foreach ([
+	protected function assignmentActions($request, $object, ?Assignment $assignment, array $names): array {
+		$definitions = [
 			'email' => ['emailForm', 'plugins.generic.objectsForReview.reservations.email', 'modal_email'],
-			'cancel' => ['cancelForm', 'plugins.generic.objectsForReview.reservations.cancel', 'modal_delete'],
+			'cancel' => ['cancelForm', $assignment?->getStatus() === Assignment::STATUS_OFFERED
+				? 'plugins.generic.objectsForReview.contractOffer.cancel' : 'plugins.generic.objectsForReview.reservations.cancel', 'modal_delete'],
 			'history' => ['history', 'plugins.generic.objectsForReview.history', 'modal_information'],
-		] as $name => [$op, $labelKey, $modalClass]) {
-			$url = $request->getDispatcher()->url($request, Application::ROUTE_COMPONENT, null,
-				ReservationActionsHandler::COMPONENT, $op, null, ['objectId' => $object->getId()]);
-			$actions[$name] = new LinkAction('ofr-' . $name . '-' . $object->getId(),
-				new AjaxModal($url, __($labelKey), $modalClass), __($labelKey));
+		];
+		$actions = [];
+		foreach ($names as $name) {
+			[$op, $labelKey, $modalClass] = $definitions[$name];
+			$params = ['objectId' => $object->getId()] + ($assignment && $name !== 'history' ? ['assignmentId' => $assignment->getId()] : []);
+			$actions[$name] = $this->linkAction($request, $op, $params, $labelKey, $modalClass,
+				$name . '-' . $object->getId() . '-' . ($assignment?->getId() ?? 0));
 		}
 		return $actions;
+	}
+
+	/**
+	 * Offer-level actions confirmed in a dialog.
+	 * @return LinkAction[]
+	 */
+	protected function offerActions($request, $object, array $names): array {
+		$actions = [];
+		foreach ($names as $name) {
+			$url = $request->getDispatcher()->url($request, Application::ROUTE_COMPONENT, null,
+				ReservationActionsHandler::COMPONENT, $name, null, ['objectId' => $object->getId()]);
+			$label = __('plugins.generic.objectsForReview.desk.' . $name);
+			$actions[$name] = new LinkAction('ofr-' . $name . '-' . $object->getId(),
+				new RemoteActionConfirmationModal($request->getSession(), __('plugins.generic.objectsForReview.desk.' . $name . '.confirm'),
+					$label, $url, 'modal_confirm'),
+				$label);
+		}
+		return $actions;
+	}
+
+	protected function linkAction($request, string $op, array $params, string $labelKey, string $modalClass, string $id): LinkAction {
+		$url = $request->getDispatcher()->url($request, Application::ROUTE_COMPONENT, null,
+			ReservationActionsHandler::COMPONENT, $op, null, $params);
+		return new LinkAction('ofr-' . $id, new AjaxModal($url, __($labelKey), $modalClass), __($labelKey));
+	}
+
+	/**
+	 * A bidder as shown when choosing among bidders.
+	 */
+	protected function bidderRow($request, $object, Assignment $assignment, array &$userCache): array {
+		$user = Repo::user()->get($assignment->getUserId(), true);
+		return [
+			'assignmentId' => $assignment->getId(),
+			'name' => $user ? $user->getFullName() : '#' . $assignment->getUserId(),
+			'email' => $user?->getEmail(),
+			'affiliation' => $user?->getLocalizedData('affiliation'),
+			'date' => $assignment->getDateCreated(),
+			'status' => $assignment->getStatus(),
+			'statement' => $assignment->getData('statement'),
+			'reviewCount' => AssignmentWorkflow::dao()->countReviewsByUser($assignment->getUserId(), $object->getContextId()),
+			'selectAction' => $this->linkAction($request, 'contractOfferForm',
+				['objectId' => $object->getId(), 'assignmentId' => $assignment->getId()],
+				'plugins.generic.objectsForReview.desk.select', 'modal_email', 'select-' . $assignment->getId()),
+		];
+	}
+
+	protected function userName(int $userId, array &$cache): string {
+		if (!isset($cache[$userId])) {
+			$user = Repo::user()->get($userId, true);
+			$cache[$userId] = $user ? $user->getFullName() . ' (' . $user->getEmail() . ')' : '#' . $userId;
+		}
+		return $cache[$userId];
 	}
 
 	/**

@@ -17,6 +17,10 @@
 namespace APP\plugins\generic\objectsForReview\controllers\grid;
 
 use APP\plugins\generic\objectsForReview\classes\ObjectForReviewDAO;
+use APP\plugins\generic\objectsForReview\classes\Assignment;
+use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
+use APP\plugins\generic\objectsForReview\classes\Roles;
+use APP\core\Application;
 use APP\plugins\generic\objectsForReview\classes\CrossrefLookup;
 use APP\plugins\generic\objectsForReview\classes\IsbnLookup;
 
@@ -50,7 +54,7 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 		parent::__construct();
 		$this->plugin = $plugin;
 		$this->addRoleAssignment(
-			array(Role::ROLE_ID_MANAGER),
+			array(Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN, Role::ROLE_ID_SUB_EDITOR),
 			array('fetchGrid', 'fetchRow', 'addAvailableObjectForReview', 'editAvailableObjectForReview', 'updateAvailableObjectForReview', 'deleteAvailableObjectForReview', 'lookupDoi', 'lookupIsbn')
 		);
 	}
@@ -67,7 +71,12 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 	 */
 	function authorize($request, &$args, $roleAssignments) {
 		$this->addPolicy(new ContextAccessPolicy($request, $roleAssignments));
-		return parent::authorize($request, $args, $roleAssignments);
+		if (!parent::authorize($request, $args, $roleAssignments)) {
+			return false;
+		}
+		// Section editors need to be book review editors
+		$userRoles = (array) $this->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES);
+		return Roles::canManage($this->plugin, $request->getContext()->getId(), $request->getUser()?->getId(), $userRoles);
 	}
 
 	/**
@@ -84,16 +93,19 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 		// Get the items and add the data to the grid
 		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
 		$objectsForReview = $objectForReviewDao->getAll($context->getId(), true, true);
+		$assignmentsByObject = AssignmentWorkflow::dao()->getByContextId($context->getId());
 
 		$gridData = array();
 		while ($objectForReview = $objectsForReview->next()) {
 			$objectId = $objectForReview->getId();
-
-			if ($objectForReview->getUserId()){
-				$user = Repo::user()->get($objectForReview->getUserId());
-				$userName = $user->getUsername() . " (" . $user->getEmail() . ")";
-			} else{
-				$userName = "-";
+			$assignments = $assignmentsByObject[$objectId] ?? [];
+			$state = AssignmentWorkflow::getState($objectForReview, $assignments);
+			$userName = __('plugins.generic.objectsForReview.offerState.' . $state);
+			if ($objectForReview->getUserId() && ($user = Repo::user()->get($objectForReview->getUserId(), true))) {
+				$userName .= ': ' . $user->getFullName() . ' (' . $user->getEmail() . ')';
+			} elseif ($objectForReview->isBidding() && in_array($state, [AssignmentWorkflow::STATE_OPEN, AssignmentWorkflow::STATE_SELECTION], true)) {
+				$userName .= ' (' . __('plugins.generic.objectsForReview.offerState.bidCount',
+					['number' => count(AssignmentWorkflow::filter($assignments, Assignment::BIDDER_STATUSES))]) . ')';
 			}
 
 			$gridData[$objectId] = array(
@@ -147,7 +159,7 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 		));
 		$this->addColumn(new GridColumn(
 			'user',
-			'plugins.generic.objectsForReview.userName',
+			'common.status',
 			null,
 			'controllers/grid/gridCell.tpl',
 			$cellProvider

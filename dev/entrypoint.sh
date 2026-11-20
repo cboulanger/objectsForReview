@@ -23,7 +23,10 @@ if [ ! -f "$PLUGIN_DIR/version.xml" ]; then
 elif [ ! -f "$MARKER" ]; then
 	echo "Installing objectsForReview plugin..."
 	runuser -u www-data -- php lib/pkp/tools/installPluginVersion.php "$PLUGIN_DIR/version.xml"
+	# Use the mounted (current) setup script rather than the copy from the image build
+	cp "$PLUGIN_DIR/dev/devSetup.php" tools/devSetup.php
 	runuser -u www-data -- php tools/devSetup.php enable-plugin
+	runuser -u www-data -- php tools/devSetup.php users
 	touch "$MARKER"
 fi
 

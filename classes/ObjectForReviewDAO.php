@@ -157,6 +157,7 @@ class ObjectForReviewDAO extends DAO {
 	 * @param $objectForReviewId int
 	 */
 	function deleteById($objectId) {
+		(new AssignmentDAO())->deleteByObjectId((int) $objectId);
 		$this->update(
 			'DELETE FROM objects_for_review WHERE object_id = ?',
 			[(int) $objectId]
@@ -209,7 +210,7 @@ class ObjectForReviewDAO extends DAO {
 	 * @return array
 	 */
 	function getAdditionalFieldNames(): array {
-		return array_merge(['authors', 'title', 'year', 'publisher'], Reservation::FIELDS);
+		return array_merge(['authors', 'title', 'year', 'publisher'], ObjectForReview::OFFER_FIELDS);
 	}
 
 	/**

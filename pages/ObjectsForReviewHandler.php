@@ -1,32 +1,37 @@
 <?php
 
 /**
- * @file plugins/generic/objectsForReview/pages/ObjectsForReviewHandler.inc.php
+ * @file plugins/generic/objectsForReview/pages/ObjectsForReviewHandler.php
  *
  * Copyright (c) 2014-2019 Simon Fraser University
  * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
- * @class ObjectsForReviewPlugin
+ * @class ObjectsForReviewHandler
  * @ingroup plugins_generic_objectsForReview
- * @brief Handle reader-facing router requests for the objects for review plugin
+ * @brief Reader-facing pages: the list of offers (reserve, bid, withdraw,
+ *  cancel), the contract page for selected bidders and the one-click links.
  */
 
 namespace APP\plugins\generic\objectsForReview\pages;
+
+use APP\facades\Repo;
 use APP\handler\Handler;
-use APP\core\Application;
-use PKP\facades\Locale;
-use PKP\db\DAORegistry;
-use APP\plugins\generic\objectsForReview\classes\ObjectForReviewDAO;
+use APP\plugins\generic\objectsForReview\classes\ActionLink;
+use APP\plugins\generic\objectsForReview\classes\Assignment;
+use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
-use APP\plugins\generic\objectsForReview\classes\ReservationLog;
-use PKP\core\PKPRequest;
 use APP\template\TemplateManager;
+use PKP\db\DAORegistry;
+use PKP\facades\Locale;
 use PKP\plugins\PluginRegistry;
 use PKP\security\authorization\ContextRequiredPolicy;
 use PKP\security\Validation;
 
 class ObjectsForReviewHandler extends Handler {
+
+	const CONTRACT_INPUT = ['acceptTerms', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote'];
+	const MAX_STATEMENT_LENGTH = 2000;
 
 	/**
 	 * @copydoc PKPHandler::authorize()
@@ -36,28 +41,44 @@ class ObjectsForReviewHandler extends Handler {
 		return parent::authorize($request, $args, $roleAssignments);
 	}
 
+	protected function plugin() {
+		return PluginRegistry::getPlugin('generic', 'ObjectsForReviewPlugin');
+	}
+
 	/**
 	 * View objects for review
 	 *
 	 * Request var "reserve" (object ID) opens the reservation dialog for that object.
 	 *
-	 * @param $args array
-	 * @param $request PKPRequest
 	 * @param $reserveState array Reservation form state after a failed submission (objectId, errors, input)
 	 */
 	public function index($args, $request, array $reserveState = []) {
 		$context = $request->getContext();
 		$contextId = $context->getId();
-		$plugin = PluginRegistry::getPlugin('generic', 'ObjectsForReviewPlugin');
+		$plugin = $this->plugin();
 		$templateMgr = TemplateManager::getManager($request);
 		$currentUser = $request->getUser();
 
-		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
-		$objectsForReview = $objectForReviewDao->getAll($contextId, true, true);
-		$gridData = array();
+		$assignmentsByObject = AssignmentWorkflow::dao()->getByContextId($contextId);
+		$objectsForReview = DAORegistry::getDAO('ObjectForReviewDAO')->getAll($contextId, true, true);
+		$gridData = [];
 		while ($objectForReview = $objectsForReview->next()) {
+			if ($objectForReview->getData('offerClosed')) {
+				continue;
+			}
 			$objectId = $objectForReview->getId();
-			$gridData[$objectId] = array(
+			$assignments = $assignmentsByObject[$objectId] ?? [];
+			$mine = null;
+			if ($currentUser) {
+				foreach (array_reverse($assignments) as $assignment) {
+					if ($assignment->getUserId() == $currentUser->getId()) {
+						$mine = $assignment;
+						break;
+					}
+				}
+			}
+			$myStatus = $mine?->getStatus();
+			$gridData[$objectId] = [
 				'objectId' => $objectId,
 				'identifierType' => $objectForReview->getIdentifierType(),
 				'identifier' => $objectForReview->getIdentifier(),
@@ -67,10 +88,17 @@ class ObjectsForReviewHandler extends Handler {
 				'publisher' => $objectForReview->getPublisher(),
 				'year' => $objectForReview->getYear(),
 				'description' => $objectForReview->getDescription(),
-				'userId' => $objectForReview->getUserId(),
-				// Only shown to the reviewer who reserved the object
-				'dueDate' => ($currentUser && $currentUser->getId() == $objectForReview->getUserId()) ? $objectForReview->getData('dueDate') : null,
-			);
+				'state' => AssignmentWorkflow::getState($objectForReview, $assignments),
+				'bidding' => $objectForReview->isBidding(),
+				'biddingOpen' => AssignmentWorkflow::isBiddingOpen($objectForReview, $assignments),
+				'bidDeadline' => $objectForReview->getData('bidDeadline'),
+				'reservable' => AssignmentWorkflow::isReservable($objectForReview, $assignments),
+				// Only shown to the user concerned
+				'myStatus' => in_array($myStatus, [Assignment::STATUS_BID, Assignment::STATUS_UNSUCCESSFUL, Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED], true) ? $myStatus : null,
+				'myDate' => $mine?->getDateCreated(),
+				'dueDate' => $myStatus === Assignment::STATUS_ACCEPTED ? $mine->getData('dueDate') : null,
+				'contractDeadline' => $myStatus === Assignment::STATUS_OFFERED ? $mine->getData('contractDeadline') : null,
+			];
 		}
 
 		$ofrInstructions = (array) $plugin->getSetting($contextId, 'ofrInstructions');
@@ -78,86 +106,239 @@ class ObjectsForReviewHandler extends Handler {
 
 		// Reservation dialog: opened after a failed submission or via ?reserve=<objectId>
 		$openObjectId = (int) ($reserveState['objectId'] ?? $request->getUserVar('reserve'));
-		if ($openObjectId && (!isset($gridData[$openObjectId]) || $gridData[$openObjectId]['userId'] || !$currentUser)) {
+		if ($openObjectId && (!isset($gridData[$openObjectId]) || !$gridData[$openObjectId]['reservable'] || !$currentUser)) {
 			$openObjectId = 0;
 		}
-		$dueDateRange = Reservation::getDueDateRange($plugin, $contextId);
-
-		$templateMgr->assign([
+		$templateMgr->assign($this->contractTemplateData($request, $reserveState) + [
 			'objectsForReview' => $gridData,
 			'currentUser' => $currentUser,
 			'instructions' => $instructions,
 			'reserveDialogTemplate' => $plugin->getTemplateResource('frontend/reserveDialog.tpl'),
-			'reserveContract' => Reservation::getContract($plugin, $context),
-			'reserveDueDate' => $dueDateRange,
 			'reserveOpenObjectId' => $openObjectId,
-			'reserveErrors' => $reserveState['errors'] ?? [],
-			'reserveInput' => ($reserveState['input'] ?? []) + ['dueDate' => $dueDateRange['default'], 'copyPreference' => ''],
+			'maxStatementLength' => self::MAX_STATEMENT_LENGTH,
 		]);
 		return $templateMgr->display($plugin->getTemplateResource('frontend/pages/forReview.tpl'));
 	}
 
 	/**
-	 * Reserve an object (submission of the reservation dialog).
-	 * @param $args array
-	 * @param $request PKPRequest
+	 * Reserve an object (direct reservation mode; submission of the reservation dialog).
 	 */
 	function reserveObject($args, $request) {
-		if (!$request->checkCSRF()) fatalError('CSRF check failed, please try again!');
-		if (!$request->getUser()) {
-			Validation::redirectLogin();
-		}
-		$objectId = (int) $request->getUserVar('objectId');
-		$currentUser = $request->getUser();
-		$currentContext = $request->getContext();
-		$plugin = PluginRegistry::getPlugin('generic', 'ObjectsForReviewPlugin');
-		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
-		$objectForReview = $objectForReviewDao->getById($objectId);
-		if (!$objectForReview || $objectForReview->getUserId() || $objectForReview->getSubmissionId()
-			|| $currentContext->getId() != $objectForReview->getContextId()) {
+		[$object, $user, $context] = $this->requirePost($request);
+		$assignments = AssignmentWorkflow::dao()->getByObjectId($object->getId());
+		if (!AssignmentWorkflow::isReservable($object, $assignments)) {
 			$request->redirect(null, 'for-review');
 		}
-
-		$input = [];
-		foreach (['acceptTerms', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote'] as $name) {
-			$input[$name] = $request->getUserVar($name);
-		}
-		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($plugin, $currentContext->getId()));
+		$input = $this->contractInput($request);
+		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($this->plugin(), $context->getId()));
 		if ($errors) {
-			return $this->index($args, $request, ['objectId' => $objectId, 'errors' => $errors, 'input' => $input]);
+			return $this->index($args, $request, ['objectId' => $object->getId(), 'errors' => $errors, 'input' => $input]);
 		}
-
-		Reservation::apply($objectForReview, $currentUser->getId(), $data);
-		$objectForReviewDao->updateObject($objectForReview);
-		ReservationLog::logEvent($objectForReview, ReservationLog::EVENT_RESERVED, $currentUser, $currentUser,
-			['reviewDueDate' => $data['dueDate']]);
-		$plugin->notifyEditor($currentUser, $objectForReview->getDescription(), 'OFR_NEW_RESERVATION',
-			Reservation::getEmailDetails($objectForReview, $currentContext));
+		AssignmentWorkflow::reserve($this->plugin(), $context, $object, $user, $data);
 		$request->redirect(null, 'for-review');
 	}
 
 	/**
-	 * Cancel the current user's reservation of an object.
-	 * @param $args array
-	 * @param $request PKPRequest
+	 * The reviewer cancels their reservation (retracts).
 	 */
 	function cancelObject($args, $request) {
+		[$object, $user] = $this->requirePost($request);
+		$assignment = AssignmentWorkflow::dao()->getByObjectAndUser($object->getId(), $user->getId(), [Assignment::STATUS_ACCEPTED]);
+		if ($assignment) {
+			AssignmentWorkflow::retract($this->plugin(), $object, $assignment, $user);
+		}
+		$request->redirect(null, 'for-review');
+	}
+
+	/**
+	 * Bid for an object (bidding mode), with an optional statement.
+	 */
+	function bid($args, $request) {
+		[$object, $user, $context] = $this->requirePost($request);
+		$assignments = AssignmentWorkflow::dao()->getByObjectId($object->getId());
+		$hasBid = AssignmentWorkflow::dao()->getByObjectAndUser($object->getId(), $user->getId(),
+			array_merge(Assignment::BIDDER_STATUSES, [Assignment::STATUS_OFFERED], Assignment::REVIEWER_STATUSES));
+		if (AssignmentWorkflow::isBiddingOpen($object, $assignments) && !$hasBid) {
+			$statement = mb_substr(trim((string) $request->getUserVar('statement')), 0, self::MAX_STATEMENT_LENGTH);
+			AssignmentWorkflow::bid($this->plugin(), $context, $object, $user, $statement);
+		}
+		$request->redirect(null, 'for-review');
+	}
+
+	/**
+	 * Withdraw one's bid (also from the list of unsuccessful bidders).
+	 */
+	function withdrawBid($args, $request) {
+		[$object, $user] = $this->requirePost($request);
+		$assignment = AssignmentWorkflow::dao()->getByObjectAndUser($object->getId(), $user->getId(), Assignment::BIDDER_STATUSES);
+		if ($assignment) {
+			AssignmentWorkflow::withdrawBid($object, $assignment, $user);
+		}
+		$request->redirect(null, 'for-review');
+	}
+
+	/**
+	 * Contract page for a logged-in bidder who has been selected (alternative to the email link).
+	 */
+	function contract($args, $request) {
+		if (!$request->getUser()) {
+			Validation::redirectLogin();
+		}
+		$object = $this->getObject($request, (int) $request->getUserVar('objectId'));
+		$assignment = $object ? AssignmentWorkflow::dao()->getByObjectAndUser($object->getId(), $request->getUser()->getId(), [Assignment::STATUS_OFFERED]) : null;
+		return $this->showResponsePage($request, $assignment ? 'contract' : 'invalid', $object, $assignment);
+	}
+
+	/**
+	 * One-click link from an email: shows what will happen and a confirmation button.
+	 * Opening the link never changes anything.
+	 */
+	function link($args, $request) {
+		[$link, $assignment, $object] = $this->resolveLink($request, (string) ($args[0] ?? ''));
+		if (!$link) {
+			return $this->showResponsePage($request, 'invalid');
+		}
+		$view = $link->action === ActionLink::ACTION_CONTRACT ? 'contract' : 'leave';
+		return $this->showResponsePage($request, $view, $object, $assignment, ['key' => $args[0]]);
+	}
+
+	/**
+	 * Answer to a contract offer (from the link page or the logged-in contract page).
+	 */
+	function respond($args, $request) {
+		if (!$request->isPost() || !$request->checkCSRF()) {
+			$request->redirect(null, 'for-review');
+		}
+		$context = $request->getContext();
+		$key = (string) $request->getUserVar('key');
+		$link = null;
+		if ($key !== '') {
+			[$link, $assignment, $object] = $this->resolveLink($request, $key);
+			if (!$link) {
+				return $this->showResponsePage($request, 'invalid');
+			}
+		} else {
+			if (!$request->getUser()) {
+				Validation::redirectLogin();
+			}
+			$object = $this->getObject($request, (int) $request->getUserVar('objectId'));
+			$assignment = $object ? AssignmentWorkflow::dao()->getByObjectAndUser($object->getId(), $request->getUser()->getId(),
+				[Assignment::STATUS_OFFERED, Assignment::STATUS_BID, Assignment::STATUS_UNSUCCESSFUL]) : null;
+		}
+		if (!$assignment) {
+			return $this->showResponsePage($request, 'invalid');
+		}
+		$extra = $key !== '' ? ['key' => $key] : [];
+		$decision = (string) $request->getUserVar('decision');
+
+		if ($decision === 'leave' && $assignment->isBidder()) {
+			AssignmentWorkflow::withdrawBid($object, $assignment, Repo::user()->get($assignment->getUserId(), true));
+			$link && ActionLink::markUsed((int) $link->link_id);
+			return $this->showResponsePage($request, 'left', $object, $assignment);
+		}
+		if ($assignment->getStatus() !== Assignment::STATUS_OFFERED) {
+			return $this->showResponsePage($request, 'invalid');
+		}
+		if ($decision === 'decline') {
+			$reason = mb_substr(trim((string) $request->getUserVar('declineReason')), 0, self::MAX_STATEMENT_LENGTH);
+			AssignmentWorkflow::declineContract($this->plugin(), $context, $object, $assignment, $reason);
+			return $this->showResponsePage($request, 'declined', $object, $assignment);
+		}
+		$input = $this->contractInput($request);
+		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($this->plugin(), $context->getId()));
+		if ($errors) {
+			return $this->showResponsePage($request, 'contract', $object, $assignment, $extra, ['errors' => $errors, 'input' => $input]);
+		}
+		AssignmentWorkflow::acceptContract($this->plugin(), $context, $object, $assignment, $data);
+		return $this->showResponsePage($request, 'accepted', $object, $assignment);
+	}
+
+	//
+	// Helpers
+	//
+
+	/**
+	 * @return array [link row, Assignment, ObjectForReview] or [null, null, null]
+	 */
+	protected function resolveLink($request, string $key): array {
+		$link = ActionLink::find($key);
+		$assignment = $link ? AssignmentWorkflow::dao()->getById((int) $link->assignment_id) : null;
+		$object = $assignment ? $this->getObject($request, $assignment->getObjectId()) : null;
+		if (!$object) {
+			return [null, null, null];
+		}
+		$expected = $link->action === ActionLink::ACTION_CONTRACT ? [Assignment::STATUS_OFFERED] : Assignment::BIDDER_STATUSES;
+		if (!in_array($assignment->getStatus(), $expected, true)) {
+			return [null, null, null];
+		}
+		return [$link, $assignment, $object];
+	}
+
+	/**
+	 * @param string $view contract | leave | invalid | accepted | declined | left
+	 */
+	protected function showResponsePage($request, string $view, $object = null, ?Assignment $assignment = null,
+			array $extra = [], array $formState = []) {
+		$plugin = $this->plugin();
+		$templateMgr = TemplateManager::getManager($request);
+		$templateMgr->assign($this->contractTemplateData($request, $formState) + $extra + [
+			'view' => $view,
+			'objectId' => $object?->getId(),
+			'objectDescription' => $object?->getDescription(),
+			'reviewerName' => $assignment ? Repo::user()->get($assignment->getUserId(), true)?->getFullName() : null,
+			'contractDeadline' => $assignment?->getData('contractDeadline'),
+			'dueDate' => $assignment?->getData('dueDate'),
+			'contractFieldsTemplate' => $plugin->getTemplateResource('frontend/contractFields.tpl'),
+			'maxStatementLength' => self::MAX_STATEMENT_LENGTH,
+		]);
+		return $templateMgr->display($plugin->getTemplateResource('frontend/pages/respond.tpl'));
+	}
+
+	/**
+	 * Template data for the contract fields (reservation dialog and contract page).
+	 */
+	protected function contractTemplateData($request, array $formState): array {
+		$plugin = $this->plugin();
+		$context = $request->getContext();
+		$dueDateRange = Reservation::getDueDateRange($plugin, $context->getId());
+		return [
+			'reserveContract' => Reservation::getContract($plugin, $context),
+			'reserveDueDate' => $dueDateRange,
+			'reserveErrors' => $formState['errors'] ?? [],
+			'reserveInput' => ($formState['input'] ?? []) + ['dueDate' => $dueDateRange['default'], 'copyPreference' => ''],
+			'contractFieldsTemplate' => $plugin->getTemplateResource('frontend/contractFields.tpl'),
+		];
+	}
+
+	protected function contractInput($request): array {
+		$input = [];
+		foreach (self::CONTRACT_INPUT as $name) {
+			$input[$name] = $request->getUserVar($name);
+		}
+		return $input;
+	}
+
+	/**
+	 * An object of the current journal.
+	 */
+	protected function getObject($request, int $objectId) {
+		$object = $objectId ? DAORegistry::getDAO('ObjectForReviewDAO')->getById($objectId) : null;
+		return $object && $object->getContextId() == $request->getContext()->getId() ? $object : null;
+	}
+
+	/**
+	 * Checks for the POST actions of logged-in users on the list page.
+	 * @return array [ObjectForReview, User, Context]
+	 */
+	protected function requirePost($request): array {
 		if (!$request->checkCSRF()) fatalError('CSRF check failed, please try again!');
 		if (!$request->getUser()) {
 			Validation::redirectLogin();
 		}
-		$objectId = (int) $request->getUserVar('objectId');
-		$currentUser = $request->getUser();
-		$currentContext = $request->getContext();
-		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
-		$objectForReview = $objectForReviewDao->getById($objectId);
-		if ($objectForReview && $objectForReview->getUserId() == $currentUser->getId() && $currentContext->getId() == $objectForReview->getContextId()) {
-			Reservation::clear($objectForReview);
-			$objectForReviewDao->updateObject($objectForReview);
-			ReservationLog::logEvent($objectForReview, ReservationLog::EVENT_CANCELLED_BY_REVIEWER, $currentUser, $currentUser);
-			$plugin = PluginRegistry::getPlugin('generic', 'ObjectsForReviewPlugin');
-			$plugin->notifyEditor($currentUser, $objectForReview->getDescription(), 'OFR_CANCEL_RESERVATION');
+		$object = $this->getObject($request, (int) $request->getUserVar('objectId'));
+		if (!$object || $object->getSubmissionId() || $object->getData('offerClosed')) {
+			$request->redirect(null, 'for-review');
 		}
-		$request->redirect(null, 'for-review');
+		return [$object, $request->getUser(), $request->getContext()];
 	}
 }

@@ -3,8 +3,8 @@
  *
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
- * Email the reviewer of a reservation ($mode "message") or cancel the
- * reservation with an optional notification ($mode "cancel").
+ * A workflow step with a prefilled, editable email (see ReservationEmailForm):
+ * $mode message | cancel | contractOffer | unsuccessful
  *}
 <script>
 	$(function() {ldelim}
@@ -15,16 +15,21 @@
 <form class="pkp_form" id="ofrReservationEmailForm" method="post" action="{$actionUrl|escape}">
 	{csrf}
 	<input type="hidden" name="objectId" value="{$objectId|escape}" />
+	{foreach from=$assignmentIds item=assignmentId}
+		<input type="hidden" name="assignmentIds[]" value="{$assignmentId|escape}" />
+	{/foreach}
 
 	{fbvFormArea id="ofrReservationEmailFormArea"}
-		<p>
-			{if $mode == 'cancel'}
-				{translate key="plugins.generic.objectsForReview.reservations.cancel.description" reviewer=$reviewerName|escape}
-			{/if}
-		</p>
 		<p class="ofrReservationObject"><em>{$objectDescription|strip_unsafe_html}</em></p>
-
 		{if $mode == 'cancel'}
+			<p>{if $cancelOffer}{translate key="plugins.generic.objectsForReview.contractOffer.cancel.description" reviewer=$reviewerName|escape}{else}{translate key="plugins.generic.objectsForReview.reservations.cancel.description" reviewer=$reviewerName|escape}{/if}</p>
+		{elseif $mode == 'contractOffer'}
+			<p>{translate key="plugins.generic.objectsForReview.contractOffer.description" reviewer=$reviewerName|escape}</p>
+		{elseif $mode == 'unsuccessful'}
+			<p>{translate key="plugins.generic.objectsForReview.unsuccessful.description"}</p>
+		{/if}
+
+		{if $optionalEmail}
 			{fbvFormSection list=true}
 				{fbvElement type="checkbox" id="sendEmail" value="1" checked=$sendEmail label="plugins.generic.objectsForReview.reservations.cancel.sendEmail"}
 			{/fbvFormSection}
@@ -32,25 +37,36 @@
 
 		<div class="ofrEmailFields">
 			{fbvFormSection label="email.to"}
-				<p>{$reviewerName|escape} &lt;{$reviewerEmail|escape}&gt;</p>
+				{foreach from=$recipients item=recipient}
+					<p class="ofrRecipient">{$recipient.name|escape} &lt;{$recipient.email|escape}&gt;</p>
+				{/foreach}
 			{/fbvFormSection}
 			{fbvFormSection label="email.subject" required=true}
 				{fbvElement type="text" id="subject" value=$subject maxlength="255" required=true}
 			{/fbvFormSection}
 			{fbvFormSection label="email.body" required=true}
 				{fbvElement type="textarea" id="body" value=$body rich=true height=$fbvStyles.height.TALL}
+				{if $mode == 'contractOffer'}
+					<p class="ofrHint">{translate key="plugins.generic.objectsForReview.contractOffer.linkHint"}</p>
+				{elseif $mode == 'unsuccessful'}
+					<p class="ofrHint">{translate key="plugins.generic.objectsForReview.unsuccessful.linkHint"}</p>
+				{/if}
 			{/fbvFormSection}
 		</div>
 
 		{if $mode == 'cancel'}
 			{fbvFormButtons submitText="plugins.generic.objectsForReview.reservations.cancel.submit"}
+		{elseif $mode == 'contractOffer'}
+			{fbvFormButtons submitText="plugins.generic.objectsForReview.contractOffer.submit"}
+		{elseif $mode == 'unsuccessful'}
+			{fbvFormButtons submitText="plugins.generic.objectsForReview.unsuccessful.submit"}
 		{else}
 			{fbvFormButtons submitText="plugins.generic.objectsForReview.reservations.email.submit"}
 		{/if}
 	{/fbvFormArea}
 </form>
 
-{if $mode == 'cancel'}
+{if $optionalEmail}
 	<script>
 		$(function() {ldelim}
 			var $form = $('#ofrReservationEmailForm'),

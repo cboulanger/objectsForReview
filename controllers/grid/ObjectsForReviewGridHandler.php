@@ -19,7 +19,8 @@ use APP\core\Application;
 
 use APP\plugins\generic\objectsForReview\classes\CrossrefLookup;
 use APP\plugins\generic\objectsForReview\classes\IsbnLookup;
-use APP\plugins\generic\objectsForReview\classes\Reservation;
+use APP\plugins\generic\objectsForReview\classes\Assignment;
+use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
 use APP\plugins\generic\objectsForReview\classes\ReservationLog;
 use APP\plugins\generic\objectsForReview\controllers\grid\form\ObjectsForReviewForm;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridRow;
@@ -285,8 +286,7 @@ class ObjectsForReviewGridHandler extends GridHandler {
 
 		// If object is created by the manager, do not delete, just remove from submission
 		if ($objectForReview->getCreator() == "manager") {
-			$objectForReview->setSubmissionId(null);
-			$objectForReviewDao->updateObject($objectForReview);
+			AssignmentWorkflow::detach($objectForReview);
 		} else {
 			$objectForReviewDao->deleteObject($objectForReview);
 		}
@@ -320,12 +320,12 @@ class ObjectsForReviewGridHandler extends GridHandler {
 			|| $objectForReview->getSubmissionId()) {
 			return new JSONMessage(false, __('user.authorization.accessDenied'));
 		}
-		$objectForReview->setSubmissionId($submissionId);
-		// Shipping address and phone are no longer needed
-		Reservation::erasePersonalData($objectForReview);
-		$objectForReviewDao->updateObject($objectForReview);
-		ReservationLog::logEvent($objectForReview, ReservationLog::EVENT_ATTACHED, $currentUser, $currentUser,
-			['submissionId' => $submissionId]);
+		$assignment = AssignmentWorkflow::dao()->getByObjectAndUser($objectForReview->getId(), $currentUser->getId(), [Assignment::STATUS_ACCEPTED]);
+		if (!$assignment) {
+			return new JSONMessage(false, __('user.authorization.accessDenied'));
+		}
+		// Sets the submission, erases shipping address and phone (no longer needed) and logs the event
+		AssignmentWorkflow::attach($objectForReview, $assignment, $currentUser, $submissionId);
 
 		$json = DAO::getDataChangedEvent($submissionId);
 		$json->setGlobalEvent('plugin:objectsForReview:added', $this->plugin->getObjectForReviewData($objectForReview));

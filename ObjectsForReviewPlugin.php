@@ -19,6 +19,10 @@ use APP\core\Application;
 use APP\pages\submission\SubmissionHandler;
 use APP\plugins\generic\objectsForReview\classes\ObjectForReview;
 use APP\plugins\generic\objectsForReview\classes\ObjectForReviewDAO;
+use APP\plugins\generic\objectsForReview\classes\AssignmentDAO;
+use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
+use APP\plugins\generic\objectsForReview\classes\ReservationMailer;
+use APP\plugins\generic\objectsForReview\classes\Roles;
 
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridHandler;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewManagementGridHandler;
@@ -172,6 +176,8 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 
 			$objectForReviewDao = new ObjectForReviewDAO();
 			DAORegistry::registerDAO('ObjectForReviewDAO', $objectForReviewDao);
+			DAORegistry::registerDAO('ObjectForReviewAssignmentDAO', new AssignmentDAO());
+			$this->upgradeSchema();
 
             Hook::add('TemplateManager::display', $this->addToSubmissionWizardSteps(...));
             Hook::add('Template::SubmissionWizard::Section', $this->addToSubmissionWizardTemplate(...));
@@ -198,11 +204,49 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 			Hook::Add('SitemapHandler::createJournalSitemap', array($this, 'addSitemapURLs'));
 
 			Hook::add('Mailer::Mailables', [$this, 'addMailable']);
+			Hook::add('Publication::publish', [$this, 'completeOnPublish']);
 
 
 
 		}
 		return $success;
+	}
+
+	/**
+	 * Create or upgrade the plugin's tables (installation only runs the migration once).
+	 */
+	protected function upgradeSchema(): void {
+		$siteContextId = Application::SITE_CONTEXT_ID;
+		if ((int) $this->getSetting($siteContextId, 'schemaVersion') >= ObjectsForReviewSchemaMigration::SCHEMA_VERSION) {
+			return;
+		}
+		(new ObjectsForReviewSchemaMigration())->up();
+		$this->updateSetting($siteContextId, 'schemaVersion', ObjectsForReviewSchemaMigration::SCHEMA_VERSION, 'int');
+	}
+
+	/**
+	 * @copydoc Plugin::setEnabled()
+	 * Create the plugin's user groups (book review editor, publisher contact) when enabled in a journal.
+	 */
+	public function setEnabled($enabled) {
+		parent::setEnabled($enabled);
+		$context = Application::get()->getRequest()->getContext();
+		if ($enabled && $context) {
+			Roles::ensureGroups($this, $context->getId());
+		}
+	}
+
+	/**
+	 * A review was published: complete its assignment and discard the list of bidders.
+	 * Hooked to Publication::publish.
+	 */
+	public function completeOnPublish($hookName, $args) {
+		$submission = $args[2];
+		$objects = (new ObjectForReviewDAO())->getBySubmissionId($submission->getId());
+		while ($object = $objects->next()) {
+			AssignmentWorkflow::complete($object);
+		}
+		return false;
 	}
 
 	/**
@@ -216,15 +260,20 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 			return false;
 		}
 		$userRoles = (array) $router->getHandler()->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES);
-		if (!array_intersect([Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN], $userRoles)) {
+		$contextId = $request->getContext()->getId();
+		if (!Roles::canManage($this, $contextId, $request->getUser()->getId(), $userRoles)) {
 			return false;
+		}
+		$ops = ['index' => 'available', 'desk' => 'desk', 'assignments' => 'assignments', 'reviewedWorks' => 'reviewedWorks'];
+		if (Roles::isManager($userRoles)) {
+			$ops['settings'] = 'settings';
 		}
 
 		$page = ObjectsForReviewManagementHandler::PAGE;
 		$onPage = $request->getRequestedPage() === $page;
 		$requestedOp = $request->getRequestedOp() ?: 'index';
 		$submenu = [];
-		foreach (['index' => 'available', 'reservations' => 'reservations', 'reviewedWorks' => 'reviewedWorks', 'settings' => 'settings'] as $op => $key) {
+		foreach ($ops as $op => $key) {
 			$submenu[$key] = [
 				'name' => __('plugins.generic.objectsForReview.menu.' . $key),
 				'url' => $router->url($request, null, $page, $op),
@@ -550,7 +599,14 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 				. ' .objectsForReviewManagement .ofrNoWrap { white-space: nowrap; }'
 				. ' .objectsForReviewManagement .ofrActions a { display: block; white-space: nowrap; margin-bottom: 0.25rem; }'
 				. ' .objectsForReviewManagement .ofrDetail { margin-top: 0.25rem; font-size: 0.875rem; }'
-				. ' .objectsForReviewManagement .ofrFilter label { margin-right: 0.5rem; font-weight: bold; }',
+				. ' .objectsForReviewManagement .ofrFilter label { margin: 0 0.5rem 0 1rem; font-weight: bold; }'
+				. ' .objectsForReviewManagement h2 { margin: 2rem 0 0.75rem; font-size: 1.125rem; }'
+				. ' .objectsForReviewManagement h2:first-child { margin-top: 0; }'
+				. ' .objectsForReviewManagement .ofrDeskItem { border: 1px solid #ddd; border-radius: 4px; padding: 1rem; margin-bottom: 1rem; }'
+				. ' .objectsForReviewManagement .ofrDeskState { margin: 0.5rem 0 1rem; }'
+				. ' .objectsForReviewManagement .ofrOfferActions { margin-top: 0.75rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }'
+				. ' .objectsForReviewManagement .ofrClosed { margin-top: 2rem; }'
+				. ' .objectsForReviewManagement .ofrClosed summary { cursor: pointer; font-weight: bold; }',
 			[
 				'inline' => true,
 				'contexts' => 'backend',
@@ -677,25 +733,29 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
     {
         $args[0]->push(ObjectsForReviewNew::class);
 		$args[0]->push(ObjectsForReviewCancel::class);
-		$args[0]->push(\APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewMessage::class);
-		$args[0]->push(\APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewCancelByEditor::class);
-		$args[0]->push(\APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewReminder::class);
+		foreach (ReservationMailer::MAILABLES as $mailableClass) {
+			if (!$args[0]->contains($mailableClass)) {
+				$args[0]->push($mailableClass);
+			}
+		}
     }
 	
 	/**
 	 * Send mail to editor when object is reserved or cancelled
 	 *
-	 * @param User $user
-	 * @param $object
+	 * Recipient: the responsible book review editor of the offer, otherwise the
+	 * notification address in the settings, otherwise the journal contact.
+	 *
+	 * @param User $user The reviewer
+	 * @param ObjectForReview $object
 	 * @param $template Send either the reserve or cancel mail
 	 */
-	public function notifyEditor($user, $objectDescription, $mailTemplate, $reservationDetails = '') {
+	public function notifyEditor($user, $object, $mailTemplate, $reservationDetails = '') {
+		$objectDescription = $object->getDescription();
 
-		$request = Application::get()->getRequest();
-		$context = $request->getContext();
-
-		// This should only ever happen within a context, never site-wide.
-		assert($context != null);
+		// The offer's journal (also outside a web request, e.g. in scheduled tasks)
+		$context = Application::get()->getRequest()->getContext()
+			?? Application::getContextDAO()->getById($object->getContextId());
 		$contextId = $context->getId();
 
         $emailParams = [
@@ -715,7 +775,10 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 			$mailable = new ObjectsForReviewCancel($context, $emailParams);
 		} 
 
-		if ($this->getSetting($contextId, 'ofrNotifyEmail')){
+		$editor = $object->getResponsibleEditorId() ? Repo::user()->get($object->getResponsibleEditorId()) : null;
+		if ($editor) {
+			$mailTo = $editor->getEmail();
+		} elseif ($this->getSetting($contextId, 'ofrNotifyEmail')){
 			$mailTo = $this->getSetting($contextId, 'ofrNotifyEmail');
 		} else{
 			$mailTo = $context->getData('contactEmail');

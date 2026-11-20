@@ -428,4 +428,463 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Rezensionsangebote: Erinnerungen vor dem Abgabetermin"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "{$count} Erinnerung(en) für {$context} gesendet."
+msgstr "Für {$context}: {$reminders} Erinnerung(en) an Fälligkeiten, {$contractReminders} Erinnerung(en) an Vertragsangebote, {$expired} abgelaufene(s) Vertragsangebot(e)."
+
+msgid "plugins.generic.objectsForReview.identifierTypeRequired"
+msgstr "Bitte wählen Sie einen Identifikatortyp."
+
+msgid "plugins.generic.objectsForReview.resourceTypeRequired"
+msgstr "Bitte wählen Sie einen Ressourcentyp."
+
+msgid "plugins.generic.objectsForReview.titleRequired"
+msgstr "Bitte geben Sie einen Titel ein."
+
+msgid "plugins.generic.objectsForReview.identifierRequired"
+msgstr "Bitte geben Sie einen Identifikator ein."
+
+msgid "plugins.generic.objectsForReview.role.bookReviewEditor"
+msgstr "Rezensionsredakteur:in"
+
+msgid "plugins.generic.objectsForReview.role.bookReviewEditor.abbrev"
+msgstr "RR"
+
+msgid "plugins.generic.objectsForReview.role.publisherContact"
+msgstr "Verlagskontakt"
+
+msgid "plugins.generic.objectsForReview.role.publisherContact.abbrev"
+msgstr "VK"
+
+msgid "plugins.generic.objectsForReview.menu.desk"
+msgstr "Aufgaben"
+
+msgid "plugins.generic.objectsForReview.menu.assignments"
+msgstr "Rezensent:innen & Bewerbungen"
+
+msgid "plugins.generic.objectsForReview.assignments.none"
+msgstr "Keine Einträge mit diesem Status."
+
+msgid "plugins.generic.objectsForReview.status.active"
+msgstr "Aktuell (angeboten oder reserviert)"
+
+msgid "plugins.generic.objectsForReview.status.all"
+msgstr "Alle"
+
+msgid "plugins.generic.objectsForReview.status.bid"
+msgstr "Bewerbung"
+
+msgid "plugins.generic.objectsForReview.status.unsuccessful"
+msgstr "Nicht ausgewählt (auf der Liste)"
+
+msgid "plugins.generic.objectsForReview.status.offered"
+msgstr "Vertrag angeboten"
+
+msgid "plugins.generic.objectsForReview.status.accepted"
+msgstr "Reserviert"
+
+msgid "plugins.generic.objectsForReview.status.submitted"
+msgstr "Rezension eingereicht"
+
+msgid "plugins.generic.objectsForReview.status.completed"
+msgstr "Rezension veröffentlicht"
+
+msgid "plugins.generic.objectsForReview.status.withdrawn"
+msgstr "Bewerbung zurückgezogen"
+
+msgid "plugins.generic.objectsForReview.status.declined"
+msgstr "Vertrag abgelehnt"
+
+msgid "plugins.generic.objectsForReview.status.expired"
+msgstr "Vertragsangebot abgelaufen"
+
+msgid "plugins.generic.objectsForReview.status.retracted"
+msgstr "Von der Rezensentin/dem Rezensenten storniert"
+
+msgid "plugins.generic.objectsForReview.status.cancelled"
+msgstr "Von der Redaktion storniert"
+
+msgid "plugins.generic.objectsForReview.status.discarded"
+msgstr "Liste geschlossen"
+
+msgid "plugins.generic.objectsForReview.offerState.open"
+msgstr "Offen"
+
+msgid "plugins.generic.objectsForReview.offerState.selection"
+msgstr "Auswahl ausstehend"
+
+msgid "plugins.generic.objectsForReview.offerState.contractOffered"
+msgstr "Vertrag angeboten"
+
+msgid "plugins.generic.objectsForReview.offerState.assigned"
+msgstr "Reserviert"
+
+msgid "plugins.generic.objectsForReview.offerState.submitted"
+msgstr "Rezension eingereicht"
+
+msgid "plugins.generic.objectsForReview.offerState.closed"
+msgstr "Geschlossen"
+
+msgid "plugins.generic.objectsForReview.offerState.bidCount"
+msgstr "{$number} Bewerbungen"
+
+msgid "plugins.generic.objectsForReview.offer.title"
+msgstr "Angebot"
+
+msgid "plugins.generic.objectsForReview.offer.mode"
+msgstr "Vergabe"
+
+msgid "plugins.generic.objectsForReview.offer.mode.description"
+msgstr "Direkte Reservierung: Wer zuerst den Bedingungen zustimmt, erhält die Rezension. Bewerbung: Interessierte bewerben sich, und die Rezensionsredaktion wählt aus."
+
+msgid "plugins.generic.objectsForReview.offer.mode.direct"
+msgstr "Direkte Reservierung"
+
+msgid "plugins.generic.objectsForReview.offer.mode.bidding"
+msgstr "Bewerbung"
+
+msgid "plugins.generic.objectsForReview.offer.modeRequired"
+msgstr "Bitte wählen Sie die Art der Vergabe."
+
+msgid "plugins.generic.objectsForReview.offer.bidDeadline"
+msgstr "Bewerbungsfrist"
+
+msgid "plugins.generic.objectsForReview.offer.bidDeadline.description"
+msgstr "Optional. Bewerbungen sind bis zum Ende dieses Tages möglich."
+
+msgid "plugins.generic.objectsForReview.offer.bidDeadlineInvalid"
+msgstr "Bitte geben Sie ein gültiges Datum ein."
+
+msgid "plugins.generic.objectsForReview.offer.responsibleEditor"
+msgstr "Zuständige Rezensionsredaktion"
+
+msgid "plugins.generic.objectsForReview.offer.responsibleEditor.description"
+msgstr "Erhält die Benachrichtigungen zu diesem Angebot. Rezensionsredakteur:innen sind Benutzer:innen der Gruppe „Rezensionsredakteur:in“ (Benutzer:innen & Rollen)."
+
+msgid "plugins.generic.objectsForReview.offer.noEditor"
+msgstr "— keine (Benachrichtigungsadresse aus den Einstellungen) —"
+
+msgid "plugins.generic.objectsForReview.offer.editorInvalid"
+msgstr "Bitte wählen Sie eine Rezensionsredakteurin oder einen Rezensionsredakteur."
+
+msgid "plugins.generic.objectsForReview.bid"
+msgstr "Bewerben"
+
+msgid "plugins.generic.objectsForReview.bid.title"
+msgstr "Für die Rezension bewerben"
+
+msgid "plugins.generic.objectsForReview.bid.description"
+msgstr "Die Rezensionsredaktion wählt unter den Bewerbungen aus. Wenn Sie ausgewählt werden, erhalten Sie eine E-Mail mit einem Link zur Rezensionsvereinbarung."
+
+msgid "plugins.generic.objectsForReview.bid.statement"
+msgstr "Begründung"
+
+msgid "plugins.generic.objectsForReview.bid.statement.hint"
+msgstr "Optional: Warum Sie dieses Werk rezensieren möchten und Ihre Expertise."
+
+msgid "plugins.generic.objectsForReview.bid.submit"
+msgstr "Bewerbung absenden"
+
+msgid "plugins.generic.objectsForReview.bid.open"
+msgstr "Bewerbung möglich"
+
+msgid "plugins.generic.objectsForReview.bid.closed"
+msgstr "Auswahl läuft"
+
+msgid "plugins.generic.objectsForReview.bid.deadline"
+msgstr "Bewerbung bis {$deadline}"
+
+msgid "plugins.generic.objectsForReview.bid.yours"
+msgstr "Sie haben sich am {$date} beworben."
+
+msgid "plugins.generic.objectsForReview.bid.unsuccessful"
+msgstr "Eine andere Person rezensiert dieses Werk. Sie bleiben auf der Liste, falls die Rezension nicht zustande kommt."
+
+msgid "plugins.generic.objectsForReview.bid.withdraw"
+msgstr "Bewerbung zurückziehen"
+
+msgid "plugins.generic.objectsForReview.bid.withdraw.confirm"
+msgstr "Möchten Sie Ihre Bewerbung zurückziehen?"
+
+msgid "plugins.generic.objectsForReview.bid.selected"
+msgstr "Sie wurden ausgewählt. Bitte antworten Sie bis {$deadline}."
+
+msgid "plugins.generic.objectsForReview.bid.respond"
+msgstr "Auf das Angebot antworten"
+
+msgid "plugins.generic.objectsForReview.backToList"
+msgstr "Zurück zur Liste der Rezensionsangebote"
+
+msgid "plugins.generic.objectsForReview.contract.title"
+msgstr "Rezensionsvereinbarung"
+
+msgid "plugins.generic.objectsForReview.contract.intro"
+msgstr "Liebe:r {$name}, Sie wurden für die Rezension dieses Werks ausgewählt. Bitte nehmen Sie die Vereinbarung bis {$deadline} an oder teilen Sie uns mit, wenn Sie die Rezension nicht schreiben können."
+
+msgid "plugins.generic.objectsForReview.contract.accept"
+msgstr "Vereinbarung annehmen"
+
+msgid "plugins.generic.objectsForReview.contract.decline"
+msgstr "Ich kann diese Rezension nicht schreiben"
+
+msgid "plugins.generic.objectsForReview.contract.declineReason"
+msgstr "Grund (optional)"
+
+msgid "plugins.generic.objectsForReview.contract.decline.submit"
+msgstr "Angebot ablehnen"
+
+msgid "plugins.generic.objectsForReview.contract.declined.noReason"
+msgstr "Kein Grund angegeben."
+
+msgid "plugins.generic.objectsForReview.contract.expired"
+msgstr "Das Angebot wurde nicht fristgerecht beantwortet."
+
+msgid "plugins.generic.objectsForReview.leave.title"
+msgstr "Von der Liste streichen"
+
+msgid "plugins.generic.objectsForReview.leave.description"
+msgstr "Liebe:r {$name}, möchten Sie von der Bewerbungsliste für dieses Werk gestrichen werden? Sie werden dazu nicht mehr kontaktiert."
+
+msgid "plugins.generic.objectsForReview.leave.submit"
+msgstr "Mich von der Liste streichen"
+
+msgid "plugins.generic.objectsForReview.link.invalid.title"
+msgstr "Link nicht mehr gültig"
+
+msgid "plugins.generic.objectsForReview.link.invalid"
+msgstr "Dieser Link ist abgelaufen oder wurde bereits verwendet. Bitte wenden Sie sich bei Fragen an die Redaktion."
+
+msgid "plugins.generic.objectsForReview.response.accepted.title"
+msgstr "Vielen Dank!"
+
+msgid "plugins.generic.objectsForReview.response.accepted"
+msgstr "Sie haben die Rezensionsvereinbarung angenommen. Ihre Rezension ist am {$dueDate} fällig."
+
+msgid "plugins.generic.objectsForReview.response.declined.title"
+msgstr "Angebot abgelehnt"
+
+msgid "plugins.generic.objectsForReview.response.declined"
+msgstr "Danke für Ihre Rückmeldung. Die Redaktion wurde informiert."
+
+msgid "plugins.generic.objectsForReview.response.left.title"
+msgstr "Von der Liste gestrichen"
+
+msgid "plugins.generic.objectsForReview.response.left"
+msgstr "Sie wurden von der Bewerbungsliste für dieses Werk gestrichen."
+
+msgid "plugins.generic.objectsForReview.desk.empty"
+msgstr "Derzeit gibt es nichts zu tun."
+
+msgid "plugins.generic.objectsForReview.desk.selection"
+msgstr "Rezensent:in auswählen"
+
+msgid "plugins.generic.objectsForReview.desk.biddingOpen"
+msgstr "Bewerbung läuft."
+
+msgid "plugins.generic.objectsForReview.desk.biddingClosed"
+msgstr "Bewerbung geschlossen."
+
+msgid "plugins.generic.objectsForReview.desk.deadlinePassed"
+msgstr "Die Bewerbungsfrist ({$deadline}) ist abgelaufen."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.declined"
+msgstr "{$name} hat den Vertrag am {$date} abgelehnt."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.expired"
+msgstr "Das Vertragsangebot an {$name} ist am {$date} abgelaufen."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.retracted"
+msgstr "{$name} hat die Reservierung am {$date} storniert."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.cancelled"
+msgstr "Die Redaktion hat die Vergabe an {$name} am {$date} storniert."
+
+msgid "plugins.generic.objectsForReview.desk.noBidders"
+msgstr "Es sind keine Bewerber:innen mehr auf der Liste."
+
+msgid "plugins.generic.objectsForReview.desk.reviewCount"
+msgstr "Rezensionen für diese Zeitschrift: {$number}"
+
+msgid "plugins.generic.objectsForReview.desk.onList"
+msgstr "Auf der Liste (bereits über andere Auswahl informiert)"
+
+msgid "plugins.generic.objectsForReview.desk.select"
+msgstr "Auswählen und Vertrag senden"
+
+msgid "plugins.generic.objectsForReview.desk.offers"
+msgstr "Warten auf Antwort zum Vertragsangebot"
+
+msgid "plugins.generic.objectsForReview.desk.unsuccessful"
+msgstr "Nicht ausgewählte Bewerber:innen benachrichtigen"
+
+msgid "plugins.generic.objectsForReview.desk.closed"
+msgstr "Geschlossene Angebote"
+
+msgid "plugins.generic.objectsForReview.desk.notPossible"
+msgstr "Dieser Schritt ist im aktuellen Stand des Angebots nicht möglich."
+
+msgid "plugins.generic.objectsForReview.desk.reopenBidding"
+msgstr "Bewerbung wieder öffnen"
+
+msgid "plugins.generic.objectsForReview.desk.reopenBidding.confirm"
+msgstr "Bewerbung für dieses Werk wieder öffnen? Bewerber:innen auf der Liste bleiben darauf."
+
+msgid "plugins.generic.objectsForReview.desk.switchToDirect"
+msgstr "Auf direkte Reservierung umstellen"
+
+msgid "plugins.generic.objectsForReview.desk.switchToDirect.confirm"
+msgstr "Dieses Angebot auf direkte Reservierung umstellen? Wer zuerst auf der öffentlichen Seite zustimmt, erhält die Rezension."
+
+msgid "plugins.generic.objectsForReview.desk.closeOffer"
+msgstr "Angebot schließen"
+
+msgid "plugins.generic.objectsForReview.desk.closeOffer.confirm"
+msgstr "Dieses Angebot schließen? Es wird von der öffentlichen Seite entfernt und die Bewerbungsliste verworfen."
+
+msgid "plugins.generic.objectsForReview.desk.reopenOffer"
+msgstr "Angebot wieder öffnen"
+
+msgid "plugins.generic.objectsForReview.desk.reopenOffer.confirm"
+msgstr "Dieses Werk wieder zur Rezension anbieten?"
+
+msgid "plugins.generic.objectsForReview.column.bidder"
+msgstr "Bewerber:in"
+
+msgid "plugins.generic.objectsForReview.column.bidDate"
+msgstr "Beworben am"
+
+msgid "plugins.generic.objectsForReview.column.selectedBidder"
+msgstr "Ausgewählt"
+
+msgid "plugins.generic.objectsForReview.column.offeredOn"
+msgstr "Angeboten am"
+
+msgid "plugins.generic.objectsForReview.column.answerBy"
+msgstr "Antwort bis"
+
+msgid "plugins.generic.objectsForReview.column.remainingBidders"
+msgstr "Weitere Bewerber:innen"
+
+msgid "plugins.generic.objectsForReview.column.person"
+msgstr "Person"
+
+msgid "plugins.generic.objectsForReview.contractOffer.description"
+msgstr "{$reviewer} für die Rezension auswählen. Die Bewerbung wird geschlossen, und {$reviewer} erhält die folgende E-Mail mit einem Link zur Rezensionsvereinbarung."
+
+msgid "plugins.generic.objectsForReview.contractOffer.linkHint"
+msgstr "{$contractUrl} wird beim Versand durch den persönlichen Link zur Vereinbarung ersetzt."
+
+msgid "plugins.generic.objectsForReview.contractOffer.linkRequired"
+msgstr "Die E-Mail muss {$contractUrl} enthalten, den Link zur Vereinbarung."
+
+msgid "plugins.generic.objectsForReview.contractOffer.submit"
+msgstr "Auswählen und senden"
+
+msgid "plugins.generic.objectsForReview.contractOffer.cancel"
+msgstr "Angebot zurückziehen"
+
+msgid "plugins.generic.objectsForReview.contractOffer.cancel.description"
+msgstr "Das Vertragsangebot an {$reviewer} zurückziehen? Danach können Sie eine andere Person auswählen."
+
+msgid "plugins.generic.objectsForReview.unsuccessful.action"
+msgstr "Bewerber:innen benachrichtigen"
+
+msgid "plugins.generic.objectsForReview.unsuccessful.description"
+msgstr "Diesen Bewerber:innen mitteilen, dass eine andere Person das Werk rezensiert. Sie bleiben auf der Liste, falls die Rezension nicht zustande kommt."
+
+msgid "plugins.generic.objectsForReview.unsuccessful.linkHint"
+msgstr "Jede:r Bewerber:in erhält eine persönliche E-Mail: {$recipientName} und {$removeUrl} (Link zum Verlassen der Liste) werden beim Versand eingesetzt."
+
+msgid "plugins.generic.objectsForReview.unsuccessful.submit"
+msgstr "Benachrichtigen"
+
+msgid "plugins.generic.objectsForReview.history.email.contractOffer"
+msgstr "Vertragsangebot gesendet"
+
+msgid "plugins.generic.objectsForReview.history.email.contractOfferAgain"
+msgstr "Vertragsangebot gesendet (nach Ausfall)"
+
+msgid "plugins.generic.objectsForReview.history.email.contractReminder"
+msgstr "Erinnerung an das Vertragsangebot gesendet"
+
+msgid "plugins.generic.objectsForReview.history.email.bidUnsuccessful"
+msgstr "Bewerber:in benachrichtigt: nicht ausgewählt"
+
+msgid "plugins.generic.objectsForReview.history.email.bidNew"
+msgstr "Redaktion über neue Bewerbung informiert"
+
+msgid "plugins.generic.objectsForReview.history.email.contractDeclined"
+msgstr "Redaktion informiert: Vertrag abgelehnt oder abgelaufen"
+
+msgid "plugins.generic.objectsForReview.history.event.bid"
+msgstr "{$recipientName} hat sich beworben"
+
+msgid "plugins.generic.objectsForReview.history.event.bidWithdrawn"
+msgstr "{$recipientName} hat die Bewerbung zurückgezogen"
+
+msgid "plugins.generic.objectsForReview.history.event.contractOffered"
+msgstr "Vertrag an {$recipientName} angeboten; Bewerbung geschlossen"
+
+msgid "plugins.generic.objectsForReview.history.event.contractAccepted"
+msgstr "Vertrag von {$recipientName} angenommen, fällig {$reviewDueDate}"
+
+msgid "plugins.generic.objectsForReview.history.event.contractDeclined"
+msgstr "Vertrag von {$recipientName} abgelehnt"
+
+msgid "plugins.generic.objectsForReview.history.event.contractExpired"
+msgstr "Vertragsangebot an {$recipientName} abgelaufen"
+
+msgid "plugins.generic.objectsForReview.history.event.contractWithdrawn"
+msgstr "Vertragsangebot an {$recipientName} von der Redaktion zurückgezogen"
+
+msgid "plugins.generic.objectsForReview.history.event.bidderUnsuccessful"
+msgstr "{$recipientName} benachrichtigt: nicht ausgewählt (bleibt auf der Liste)"
+
+msgid "plugins.generic.objectsForReview.history.event.biddingReopened"
+msgstr "Bewerbung wieder geöffnet"
+
+msgid "plugins.generic.objectsForReview.history.event.modeDirect"
+msgstr "Auf direkte Reservierung umgestellt"
+
+msgid "plugins.generic.objectsForReview.history.event.offerClosed"
+msgstr "Angebot geschlossen"
+
+msgid "plugins.generic.objectsForReview.history.event.offerReopened"
+msgstr "Angebot wieder geöffnet"
+
+msgid "plugins.generic.objectsForReview.history.event.listDiscarded"
+msgstr "Bewerbungsliste verworfen ({$number})"
+
+msgid "plugins.generic.objectsForReview.history.event.completed"
+msgstr "Rezension von {$recipientName} veröffentlicht"
+
+msgid "plugins.generic.objectsForReview.settings.defaultMode"
+msgstr "Standard-Vergabe für neue Angebote"
+
+msgid "plugins.generic.objectsForReview.settings.defaultMode.description"
+msgstr "Kann für jedes Angebot geändert werden."
+
+msgid "plugins.generic.objectsForReview.settings.defaultEditor"
+msgstr "Standardmäßig zuständige Rezensionsredaktion"
+
+msgid "plugins.generic.objectsForReview.settings.defaultEditor.description"
+msgstr "Für neue Angebote. Ist niemand festgelegt, wird zuständig, wer als Rezensionsredakteur:in das Angebot anlegt."
+
+msgid "plugins.generic.objectsForReview.settings.defaultEditor.none"
+msgstr "— niemand —"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays"
+msgstr "Vertragsangebote"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.description"
+msgstr "Tage, die eine ausgewählte Person zur Annahme der Vereinbarung hat, und nach wie vielen Tagen eine Erinnerung gesendet wird (0: keine Erinnerung)."
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.deadline"
+msgstr "Tage bis zur Antwort"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.reminder"
+msgstr "Erinnerung nach (Tagen)"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.invalid"
+msgstr "Bitte geben Sie die Antwortfrist (1–90 Tage) und eine Erinnerung vor Fristende an."
+
+msgid "plugins.generic.objectsForReview.desk.declineReason"
+msgstr "Grund"

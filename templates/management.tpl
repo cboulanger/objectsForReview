@@ -5,7 +5,7 @@
  *
  * Backend pages of the "Objects for Review" menu section.
  *
- * $view: available | reservations | reviewedWorks | settings
+ * $view: available | desk | assignments | reviewedWorks | settings
  *}
 {extends file="layouts/backend.tpl"}
 
@@ -21,28 +21,181 @@
 		{elseif $view == 'settings'}
 			{load_url_in_div id="objectsForReviewSettingsContainer" url=$settingsUrl}
 
-		{elseif $view == 'reservations'}
-			{if $users|@count > 1}
-				<form class="ofrFilter" method="get" action="{url op="reservations"}">
-					<label for="ofrFilterUser">{translate key="plugins.generic.objectsForReview.column.reservedBy"}</label>
+		{elseif $view == 'desk'}
+			{if !$selection && !$offers && !$unsuccessful}
+				<p class="ofrDeskEmpty">{translate key="plugins.generic.objectsForReview.desk.empty"}</p>
+			{/if}
+
+			{if $selection}
+				<h2>{translate key="plugins.generic.objectsForReview.desk.selection"}</h2>
+				{foreach from=$selection item=offer}
+					<section class="ofrDeskItem" id="ofrSelection-{$offer.objectId|escape}">
+						<div class="ofrDeskHead">
+							{include file=$ofrObjectCell row=$offer}
+							<p class="ofrDeskState">
+								{if $offer.biddingOpen}
+									{translate key="plugins.generic.objectsForReview.desk.biddingOpen"}{if $offer.bidDeadline} ({translate key="plugins.generic.objectsForReview.bid.deadline" deadline=$offer.bidDeadline|date_format:$dateFormatShort}){/if}
+								{elseif $offer.deadlinePassed && !$offer.dropout}
+									{translate key="plugins.generic.objectsForReview.desk.deadlinePassed" deadline=$offer.bidDeadline|date_format:$dateFormatShort}
+								{else}
+									{translate key="plugins.generic.objectsForReview.desk.biddingClosed"}
+								{/if}
+								{if $offer.dropout}
+									<br /><strong>{translate key="plugins.generic.objectsForReview.desk.dropout.`$offer.dropout.status`" name=$offer.dropout.name|escape date=$offer.dropout.date|date_format:$dateFormatShort}</strong>
+									{if $offer.dropout.reason}<br /><span class="ofrDetail">{translate key="plugins.generic.objectsForReview.desk.declineReason"}: {$offer.dropout.reason|escape|nl2br}</span>{/if}
+								{/if}
+							</p>
+						</div>
+						{if $offer.bidders}
+							<table class="ofrTable ofrBidders">
+								<thead>
+									<tr>
+										<th>{translate key="plugins.generic.objectsForReview.column.bidder"}</th>
+										<th>{translate key="plugins.generic.objectsForReview.bid.statement"}</th>
+										<th>{translate key="plugins.generic.objectsForReview.column.bidDate"}</th>
+										<th><span class="pkp_screen_reader">{translate key="grid.columns.actions"}</span></th>
+									</tr>
+								</thead>
+								<tbody>
+									{foreach from=$offer.bidders item=bidder}
+										<tr>
+											<td>
+												<strong>{$bidder.name|escape}</strong>
+												{if $bidder.affiliation}<div class="ofrDetail">{$bidder.affiliation|escape}</div>{/if}
+												<div class="ofrDetail">{$bidder.email|escape}</div>
+												<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.desk.reviewCount" number=$bidder.reviewCount}</div>
+												{if $bidder.status == 'unsuccessful'}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.desk.onList"}</div>{/if}
+											</td>
+											<td>{if $bidder.statement}{$bidder.statement|escape|nl2br}{else}–{/if}</td>
+											<td class="ofrNoWrap">{$bidder.date|date_format:$dateFormatShort}</td>
+											<td class="ofrActions">{include file="linkAction/linkAction.tpl" action=$bidder.selectAction contextId="ofrDesk"}</td>
+										</tr>
+									{/foreach}
+								</tbody>
+							</table>
+						{else}
+							<p>{translate key="plugins.generic.objectsForReview.desk.noBidders"}</p>
+						{/if}
+						<div class="ofrOfferActions">
+							{foreach from=$offer.offerActions item=action}
+								{include file="linkAction/linkAction.tpl" action=$action contextId="ofrDesk"}
+							{/foreach}
+							{include file="linkAction/linkAction.tpl" action=$offer.historyAction contextId="ofrDesk"}
+						</div>
+					</section>
+				{/foreach}
+			{/if}
+
+			{if $offers}
+				<h2>{translate key="plugins.generic.objectsForReview.desk.offers"}</h2>
+				<table class="ofrTable">
+					<thead>
+						<tr>
+							<th>{translate key="plugins.generic.objectsForReview.column.object"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.selectedBidder"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.dates"}</th>
+							<th><span class="pkp_screen_reader">{translate key="grid.columns.actions"}</span></th>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach from=$offers item=row}
+							<tr>
+								<td>{include file=$ofrObjectCell row=$row}</td>
+								<td>{$row.user|escape}</td>
+								<td class="ofrNoWrap">
+									{translate key="plugins.generic.objectsForReview.column.offeredOn"}: {$row.dateOffered|date_format:$dateFormatShort}<br />
+									<strong>{translate key="plugins.generic.objectsForReview.column.answerBy"}: {$row.contractDeadline|date_format:$dateFormatShort}</strong>
+									{if $row.contractReminderSent}<br />{translate key="plugins.generic.objectsForReview.column.reminderSent"}: {$row.contractReminderSent|date_format:$dateFormatShort}{/if}
+								</td>
+								<td class="ofrActions">
+									{foreach from=$row.actions item=action}
+										{include file="linkAction/linkAction.tpl" action=$action contextId="ofrDesk"}
+									{/foreach}
+								</td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			{/if}
+
+			{if $unsuccessful}
+				<h2>{translate key="plugins.generic.objectsForReview.desk.unsuccessful"}</h2>
+				<table class="ofrTable">
+					<thead>
+						<tr>
+							<th>{translate key="plugins.generic.objectsForReview.column.object"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.reservedBy"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.remainingBidders"}</th>
+							<th><span class="pkp_screen_reader">{translate key="grid.columns.actions"}</span></th>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach from=$unsuccessful item=row}
+							<tr>
+								<td>{include file=$ofrObjectCell row=$row}</td>
+								<td>{$row.reviewer|escape}</td>
+								<td>{foreach from=$row.names item=name}<div>{$name|escape}</div>{/foreach}</td>
+								<td class="ofrActions">{include file="linkAction/linkAction.tpl" action=$row.action contextId="ofrDesk"}</td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			{/if}
+
+			{if $closed}
+				<details class="ofrClosed">
+					<summary>{translate key="plugins.generic.objectsForReview.desk.closed"} ({$closed|@count})</summary>
+					<table class="ofrTable">
+						<tbody>
+							{foreach from=$closed item=row}
+								<tr>
+									<td>{include file=$ofrObjectCell row=$row}</td>
+									<td class="ofrActions">
+										{foreach from=$row.offerActions item=action}
+											{include file="linkAction/linkAction.tpl" action=$action contextId="ofrDesk"}
+										{/foreach}
+									</td>
+								</tr>
+							{/foreach}
+						</tbody>
+					</table>
+				</details>
+			{/if}
+			<script>
+				$(function() {ldelim}
+					$('.objectsForReviewManagement').on('dataChanged', function() {ldelim} window.location.reload(); {rdelim});
+				{rdelim});
+			</script>
+
+		{elseif $view == 'assignments'}
+			<form class="ofrFilter" method="get" action="{url op="assignments"}">
+				<label for="ofrFilterStatus">{translate key="common.status"}</label>
+				<select id="ofrFilterStatus" name="status" onchange="this.form.submit()">
+					{foreach from=$statusOptions item=option}
+						<option value="{$option|escape}"{if $option == $statusFilter} selected{/if}>{translate key="plugins.generic.objectsForReview.status.$option"}</option>
+					{/foreach}
+				</select>
+				{if $users|@count > 1}
+					<label for="ofrFilterUser">{translate key="plugins.generic.objectsForReview.column.person"}</label>
 					<select id="ofrFilterUser" name="userId" onchange="this.form.submit()">
 						<option value="">{translate key="plugins.generic.objectsForReview.filter.allUsers"}</option>
 						{foreach from=$users key=userId item=userName}
 							<option value="{$userId|escape}"{if $userId == $filterUserId} selected{/if}>{$userName|escape}</option>
 						{/foreach}
 					</select>
-					<noscript><button type="submit" class="pkp_button">{translate key="plugins.generic.objectsForReview.filter.apply"}</button></noscript>
-				</form>
-			{/if}
+				{/if}
+				<noscript><button type="submit" class="pkp_button">{translate key="plugins.generic.objectsForReview.filter.apply"}</button></noscript>
+			</form>
 			{if $rows|@count}
 				<table class="ofrTable">
 					<thead>
 						<tr>
 							<th>{translate key="plugins.generic.objectsForReview.column.object"}</th>
-							<th>{translate key="plugins.generic.objectsForReview.column.reservedBy"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.person"}</th>
+							<th>{translate key="common.status"}</th>
 							<th>{translate key="plugins.generic.objectsForReview.column.dates"}</th>
 							<th>{translate key="plugins.generic.objectsForReview.reserve.copy"}</th>
-							<th><span class="pkp_screen_reader">{translate key="common.actions"}</span></th>
+							<th><span class="pkp_screen_reader">{translate key="grid.columns.actions"}</span></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -50,9 +203,11 @@
 							<tr>
 								<td>{include file=$ofrObjectCell row=$row}</td>
 								<td>{$row.user|escape}</td>
+								<td class="ofrNoWrap">{translate key="plugins.generic.objectsForReview.status.`$row.status`"}<br /><span class="ofrDetail">{$row.dateStatus|date_format:$dateFormatShort}</span></td>
 								<td class="ofrNoWrap">
 									{if $row.dateReserved}{translate key="plugins.generic.objectsForReview.column.reservedOn"}: {$row.dateReserved|date_format:$dateFormatShort}<br />{/if}
 									{if $row.dueDate}<strong>{translate key="plugins.generic.objectsForReview.reserve.dueDate"}: {$row.dueDate|date_format:$dateFormatShort}</strong>{/if}
+									{if $row.contractDeadline}<strong>{translate key="plugins.generic.objectsForReview.column.answerBy"}: {$row.contractDeadline|date_format:$dateFormatShort}</strong>{/if}
 									{if $row.reminderSent}<br />{translate key="plugins.generic.objectsForReview.column.reminderSent"}: {$row.reminderSent|date_format:$dateFormatShort}{/if}
 								</td>
 								<td>
@@ -63,7 +218,7 @@
 								</td>
 								<td class="ofrActions">
 									{foreach from=$row.actions item=action}
-										{include file="linkAction/linkAction.tpl" action=$action contextId="ofrReservations"}
+										{include file="linkAction/linkAction.tpl" action=$action contextId="ofrAssignments"}
 									{/foreach}
 								</td>
 							</tr>
@@ -71,10 +226,10 @@
 					</tbody>
 				</table>
 			{else}
-				<p>{translate key="plugins.generic.objectsForReview.reservations.none"}</p>
+				<p>{translate key="plugins.generic.objectsForReview.assignments.none"}</p>
 			{/if}
 			<script>
-				// Reload after a reservation was emailed or cancelled in a modal
+				// Reload after an assignment was emailed or cancelled in a modal
 				$(function() {ldelim}
 					$('.objectsForReviewManagement').on('dataChanged', function() {ldelim} window.location.reload(); {rdelim});
 				{rdelim});

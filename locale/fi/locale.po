@@ -408,4 +408,463 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Arvioitavat julkaisut: muistutukset ennen määräpäivää"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "{$count} muistutus(ta) lähetetty: {$context}."
+msgstr "{$context}: {$reminders} määräpäivämuistutus(ta), {$contractReminders} sopimustarjousmuistutus(ta), {$expired} vanhentunut(ta) sopimustarjous(ta)."
+
+msgid "plugins.generic.objectsForReview.identifierTypeRequired"
+msgstr "Valitse tunnisteen tyyppi."
+
+msgid "plugins.generic.objectsForReview.resourceTypeRequired"
+msgstr "Valitse aineiston tyyppi."
+
+msgid "plugins.generic.objectsForReview.titleRequired"
+msgstr "Anna nimeke."
+
+msgid "plugins.generic.objectsForReview.identifierRequired"
+msgstr "Anna tunniste."
+
+msgid "plugins.generic.objectsForReview.role.bookReviewEditor"
+msgstr "Kirja-arvioiden toimittaja"
+
+msgid "plugins.generic.objectsForReview.role.bookReviewEditor.abbrev"
+msgstr "KAT"
+
+msgid "plugins.generic.objectsForReview.role.publisherContact"
+msgstr "Kustantajan yhteyshenkilö"
+
+msgid "plugins.generic.objectsForReview.role.publisherContact.abbrev"
+msgstr "KY"
+
+msgid "plugins.generic.objectsForReview.menu.desk"
+msgstr "Tehtävät"
+
+msgid "plugins.generic.objectsForReview.menu.assignments"
+msgstr "Arvioijat ja hakijat"
+
+msgid "plugins.generic.objectsForReview.assignments.none"
+msgstr "Ei merkintöjä tällä tilalla."
+
+msgid "plugins.generic.objectsForReview.status.active"
+msgstr "Ajankohtaiset (tarjottu tai varattu)"
+
+msgid "plugins.generic.objectsForReview.status.all"
+msgstr "Kaikki"
+
+msgid "plugins.generic.objectsForReview.status.bid"
+msgstr "Hakemus"
+
+msgid "plugins.generic.objectsForReview.status.unsuccessful"
+msgstr "Ei valittu (listalla)"
+
+msgid "plugins.generic.objectsForReview.status.offered"
+msgstr "Sopimus tarjottu"
+
+msgid "plugins.generic.objectsForReview.status.accepted"
+msgstr "Varattu"
+
+msgid "plugins.generic.objectsForReview.status.submitted"
+msgstr "Arvio lähetetty"
+
+msgid "plugins.generic.objectsForReview.status.completed"
+msgstr "Arvio julkaistu"
+
+msgid "plugins.generic.objectsForReview.status.withdrawn"
+msgstr "Hakemus peruttu"
+
+msgid "plugins.generic.objectsForReview.status.declined"
+msgstr "Sopimus hylätty"
+
+msgid "plugins.generic.objectsForReview.status.expired"
+msgstr "Sopimustarjous vanhentunut"
+
+msgid "plugins.generic.objectsForReview.status.retracted"
+msgstr "Arvioija perui"
+
+msgid "plugins.generic.objectsForReview.status.cancelled"
+msgstr "Toimitus perui"
+
+msgid "plugins.generic.objectsForReview.status.discarded"
+msgstr "Lista suljettu"
+
+msgid "plugins.generic.objectsForReview.offerState.open"
+msgstr "Avoin"
+
+msgid "plugins.generic.objectsForReview.offerState.selection"
+msgstr "Valinta kesken"
+
+msgid "plugins.generic.objectsForReview.offerState.contractOffered"
+msgstr "Sopimus tarjottu"
+
+msgid "plugins.generic.objectsForReview.offerState.assigned"
+msgstr "Varattu"
+
+msgid "plugins.generic.objectsForReview.offerState.submitted"
+msgstr "Arvio lähetetty"
+
+msgid "plugins.generic.objectsForReview.offerState.closed"
+msgstr "Suljettu"
+
+msgid "plugins.generic.objectsForReview.offerState.bidCount"
+msgstr "{$number} hakemusta"
+
+msgid "plugins.generic.objectsForReview.offer.title"
+msgstr "Tarjous"
+
+msgid "plugins.generic.objectsForReview.offer.mode"
+msgstr "Jakotapa"
+
+msgid "plugins.generic.objectsForReview.offer.mode.description"
+msgstr "Suora varaus: arvion saa ensimmäinen ehdot hyväksyvä. Haku: arvioijat hakevat, ja kirja-arvioiden toimittaja valitsee."
+
+msgid "plugins.generic.objectsForReview.offer.mode.direct"
+msgstr "Suora varaus"
+
+msgid "plugins.generic.objectsForReview.offer.mode.bidding"
+msgstr "Haku"
+
+msgid "plugins.generic.objectsForReview.offer.modeRequired"
+msgstr "Valitse jakotapa."
+
+msgid "plugins.generic.objectsForReview.offer.bidDeadline"
+msgstr "Hakuaika päättyy"
+
+msgid "plugins.generic.objectsForReview.offer.bidDeadline.description"
+msgstr "Valinnainen. Hakemuksia otetaan vastaan tämän päivän loppuun."
+
+msgid "plugins.generic.objectsForReview.offer.bidDeadlineInvalid"
+msgstr "Anna kelvollinen päivämäärä."
+
+msgid "plugins.generic.objectsForReview.offer.responsibleEditor"
+msgstr "Vastuullinen kirja-arvioiden toimittaja"
+
+msgid "plugins.generic.objectsForReview.offer.responsibleEditor.description"
+msgstr "Saa tätä tarjousta koskevat ilmoitukset. Kirja-arvioiden toimittajat ovat ryhmän ”Kirja-arvioiden toimittaja” käyttäjiä (Käyttäjät ja roolit)."
+
+msgid "plugins.generic.objectsForReview.offer.noEditor"
+msgstr "— ei ketään (ilmoitusosoite asetuksista) —"
+
+msgid "plugins.generic.objectsForReview.offer.editorInvalid"
+msgstr "Valitse kirja-arvioiden toimittaja."
+
+msgid "plugins.generic.objectsForReview.bid"
+msgstr "Hae"
+
+msgid "plugins.generic.objectsForReview.bid.title"
+msgstr "Hae tämän teoksen arvioijaksi"
+
+msgid "plugins.generic.objectsForReview.bid.description"
+msgstr "Kirja-arvioiden toimittaja valitsee hakijoiden joukosta. Jos sinut valitaan, saat sähköpostin, jossa on linkki arviointisopimukseen."
+
+msgid "plugins.generic.objectsForReview.bid.statement"
+msgstr "Perustelut"
+
+msgid "plugins.generic.objectsForReview.bid.statement.hint"
+msgstr "Valinnainen: miksi haluaisit arvioida teoksen, ja asiantuntemuksesi."
+
+msgid "plugins.generic.objectsForReview.bid.submit"
+msgstr "Lähetä hakemus"
+
+msgid "plugins.generic.objectsForReview.bid.open"
+msgstr "Haettavissa"
+
+msgid "plugins.generic.objectsForReview.bid.closed"
+msgstr "Valinta käynnissä"
+
+msgid "plugins.generic.objectsForReview.bid.deadline"
+msgstr "Haku päättyy {$deadline}"
+
+msgid "plugins.generic.objectsForReview.bid.yours"
+msgstr "Hait {$date}."
+
+msgid "plugins.generic.objectsForReview.bid.unsuccessful"
+msgstr "Toinen henkilö arvioi teoksen. Pysyt listalla siltä varalta, ettei arviota synny."
+
+msgid "plugins.generic.objectsForReview.bid.withdraw"
+msgstr "Peru hakemus"
+
+msgid "plugins.generic.objectsForReview.bid.withdraw.confirm"
+msgstr "Haluatko perua hakemuksesi?"
+
+msgid "plugins.generic.objectsForReview.bid.selected"
+msgstr "Sinut on valittu. Vastaa viimeistään {$deadline}."
+
+msgid "plugins.generic.objectsForReview.bid.respond"
+msgstr "Vastaa tarjoukseen"
+
+msgid "plugins.generic.objectsForReview.backToList"
+msgstr "Takaisin arvioitavien teosten luetteloon"
+
+msgid "plugins.generic.objectsForReview.contract.title"
+msgstr "Arviointisopimus"
+
+msgid "plugins.generic.objectsForReview.contract.intro"
+msgstr "Hyvä {$name}, sinut on valittu arvioimaan tämä teos. Hyväksy sopimus viimeistään {$deadline} tai ilmoita, jos et voi kirjoittaa arviota."
+
+msgid "plugins.generic.objectsForReview.contract.accept"
+msgstr "Hyväksy sopimus"
+
+msgid "plugins.generic.objectsForReview.contract.decline"
+msgstr "En voi kirjoittaa tätä arviota"
+
+msgid "plugins.generic.objectsForReview.contract.declineReason"
+msgstr "Syy (valinnainen)"
+
+msgid "plugins.generic.objectsForReview.contract.decline.submit"
+msgstr "Hylkää tarjous"
+
+msgid "plugins.generic.objectsForReview.contract.declined.noReason"
+msgstr "Syytä ei annettu."
+
+msgid "plugins.generic.objectsForReview.contract.expired"
+msgstr "Tarjoukseen ei vastattu määräaikaan mennessä."
+
+msgid "plugins.generic.objectsForReview.leave.title"
+msgstr "Poistu listalta"
+
+msgid "plugins.generic.objectsForReview.leave.description"
+msgstr "Hyvä {$name}, haluatko, että sinut poistetaan tämän teoksen hakijalistalta? Sinuun ei oteta enää yhteyttä teoksesta."
+
+msgid "plugins.generic.objectsForReview.leave.submit"
+msgstr "Poista minut listalta"
+
+msgid "plugins.generic.objectsForReview.link.invalid.title"
+msgstr "Linkki ei ole enää voimassa"
+
+msgid "plugins.generic.objectsForReview.link.invalid"
+msgstr "Linkki on vanhentunut tai sitä on jo käytetty. Ota tarvittaessa yhteyttä toimitukseen."
+
+msgid "plugins.generic.objectsForReview.response.accepted.title"
+msgstr "Kiitos!"
+
+msgid "plugins.generic.objectsForReview.response.accepted"
+msgstr "Olet hyväksynyt arviointisopimuksen. Arviosi määräpäivä on {$dueDate}."
+
+msgid "plugins.generic.objectsForReview.response.declined.title"
+msgstr "Tarjous hylätty"
+
+msgid "plugins.generic.objectsForReview.response.declined"
+msgstr "Kiitos ilmoituksesta. Toimitukselle on ilmoitettu."
+
+msgid "plugins.generic.objectsForReview.response.left.title"
+msgstr "Poistettu listalta"
+
+msgid "plugins.generic.objectsForReview.response.left"
+msgstr "Sinut on poistettu tämän teoksen hakijalistalta."
+
+msgid "plugins.generic.objectsForReview.desk.empty"
+msgstr "Ei tehtäviä tällä hetkellä."
+
+msgid "plugins.generic.objectsForReview.desk.selection"
+msgstr "Valitse arvioija"
+
+msgid "plugins.generic.objectsForReview.desk.biddingOpen"
+msgstr "Haku on käynnissä."
+
+msgid "plugins.generic.objectsForReview.desk.biddingClosed"
+msgstr "Haku on suljettu."
+
+msgid "plugins.generic.objectsForReview.desk.deadlinePassed"
+msgstr "Hakuaika ({$deadline}) on päättynyt."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.declined"
+msgstr "{$name} hylkäsi sopimuksen {$date}."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.expired"
+msgstr "Sopimustarjous henkilölle {$name} vanheni {$date}."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.retracted"
+msgstr "{$name} perui varauksen {$date}."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.cancelled"
+msgstr "Toimitus perui henkilön {$name} tehtävän {$date}."
+
+msgid "plugins.generic.objectsForReview.desk.noBidders"
+msgstr "Listalla ei ole enää hakijoita."
+
+msgid "plugins.generic.objectsForReview.desk.reviewCount"
+msgstr "Arvioita tähän lehteen: {$number}"
+
+msgid "plugins.generic.objectsForReview.desk.onList"
+msgstr "Listalla (on jo kerrottu, että toinen valittiin)"
+
+msgid "plugins.generic.objectsForReview.desk.select"
+msgstr "Valitse ja lähetä sopimus"
+
+msgid "plugins.generic.objectsForReview.desk.offers"
+msgstr "Odotetaan vastausta sopimustarjoukseen"
+
+msgid "plugins.generic.objectsForReview.desk.unsuccessful"
+msgstr "Ilmoita hakijoille, joita ei valittu"
+
+msgid "plugins.generic.objectsForReview.desk.closed"
+msgstr "Suljetut tarjoukset"
+
+msgid "plugins.generic.objectsForReview.desk.notPossible"
+msgstr "Tämä vaihe ei ole mahdollinen tarjouksen nykyisessä tilassa."
+
+msgid "plugins.generic.objectsForReview.desk.reopenBidding"
+msgstr "Avaa haku uudelleen"
+
+msgid "plugins.generic.objectsForReview.desk.reopenBidding.confirm"
+msgstr "Avataanko haku uudelleen? Listalla olevat hakijat pysyvät listalla."
+
+msgid "plugins.generic.objectsForReview.desk.switchToDirect"
+msgstr "Vaihda suoraan varaukseen"
+
+msgid "plugins.generic.objectsForReview.desk.switchToDirect.confirm"
+msgstr "Vaihdetaanko tarjous suoraan varaukseen? Arvion saa ensimmäinen, joka hyväksyy ehdot julkisella sivulla."
+
+msgid "plugins.generic.objectsForReview.desk.closeOffer"
+msgstr "Sulje tarjous"
+
+msgid "plugins.generic.objectsForReview.desk.closeOffer.confirm"
+msgstr "Suljetaanko tarjous? Se poistetaan julkiselta sivulta ja hakijalista hylätään."
+
+msgid "plugins.generic.objectsForReview.desk.reopenOffer"
+msgstr "Avaa tarjous uudelleen"
+
+msgid "plugins.generic.objectsForReview.desk.reopenOffer.confirm"
+msgstr "Tarjotaanko teosta uudelleen arvioitavaksi?"
+
+msgid "plugins.generic.objectsForReview.column.bidder"
+msgstr "Hakija"
+
+msgid "plugins.generic.objectsForReview.column.bidDate"
+msgstr "Haettu"
+
+msgid "plugins.generic.objectsForReview.column.selectedBidder"
+msgstr "Valittu hakija"
+
+msgid "plugins.generic.objectsForReview.column.offeredOn"
+msgstr "Tarjottu"
+
+msgid "plugins.generic.objectsForReview.column.answerBy"
+msgstr "Vastattava viimeistään"
+
+msgid "plugins.generic.objectsForReview.column.remainingBidders"
+msgstr "Muut hakijat"
+
+msgid "plugins.generic.objectsForReview.column.person"
+msgstr "Henkilö"
+
+msgid "plugins.generic.objectsForReview.contractOffer.description"
+msgstr "Valitse {$reviewer} arvioimaan teos. Haku suljetaan, ja {$reviewer} saa alla olevan sähköpostin, jossa on linkki arviointisopimukseen."
+
+msgid "plugins.generic.objectsForReview.contractOffer.linkHint"
+msgstr "{$contractUrl} korvataan lähetettäessä henkilökohtaisella linkillä sopimukseen."
+
+msgid "plugins.generic.objectsForReview.contractOffer.linkRequired"
+msgstr "Sähköpostin on sisällettävä {$contractUrl}, linkki sopimukseen."
+
+msgid "plugins.generic.objectsForReview.contractOffer.submit"
+msgstr "Valitse ja lähetä"
+
+msgid "plugins.generic.objectsForReview.contractOffer.cancel"
+msgstr "Peru tarjous"
+
+msgid "plugins.generic.objectsForReview.contractOffer.cancel.description"
+msgstr "Perutaanko sopimustarjous henkilölle {$reviewer}? Voit sitten valita toisen hakijan."
+
+msgid "plugins.generic.objectsForReview.unsuccessful.action"
+msgstr "Ilmoita hakijoille"
+
+msgid "plugins.generic.objectsForReview.unsuccessful.description"
+msgstr "Kerro näille hakijoille, että toinen henkilö arvioi teoksen. He pysyvät listalla siltä varalta, ettei arviota synny."
+
+msgid "plugins.generic.objectsForReview.unsuccessful.linkHint"
+msgstr "Jokainen hakija saa henkilökohtaisen sähköpostin: {$recipientName} ja {$removeUrl} (linkki listalta poistumiseen) täytetään lähetettäessä."
+
+msgid "plugins.generic.objectsForReview.unsuccessful.submit"
+msgstr "Ilmoita"
+
+msgid "plugins.generic.objectsForReview.history.email.contractOffer"
+msgstr "Sopimustarjous lähetetty"
+
+msgid "plugins.generic.objectsForReview.history.email.contractOfferAgain"
+msgstr "Sopimustarjous lähetetty (peruutuksen jälkeen)"
+
+msgid "plugins.generic.objectsForReview.history.email.contractReminder"
+msgstr "Muistutus sopimustarjouksesta lähetetty"
+
+msgid "plugins.generic.objectsForReview.history.email.bidUnsuccessful"
+msgstr "Hakijalle ilmoitettu: ei valittu"
+
+msgid "plugins.generic.objectsForReview.history.email.bidNew"
+msgstr "Toimittajalle ilmoitettu uudesta hakemuksesta"
+
+msgid "plugins.generic.objectsForReview.history.email.contractDeclined"
+msgstr "Toimittajalle ilmoitettu: sopimus hylätty tai vanhentunut"
+
+msgid "plugins.generic.objectsForReview.history.event.bid"
+msgstr "{$recipientName} haki"
+
+msgid "plugins.generic.objectsForReview.history.event.bidWithdrawn"
+msgstr "{$recipientName} perui hakemuksensa"
+
+msgid "plugins.generic.objectsForReview.history.event.contractOffered"
+msgstr "Sopimus tarjottu henkilölle {$recipientName}; haku suljettu"
+
+msgid "plugins.generic.objectsForReview.history.event.contractAccepted"
+msgstr "{$recipientName} hyväksyi sopimuksen, määräpäivä {$reviewDueDate}"
+
+msgid "plugins.generic.objectsForReview.history.event.contractDeclined"
+msgstr "{$recipientName} hylkäsi sopimuksen"
+
+msgid "plugins.generic.objectsForReview.history.event.contractExpired"
+msgstr "Sopimustarjous henkilölle {$recipientName} vanheni"
+
+msgid "plugins.generic.objectsForReview.history.event.contractWithdrawn"
+msgstr "Toimitus perui sopimustarjouksen henkilölle {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.bidderUnsuccessful"
+msgstr "{$recipientName}: ilmoitettu, ettei valittu (pysyy listalla)"
+
+msgid "plugins.generic.objectsForReview.history.event.biddingReopened"
+msgstr "Haku avattu uudelleen"
+
+msgid "plugins.generic.objectsForReview.history.event.modeDirect"
+msgstr "Vaihdettu suoraan varaukseen"
+
+msgid "plugins.generic.objectsForReview.history.event.offerClosed"
+msgstr "Tarjous suljettu"
+
+msgid "plugins.generic.objectsForReview.history.event.offerReopened"
+msgstr "Tarjous avattu uudelleen"
+
+msgid "plugins.generic.objectsForReview.history.event.listDiscarded"
+msgstr "Hakijalista hylätty ({$number})"
+
+msgid "plugins.generic.objectsForReview.history.event.completed"
+msgstr "Henkilön {$recipientName} arvio julkaistu"
+
+msgid "plugins.generic.objectsForReview.settings.defaultMode"
+msgstr "Uusien tarjousten oletusjakotapa"
+
+msgid "plugins.generic.objectsForReview.settings.defaultMode.description"
+msgstr "Voidaan muuttaa tarjouskohtaisesti."
+
+msgid "plugins.generic.objectsForReview.settings.defaultEditor"
+msgstr "Oletusarvoinen vastuullinen kirja-arvioiden toimittaja"
+
+msgid "plugins.generic.objectsForReview.settings.defaultEditor.description"
+msgstr "Uusille tarjouksille. Jos ketään ei ole asetettu, tarjouksen luova kirja-arvioiden toimittaja on vastuussa."
+
+msgid "plugins.generic.objectsForReview.settings.defaultEditor.none"
+msgstr "— ei ketään —"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays"
+msgstr "Sopimustarjoukset"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.description"
+msgstr "Montako päivää valitulla hakijalla on aikaa hyväksyä sopimus, ja monenko päivän jälkeen lähetetään muistutus (0: ei muistutusta)."
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.deadline"
+msgstr "Vastausaika päivinä"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.reminder"
+msgstr "Muistutus (päivän kuluttua)"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.invalid"
+msgstr "Anna vastausaika (1–90 päivää) ja muistutus ennen määräaikaa."
+
+msgid "plugins.generic.objectsForReview.desk.declineReason"
+msgstr "Syy"

@@ -81,3 +81,75 @@ msgstr "Erinnerung: Ihre Rezension ist am {$dueDate} fällig"
 
 msgid "emails.ofrReminder.body"
 msgstr "<p>Liebe/r {$recipientName},</p><p>wir möchten Sie freundlich daran erinnern, dass Ihre Rezension des folgenden Werks am <strong>{$dueDate}</strong> fällig ist:<br />{$objectDescription}</p><p>Wenn Sie mehr Zeit benötigen, wenden Sie sich bitte so bald wie möglich an die Redaktion.</p><p>Mit freundlichen Grüßen<br />{$contextName}</p>"
+
+msgid "emails.ofrContractOffer.name"
+msgstr "Rezensionsvereinbarung: Vertragsangebot"
+
+msgid "emails.ofrContractOffer.description"
+msgstr "An die von der Rezensionsredaktion ausgewählte Person, mit Link zur Rezensionsvereinbarung."
+
+msgid "emails.ofrContractOffer.subject"
+msgstr "Sie wurden für eine Rezension ausgewählt"
+
+msgid "emails.ofrContractOffer.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>vielen Dank für Ihr Interesse. Wir freuen uns, Ihnen die Rezension des folgenden Werks anbieten zu können:<br />{$objectDescription}</p><p>Bitte nehmen Sie die Rezensionsvereinbarung bis <strong>{$contractDeadline}</strong> an oder lehnen Sie das Angebot ab:<br /><a href=\"{$contractUrl}\">{$contractUrl}</a></p><p>Mit freundlichen Grüßen<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrContractOfferAgain.name"
+msgstr "Rezensionsvereinbarung: Angebot nach Ausfall"
+
+msgid "emails.ofrContractOfferAgain.description"
+msgstr "An eine Person von der Bewerbungsliste, nachdem die zuvor ausgewählte Person ausgefallen ist."
+
+msgid "emails.ofrContractOfferAgain.subject"
+msgstr "Die Rezension eines Werks, für das Sie sich beworben haben, ist wieder frei"
+
+msgid "emails.ofrContractOfferAgain.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>Sie hatten sich für die Rezension des folgenden Werks beworben:<br />{$objectDescription}</p><p>Die Rezension ist wieder frei, und wir würden sie Ihnen gerne anbieten. Wenn Sie weiterhin Interesse haben, nehmen Sie bitte die Rezensionsvereinbarung bis <strong>{$contractDeadline}</strong> an oder lehnen Sie das Angebot ab:<br /><a href=\"{$contractUrl}\">{$contractUrl}</a></p><p>Mit freundlichen Grüßen<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrContractReminder.name"
+msgstr "Erinnerung an ein Vertragsangebot"
+
+msgid "emails.ofrContractReminder.description"
+msgstr "Wird automatisch an eine ausgewählte Person gesendet, die noch nicht auf das Vertragsangebot geantwortet hat."
+
+msgid "emails.ofrContractReminder.subject"
+msgstr "Erinnerung: Bitte antworten Sie bis {$contractDeadline} auf das Rezensionsangebot"
+
+msgid "emails.ofrContractReminder.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>wir möchten Sie freundlich daran erinnern, dass wir Ihnen die Rezension des folgenden Werks angeboten haben:<br />{$objectDescription}</p><p>Bitte nehmen Sie die Rezensionsvereinbarung bis <strong>{$contractDeadline}</strong> an oder lehnen Sie das Angebot ab:<br /><a href=\"{$contractUrl}\">{$contractUrl}</a></p><p>Mit freundlichen Grüßen<br />{$contextName}</p>"
+
+msgid "emails.ofrBidUnsuccessful.name"
+msgstr "Bewerbung nicht ausgewählt"
+
+msgid "emails.ofrBidUnsuccessful.description"
+msgstr "An die übrigen Bewerber:innen, sobald ein Vertrag angenommen wurde. Sie bleiben auf der Liste, falls die Rezension nicht zustande kommt."
+
+msgid "emails.ofrBidUnsuccessful.subject"
+msgstr "Ihre Bewerbung für eine Rezension"
+
+msgid "emails.ofrBidUnsuccessful.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>vielen Dank für Ihre Bewerbung für die Rezension des folgenden Werks:<br />{$objectDescription}</p><p>Wir haben die Rezension diesmal an eine andere Person vergeben. Wir behalten Sie auf unserer Liste und kommen gegebenenfalls auf Sie zu, falls die Rezension nicht zustande kommt.</p><p>Wenn Sie lieber von der Liste gestrichen werden möchten, nutzen Sie bitte diesen Link:<br /><a href=\"{$removeUrl}\">{$removeUrl}</a></p><p>Mit freundlichen Grüßen<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrBidNew.name"
+msgstr "Neue Bewerbung (an die Rezensionsredaktion)"
+
+msgid "emails.ofrBidNew.description"
+msgstr "Wird automatisch an die zuständige Rezensionsredaktion gesendet, wenn sich jemand für eine Rezension bewirbt."
+
+msgid "emails.ofrBidNew.subject"
+msgstr "Neue Bewerbung für eine Rezension: {$objectDescription}"
+
+msgid "emails.ofrBidNew.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>{$bidderName} hat sich für die Rezension des folgenden Werks beworben:<br />{$objectDescription}</p><p>Begründung:<br />{$bidStatement}</p><p>Hier können Sie unter den Bewerbungen auswählen: <a href=\"{$deskUrl}\">{$deskUrl}</a></p>"
+
+msgid "emails.ofrContractDeclined.name"
+msgstr "Vertrag abgelehnt oder abgelaufen (an die Rezensionsredaktion)"
+
+msgid "emails.ofrContractDeclined.description"
+msgstr "Wird automatisch an die zuständige Rezensionsredaktion gesendet, wenn eine ausgewählte Person das Vertragsangebot ablehnt oder nicht rechtzeitig antwortet."
+
+msgid "emails.ofrContractDeclined.subject"
+msgstr "Rezensionsangebot nicht angenommen: {$objectDescription}"
+
+msgid "emails.ofrContractDeclined.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>{$reviewerName} hat das Angebot zur Rezension des folgenden Werks nicht angenommen:<br />{$objectDescription}</p><p>{$declineReason}</p><p>Bitte wählen Sie eine andere Person aus oder öffnen Sie die Bewerbung erneut: <a href=\"{$deskUrl}\">{$deskUrl}</a></p>"

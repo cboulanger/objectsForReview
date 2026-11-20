@@ -17,6 +17,44 @@ namespace APP\plugins\generic\objectsForReview\classes;
 
 class ObjectForReview extends \PKP\core\DataObject {
 
+	/** Assignment modes: first come, first served, or the book review editor chooses among bidders */
+	const MODE_DIRECT = 'direct';
+	const MODE_BIDDING = 'bidding';
+	const MODES = [self::MODE_DIRECT, self::MODE_BIDDING];
+
+	/**
+	 * Offer settings (see ObjectForReviewDAO::getAdditionalFieldNames()):
+	 * - assignmentMode: MODE_DIRECT or MODE_BIDDING (unset: direct)
+	 * - bidDeadline: optional last day for bids (Y-m-d)
+	 * - biddingClosed: set when the editor selects a bidder; unset to reopen bidding
+	 * - responsibleEditorId: book review editor who receives the notifications
+	 * - offerClosed: the editor has withdrawn the offer
+	 */
+	const OFFER_FIELDS = ['assignmentMode', 'bidDeadline', 'biddingClosed', 'responsibleEditorId', 'offerClosed'];
+
+	function getAssignmentMode(): string {
+		return $this->getData('assignmentMode') === self::MODE_BIDDING ? self::MODE_BIDDING : self::MODE_DIRECT;
+	}
+
+	function isBidding(): bool {
+		return $this->getAssignmentMode() === self::MODE_BIDDING;
+	}
+
+	function getResponsibleEditorId(): ?int {
+		return $this->getData('responsibleEditorId') ? (int) $this->getData('responsibleEditorId') : null;
+	}
+
+	/**
+	 * Set or delete an offer setting (unset settings are deleted from the settings table).
+	 */
+	function setOfferSetting(string $name, $value): void {
+		if ($value === null || $value === '' || $value === false) {
+			$this->unsetData($name);
+		} else {
+			$this->setData($name, $value);
+		}
+	}
+
 	//
 	// Get/set methods
 	//

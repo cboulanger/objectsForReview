@@ -84,3 +84,75 @@ msgstr "Reminder: your review is due on {$dueDate}"
 
 msgid "emails.ofrReminder.body"
 msgstr "<p>Dear {$recipientName},</p><p>this is a friendly reminder that your review of the following work is due on <strong>{$dueDate}</strong>:<br />{$objectDescription}</p><p>If you need more time, please contact the editors as soon as possible.</p><p>Kind regards,<br />{$contextName}</p>"
+
+msgid "emails.ofrContractOffer.name"
+msgstr "Review agreement: contract offer"
+
+msgid "emails.ofrContractOffer.description"
+msgstr "Sent to the bidder selected by the book review editor, with a link to the review agreement."
+
+msgid "emails.ofrContractOffer.subject"
+msgstr "You have been selected to review a work"
+
+msgid "emails.ofrContractOffer.body"
+msgstr "<p>Dear {$recipientName},</p><p>thank you for your interest. We are happy to offer you the review of the following work:<br />{$objectDescription}</p><p>Please accept the review agreement, or decline the offer, by <strong>{$contractDeadline}</strong>:<br /><a href=\"{$contractUrl}\">{$contractUrl}</a></p><p>Kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrContractOfferAgain.name"
+msgstr "Review agreement: offer after a dropout"
+
+msgid "emails.ofrContractOfferAgain.description"
+msgstr "Sent to a bidder from the kept list after the previously selected reviewer dropped out."
+
+msgid "emails.ofrContractOfferAgain.subject"
+msgstr "The review of a work you applied for is available again"
+
+msgid "emails.ofrContractOfferAgain.body"
+msgstr "<p>Dear {$recipientName},</p><p>you applied to review the following work:<br />{$objectDescription}</p><p>The review has become available again, and we would be happy to offer it to you. If you are still interested, please accept the review agreement by <strong>{$contractDeadline}</strong>, or decline the offer:<br /><a href=\"{$contractUrl}\">{$contractUrl}</a></p><p>Kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrContractReminder.name"
+msgstr "Reminder about a contract offer"
+
+msgid "emails.ofrContractReminder.description"
+msgstr "Sent automatically to a selected bidder who has not yet answered the contract offer."
+
+msgid "emails.ofrContractReminder.subject"
+msgstr "Reminder: please respond to the review offer by {$contractDeadline}"
+
+msgid "emails.ofrContractReminder.body"
+msgstr "<p>Dear {$recipientName},</p><p>this is a friendly reminder that we have offered you the review of the following work:<br />{$objectDescription}</p><p>Please accept the review agreement, or decline the offer, by <strong>{$contractDeadline}</strong>:<br /><a href=\"{$contractUrl}\">{$contractUrl}</a></p><p>Kind regards,<br />{$contextName}</p>"
+
+msgid "emails.ofrBidUnsuccessful.name"
+msgstr "Bidder not selected"
+
+msgid "emails.ofrBidUnsuccessful.description"
+msgstr "Sent to the other bidders once a contract has been accepted. They stay on the list in case the review does not materialise."
+
+msgid "emails.ofrBidUnsuccessful.subject"
+msgstr "Your application to review a work"
+
+msgid "emails.ofrBidUnsuccessful.body"
+msgstr "<p>Dear {$recipientName},</p><p>thank you for applying to review the following work:<br />{$objectDescription}</p><p>We have given the review to another applicant this time. We will keep you on our list, and may contact you if the review does not materialise.</p><p>If you would rather be removed from the list, please use this link:<br /><a href=\"{$removeUrl}\">{$removeUrl}</a></p><p>Kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrBidNew.name"
+msgstr "New bid (to the book review editor)"
+
+msgid "emails.ofrBidNew.description"
+msgstr "Sent automatically to the responsible book review editor when someone applies to review a work."
+
+msgid "emails.ofrBidNew.subject"
+msgstr "New application to review: {$objectDescription}"
+
+msgid "emails.ofrBidNew.body"
+msgstr "<p>Dear {$recipientName},</p><p>{$bidderName} has applied to review the following work:<br />{$objectDescription}</p><p>Statement:<br />{$bidStatement}</p><p>You can choose among the applicants here: <a href=\"{$deskUrl}\">{$deskUrl}</a></p>"
+
+msgid "emails.ofrContractDeclined.name"
+msgstr "Contract declined or expired (to the book review editor)"
+
+msgid "emails.ofrContractDeclined.description"
+msgstr "Sent automatically to the responsible book review editor when a selected bidder declines the contract offer or does not answer in time."
+
+msgid "emails.ofrContractDeclined.subject"
+msgstr "Review offer not accepted: {$objectDescription}"
+
+msgid "emails.ofrContractDeclined.body"
+msgstr "<p>Dear {$recipientName},</p><p>{$reviewerName} has not accepted the offer to review the following work:<br />{$objectDescription}</p><p>{$declineReason}</p><p>Please choose another bidder, or reopen bidding: <a href=\"{$deskUrl}\">{$deskUrl}</a></p>"

@@ -66,7 +66,7 @@ class DevSetupTool extends \PKP\cliTool\CommandLineTool
 {
 	public function usage()
 	{
-		echo "Usage: php tools/devSetup.php install|journal|enable-plugin\n";
+		echo "Usage: php tools/devSetup.php install|journal|enable-plugin|users\n";
 	}
 
 	public function execute()
@@ -78,6 +78,9 @@ class DevSetupTool extends \PKP\cliTool\CommandLineTool
 				break;
 			case 'enable-plugin':
 				$this->enablePlugin();
+				break;
+			case 'users':
+				$this->createWorkflowUsers();
 				break;
 			default:
 				$this->usage();
@@ -153,6 +156,44 @@ class DevSetupTool extends \PKP\cliTool\CommandLineTool
 			'masthead' => null,
 		]);
 		echo "Created author account '{$username}'.\n";
+	}
+
+	/**
+	 * Accounts for testing the review workflow: a book review editor and a second bidder.
+	 * The plugin's user groups are created if needed.
+	 */
+	protected function createWorkflowUsers()
+	{
+		$context = Application::getContextDAO()->getByPath(devEnv('OJS_JOURNAL_PATH', 'test'));
+		\PKP\plugins\PluginRegistry::loadCategory('generic', true, $context->getId());
+		$plugin = \PKP\plugins\PluginRegistry::getPlugin('generic', 'ObjectsForReviewPlugin');
+		$editorGroupId = \APP\plugins\generic\objectsForReview\classes\Roles::getGroupId($plugin, $context->getId(), 'bookReviewEditor');
+		$authorGroupId = UserGroup::withContextIds([$context->getId()])->withRoleIds([Role::ROLE_ID_AUTHOR])->isDefault(true)->firstOrFail()->userGroupId;
+		$this->createUser($context, 'bre', 'ojsbre', 'Book Review', 'Editor', 'bre@example.org', $editorGroupId);
+		$this->createUser($context, 'reviewer2', 'ojsreviewer2', 'Second', 'Reviewer', 'reviewer2@example.org', $authorGroupId);
+	}
+
+	protected function createUser($context, string $username, string $password, string $given, string $family, string $email, int $userGroupId)
+	{
+		if (Repo::user()->getByUsername($username, true)) {
+			echo "User '{$username}' already exists.\n";
+			return;
+		}
+		$user = Repo::user()->newDataObject();
+		$user->setUsername($username);
+		$user->setEmail($email);
+		$user->setPassword(Validation::encryptCredentials($username, $password));
+		$user->setGivenName($given, 'en');
+		$user->setFamilyName($family, 'en');
+		$user->setCountry('DE');
+		$user->setAffiliation('Test University', 'en');
+		$user->setMailingAddress("Test University\nExample Street 1\n12345 Example City");
+		$user->setDateRegistered(Core::getCurrentDate());
+		$user->setDateValidated(Core::getCurrentDate());
+		$user->setMustChangePassword(false);
+		$userId = Repo::user()->add($user);
+		UserUserGroup::create(['userId' => $userId, 'userGroupId' => $userGroupId, 'dateStart' => null, 'dateEnd' => null, 'masthead' => null]);
+		echo "Created account '{$username}' (password '{$password}').\n";
 	}
 
 	/**

@@ -429,4 +429,463 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Objects for review: reminders before the due date"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "{$count} reminder(s) sent for {$context}."
+msgstr "For {$context}: {$reminders} due date reminder(s), {$contractReminders} contract offer reminder(s), {$expired} expired contract offer(s)."
+
+msgid "plugins.generic.objectsForReview.identifierTypeRequired"
+msgstr "Please select an identifier type."
+
+msgid "plugins.generic.objectsForReview.resourceTypeRequired"
+msgstr "Please select a resource type."
+
+msgid "plugins.generic.objectsForReview.titleRequired"
+msgstr "Please enter a title."
+
+msgid "plugins.generic.objectsForReview.identifierRequired"
+msgstr "Please enter an identifier."
+
+msgid "plugins.generic.objectsForReview.role.bookReviewEditor"
+msgstr "Book review editor"
+
+msgid "plugins.generic.objectsForReview.role.bookReviewEditor.abbrev"
+msgstr "BRE"
+
+msgid "plugins.generic.objectsForReview.role.publisherContact"
+msgstr "Publisher contact"
+
+msgid "plugins.generic.objectsForReview.role.publisherContact.abbrev"
+msgstr "PC"
+
+msgid "plugins.generic.objectsForReview.menu.desk"
+msgstr "To-do"
+
+msgid "plugins.generic.objectsForReview.menu.assignments"
+msgstr "Reviewers & bidders"
+
+msgid "plugins.generic.objectsForReview.assignments.none"
+msgstr "No entries with this status."
+
+msgid "plugins.generic.objectsForReview.status.active"
+msgstr "Current (offered or reserved)"
+
+msgid "plugins.generic.objectsForReview.status.all"
+msgstr "All"
+
+msgid "plugins.generic.objectsForReview.status.bid"
+msgstr "Bid"
+
+msgid "plugins.generic.objectsForReview.status.unsuccessful"
+msgstr "Not selected (on the list)"
+
+msgid "plugins.generic.objectsForReview.status.offered"
+msgstr "Contract offered"
+
+msgid "plugins.generic.objectsForReview.status.accepted"
+msgstr "Reserved"
+
+msgid "plugins.generic.objectsForReview.status.submitted"
+msgstr "Review submitted"
+
+msgid "plugins.generic.objectsForReview.status.completed"
+msgstr "Review published"
+
+msgid "plugins.generic.objectsForReview.status.withdrawn"
+msgstr "Bid withdrawn"
+
+msgid "plugins.generic.objectsForReview.status.declined"
+msgstr "Contract declined"
+
+msgid "plugins.generic.objectsForReview.status.expired"
+msgstr "Contract offer expired"
+
+msgid "plugins.generic.objectsForReview.status.retracted"
+msgstr "Cancelled by the reviewer"
+
+msgid "plugins.generic.objectsForReview.status.cancelled"
+msgstr "Cancelled by the editors"
+
+msgid "plugins.generic.objectsForReview.status.discarded"
+msgstr "List closed"
+
+msgid "plugins.generic.objectsForReview.offerState.open"
+msgstr "Open"
+
+msgid "plugins.generic.objectsForReview.offerState.selection"
+msgstr "Selection pending"
+
+msgid "plugins.generic.objectsForReview.offerState.contractOffered"
+msgstr "Contract offered"
+
+msgid "plugins.generic.objectsForReview.offerState.assigned"
+msgstr "Reserved"
+
+msgid "plugins.generic.objectsForReview.offerState.submitted"
+msgstr "Review submitted"
+
+msgid "plugins.generic.objectsForReview.offerState.closed"
+msgstr "Closed"
+
+msgid "plugins.generic.objectsForReview.offerState.bidCount"
+msgstr "{$number} bids"
+
+msgid "plugins.generic.objectsForReview.offer.title"
+msgstr "Offer"
+
+msgid "plugins.generic.objectsForReview.offer.mode"
+msgstr "Assignment"
+
+msgid "plugins.generic.objectsForReview.offer.mode.description"
+msgstr "Direct reservation: the first person to accept the terms gets the review. Bidding: reviewers apply, and the book review editor chooses."
+
+msgid "plugins.generic.objectsForReview.offer.mode.direct"
+msgstr "Direct reservation"
+
+msgid "plugins.generic.objectsForReview.offer.mode.bidding"
+msgstr "Bidding"
+
+msgid "plugins.generic.objectsForReview.offer.modeRequired"
+msgstr "Please choose how the review is assigned."
+
+msgid "plugins.generic.objectsForReview.offer.bidDeadline"
+msgstr "Bid deadline"
+
+msgid "plugins.generic.objectsForReview.offer.bidDeadline.description"
+msgstr "Optional. Bids are accepted until the end of this day."
+
+msgid "plugins.generic.objectsForReview.offer.bidDeadlineInvalid"
+msgstr "Please enter a valid date."
+
+msgid "plugins.generic.objectsForReview.offer.responsibleEditor"
+msgstr "Responsible book review editor"
+
+msgid "plugins.generic.objectsForReview.offer.responsibleEditor.description"
+msgstr "Receives the notifications about this offer. Book review editors are users in the group \"Book review editor\" (Users & Roles)."
+
+msgid "plugins.generic.objectsForReview.offer.noEditor"
+msgstr "— none (notification address from the settings) —"
+
+msgid "plugins.generic.objectsForReview.offer.editorInvalid"
+msgstr "Please choose a book review editor."
+
+msgid "plugins.generic.objectsForReview.bid"
+msgstr "Apply"
+
+msgid "plugins.generic.objectsForReview.bid.title"
+msgstr "Apply to review this work"
+
+msgid "plugins.generic.objectsForReview.bid.description"
+msgstr "The book review editor will choose among the applicants. If you are selected, you will receive an email with a link to the review agreement."
+
+msgid "plugins.generic.objectsForReview.bid.statement"
+msgstr "Statement"
+
+msgid "plugins.generic.objectsForReview.bid.statement.hint"
+msgstr "Optional: why you would like to review this work, and your expertise."
+
+msgid "plugins.generic.objectsForReview.bid.submit"
+msgstr "Submit application"
+
+msgid "plugins.generic.objectsForReview.bid.open"
+msgstr "Open for applications"
+
+msgid "plugins.generic.objectsForReview.bid.closed"
+msgstr "Selection in progress"
+
+msgid "plugins.generic.objectsForReview.bid.deadline"
+msgstr "Apply by {$deadline}"
+
+msgid "plugins.generic.objectsForReview.bid.yours"
+msgstr "You applied on {$date}."
+
+msgid "plugins.generic.objectsForReview.bid.unsuccessful"
+msgstr "Someone else is reviewing this work. You remain on the list in case the review does not materialise."
+
+msgid "plugins.generic.objectsForReview.bid.withdraw"
+msgstr "Withdraw application"
+
+msgid "plugins.generic.objectsForReview.bid.withdraw.confirm"
+msgstr "Do you want to withdraw your application?"
+
+msgid "plugins.generic.objectsForReview.bid.selected"
+msgstr "You have been selected. Please respond by {$deadline}."
+
+msgid "plugins.generic.objectsForReview.bid.respond"
+msgstr "Respond to the offer"
+
+msgid "plugins.generic.objectsForReview.backToList"
+msgstr "Back to the list of works for review"
+
+msgid "plugins.generic.objectsForReview.contract.title"
+msgstr "Review agreement"
+
+msgid "plugins.generic.objectsForReview.contract.intro"
+msgstr "Dear {$name}, you have been selected to review this work. Please accept the agreement by {$deadline}, or let us know if you cannot write the review."
+
+msgid "plugins.generic.objectsForReview.contract.accept"
+msgstr "Accept the agreement"
+
+msgid "plugins.generic.objectsForReview.contract.decline"
+msgstr "I cannot write this review"
+
+msgid "plugins.generic.objectsForReview.contract.declineReason"
+msgstr "Reason (optional)"
+
+msgid "plugins.generic.objectsForReview.contract.decline.submit"
+msgstr "Decline the offer"
+
+msgid "plugins.generic.objectsForReview.contract.declined.noReason"
+msgstr "No reason given."
+
+msgid "plugins.generic.objectsForReview.contract.expired"
+msgstr "The offer was not answered by the deadline."
+
+msgid "plugins.generic.objectsForReview.leave.title"
+msgstr "Leave the list"
+
+msgid "plugins.generic.objectsForReview.leave.description"
+msgstr "Dear {$name}, do you want to be removed from the list of applicants for this work? You will not be contacted about it again."
+
+msgid "plugins.generic.objectsForReview.leave.submit"
+msgstr "Remove me from the list"
+
+msgid "plugins.generic.objectsForReview.link.invalid.title"
+msgstr "Link no longer valid"
+
+msgid "plugins.generic.objectsForReview.link.invalid"
+msgstr "This link has expired or has already been used. Please contact the editors if you have any questions."
+
+msgid "plugins.generic.objectsForReview.response.accepted.title"
+msgstr "Thank you!"
+
+msgid "plugins.generic.objectsForReview.response.accepted"
+msgstr "You have accepted the review agreement. Your review is due on {$dueDate}."
+
+msgid "plugins.generic.objectsForReview.response.declined.title"
+msgstr "Offer declined"
+
+msgid "plugins.generic.objectsForReview.response.declined"
+msgstr "Thank you for letting us know. The editors have been informed."
+
+msgid "plugins.generic.objectsForReview.response.left.title"
+msgstr "Removed from the list"
+
+msgid "plugins.generic.objectsForReview.response.left"
+msgstr "You have been removed from the list of applicants for this work."
+
+msgid "plugins.generic.objectsForReview.desk.empty"
+msgstr "Nothing to do at the moment."
+
+msgid "plugins.generic.objectsForReview.desk.selection"
+msgstr "Choose a reviewer"
+
+msgid "plugins.generic.objectsForReview.desk.biddingOpen"
+msgstr "Bidding is open."
+
+msgid "plugins.generic.objectsForReview.desk.biddingClosed"
+msgstr "Bidding is closed."
+
+msgid "plugins.generic.objectsForReview.desk.deadlinePassed"
+msgstr "The bid deadline ({$deadline}) has passed."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.declined"
+msgstr "{$name} declined the contract on {$date}."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.expired"
+msgstr "The contract offer to {$name} expired on {$date}."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.retracted"
+msgstr "{$name} cancelled the reservation on {$date}."
+
+msgid "plugins.generic.objectsForReview.desk.dropout.cancelled"
+msgstr "The editors cancelled the assignment of {$name} on {$date}."
+
+msgid "plugins.generic.objectsForReview.desk.noBidders"
+msgstr "There are no bidders left on the list."
+
+msgid "plugins.generic.objectsForReview.desk.reviewCount"
+msgstr "Reviews for this journal: {$number}"
+
+msgid "plugins.generic.objectsForReview.desk.onList"
+msgstr "On the list (already told someone else was chosen)"
+
+msgid "plugins.generic.objectsForReview.desk.select"
+msgstr "Select and send contract"
+
+msgid "plugins.generic.objectsForReview.desk.offers"
+msgstr "Waiting for an answer to the contract offer"
+
+msgid "plugins.generic.objectsForReview.desk.unsuccessful"
+msgstr "Notify bidders who were not selected"
+
+msgid "plugins.generic.objectsForReview.desk.closed"
+msgstr "Closed offers"
+
+msgid "plugins.generic.objectsForReview.desk.notPossible"
+msgstr "This step is not possible in the current state of the offer."
+
+msgid "plugins.generic.objectsForReview.desk.reopenBidding"
+msgstr "Reopen bidding"
+
+msgid "plugins.generic.objectsForReview.desk.reopenBidding.confirm"
+msgstr "Reopen bidding for this work? Bidders already on the list stay on it."
+
+msgid "plugins.generic.objectsForReview.desk.switchToDirect"
+msgstr "Switch to direct reservation"
+
+msgid "plugins.generic.objectsForReview.desk.switchToDirect.confirm"
+msgstr "Switch this offer to direct reservation? The first person to accept the terms on the public page gets the review."
+
+msgid "plugins.generic.objectsForReview.desk.closeOffer"
+msgstr "Close offer"
+
+msgid "plugins.generic.objectsForReview.desk.closeOffer.confirm"
+msgstr "Close this offer? It is removed from the public page and the list of bidders is discarded."
+
+msgid "plugins.generic.objectsForReview.desk.reopenOffer"
+msgstr "Reopen offer"
+
+msgid "plugins.generic.objectsForReview.desk.reopenOffer.confirm"
+msgstr "Offer this work for review again?"
+
+msgid "plugins.generic.objectsForReview.column.bidder"
+msgstr "Bidder"
+
+msgid "plugins.generic.objectsForReview.column.bidDate"
+msgstr "Applied on"
+
+msgid "plugins.generic.objectsForReview.column.selectedBidder"
+msgstr "Selected bidder"
+
+msgid "plugins.generic.objectsForReview.column.offeredOn"
+msgstr "Offered on"
+
+msgid "plugins.generic.objectsForReview.column.answerBy"
+msgstr "Answer by"
+
+msgid "plugins.generic.objectsForReview.column.remainingBidders"
+msgstr "Remaining bidders"
+
+msgid "plugins.generic.objectsForReview.column.person"
+msgstr "Person"
+
+msgid "plugins.generic.objectsForReview.contractOffer.description"
+msgstr "Select {$reviewer} to review this work. Bidding closes, and {$reviewer} receives the email below with a link to the review agreement."
+
+msgid "plugins.generic.objectsForReview.contractOffer.linkHint"
+msgstr "{$contractUrl} is replaced with the personal link to the agreement when the email is sent."
+
+msgid "plugins.generic.objectsForReview.contractOffer.linkRequired"
+msgstr "The email must contain {$contractUrl}, the link to the agreement."
+
+msgid "plugins.generic.objectsForReview.contractOffer.submit"
+msgstr "Select and send"
+
+msgid "plugins.generic.objectsForReview.contractOffer.cancel"
+msgstr "Withdraw offer"
+
+msgid "plugins.generic.objectsForReview.contractOffer.cancel.description"
+msgstr "Withdraw the contract offer to {$reviewer}? You can then choose another bidder."
+
+msgid "plugins.generic.objectsForReview.unsuccessful.action"
+msgstr "Notify bidders"
+
+msgid "plugins.generic.objectsForReview.unsuccessful.description"
+msgstr "Tell these bidders that someone else is reviewing the work. They stay on the list in case the review does not materialise."
+
+msgid "plugins.generic.objectsForReview.unsuccessful.linkHint"
+msgstr "Each bidder gets a personal email: {$recipientName} and {$removeUrl} (link to leave the list) are filled in when it is sent."
+
+msgid "plugins.generic.objectsForReview.unsuccessful.submit"
+msgstr "Notify"
+
+msgid "plugins.generic.objectsForReview.history.email.contractOffer"
+msgstr "Contract offer sent"
+
+msgid "plugins.generic.objectsForReview.history.email.contractOfferAgain"
+msgstr "Contract offer sent (after a dropout)"
+
+msgid "plugins.generic.objectsForReview.history.email.contractReminder"
+msgstr "Reminder about the contract offer sent"
+
+msgid "plugins.generic.objectsForReview.history.email.bidUnsuccessful"
+msgstr "Bidder notified: not selected"
+
+msgid "plugins.generic.objectsForReview.history.email.bidNew"
+msgstr "Editor notified of a new bid"
+
+msgid "plugins.generic.objectsForReview.history.email.contractDeclined"
+msgstr "Editor notified: contract declined or expired"
+
+msgid "plugins.generic.objectsForReview.history.event.bid"
+msgstr "{$recipientName} applied"
+
+msgid "plugins.generic.objectsForReview.history.event.bidWithdrawn"
+msgstr "{$recipientName} withdrew the application"
+
+msgid "plugins.generic.objectsForReview.history.event.contractOffered"
+msgstr "Contract offered to {$recipientName}; bidding closed"
+
+msgid "plugins.generic.objectsForReview.history.event.contractAccepted"
+msgstr "Contract accepted by {$recipientName}, due {$reviewDueDate}"
+
+msgid "plugins.generic.objectsForReview.history.event.contractDeclined"
+msgstr "Contract declined by {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.contractExpired"
+msgstr "Contract offer to {$recipientName} expired"
+
+msgid "plugins.generic.objectsForReview.history.event.contractWithdrawn"
+msgstr "Contract offer to {$recipientName} withdrawn by the editors"
+
+msgid "plugins.generic.objectsForReview.history.event.bidderUnsuccessful"
+msgstr "{$recipientName} notified: not selected (stays on the list)"
+
+msgid "plugins.generic.objectsForReview.history.event.biddingReopened"
+msgstr "Bidding reopened"
+
+msgid "plugins.generic.objectsForReview.history.event.modeDirect"
+msgstr "Switched to direct reservation"
+
+msgid "plugins.generic.objectsForReview.history.event.offerClosed"
+msgstr "Offer closed"
+
+msgid "plugins.generic.objectsForReview.history.event.offerReopened"
+msgstr "Offer reopened"
+
+msgid "plugins.generic.objectsForReview.history.event.listDiscarded"
+msgstr "List of bidders discarded ({$number})"
+
+msgid "plugins.generic.objectsForReview.history.event.completed"
+msgstr "Review by {$recipientName} published"
+
+msgid "plugins.generic.objectsForReview.settings.defaultMode"
+msgstr "Default assignment for new offers"
+
+msgid "plugins.generic.objectsForReview.settings.defaultMode.description"
+msgstr "Can be changed for each offer."
+
+msgid "plugins.generic.objectsForReview.settings.defaultEditor"
+msgstr "Default responsible book review editor"
+
+msgid "plugins.generic.objectsForReview.settings.defaultEditor.description"
+msgstr "For new offers. If none is set, a book review editor who creates an offer becomes responsible for it."
+
+msgid "plugins.generic.objectsForReview.settings.defaultEditor.none"
+msgstr "— none —"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays"
+msgstr "Contract offers"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.description"
+msgstr "Days a selected bidder has to accept the agreement, and after how many days a reminder is sent (0: no reminder)."
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.deadline"
+msgstr "Days to answer"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.reminder"
+msgstr "Reminder after (days)"
+
+msgid "plugins.generic.objectsForReview.settings.contractDays.invalid"
+msgstr "Please enter the number of days to answer (1–90) and a reminder before the deadline."
+
+msgid "plugins.generic.objectsForReview.desk.declineReason"
+msgstr "Reason"

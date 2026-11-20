@@ -1,0 +1,78 @@
+{**
+ * plugins/generic/objectsForReview/templates/frontend/pages/respond.tpl
+ *
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
+ *
+ * Page behind the one-click links and the contract page for selected bidders.
+ * Opening it never changes anything; every action needs a confirmation button.
+ *
+ * $view: contract | leave | invalid | accepted | declined | left
+ * $key: link key (when reached through an email link)
+ *}
+{include file="frontend/components/header.tpl" pageTitle="plugins.generic.objectsForReview.frontendTitle"}
+
+<div class="page objectsForReview ofrResponse">
+	{include file="frontend/components/breadcrumbs.tpl" currentTitleKey="plugins.generic.objectsForReview.frontendTitle"}
+
+	{if $view == 'invalid'}
+		<h1>{translate key="plugins.generic.objectsForReview.link.invalid.title"}</h1>
+		<p>{translate key="plugins.generic.objectsForReview.link.invalid"}</p>
+
+	{elseif $view == 'contract'}
+		<h1>{translate key="plugins.generic.objectsForReview.contract.title"}</h1>
+		<p class="ofrReserveObject">{$objectDescription|strip_unsafe_html}</p>
+		<p>{translate key="plugins.generic.objectsForReview.contract.intro" name=$reviewerName|escape deadline=$contractDeadline|date_format:$dateFormatShort}</p>
+
+		<form class="ofrContractForm" method="post" action="{url op="respond"}">
+			{csrf}
+			<input type="hidden" name="decision" value="accept" />
+			{if $key}<input type="hidden" name="key" value="{$key|escape}" />{else}<input type="hidden" name="objectId" value="{$objectId|escape}" />{/if}
+			{include file=$contractFieldsTemplate}
+			<div class="ofrButtons">
+				<button type="submit" class="pkp_button">{translate key="plugins.generic.objectsForReview.contract.accept"}</button>
+			</div>
+		</form>
+
+		<details class="ofrDecline">
+			<summary>{translate key="plugins.generic.objectsForReview.contract.decline"}</summary>
+			<form class="ofrDeclineForm" method="post" action="{url op="respond"}">
+				{csrf}
+				<input type="hidden" name="decision" value="decline" />
+				{if $key}<input type="hidden" name="key" value="{$key|escape}" />{else}<input type="hidden" name="objectId" value="{$objectId|escape}" />{/if}
+				<div class="ofrField">
+					<label for="ofrDeclineReason">{translate key="plugins.generic.objectsForReview.contract.declineReason"}</label>
+					<textarea id="ofrDeclineReason" name="declineReason" rows="3" maxlength="{$maxStatementLength|escape}"></textarea>
+				</div>
+				<button type="submit" class="pkp_button">{translate key="plugins.generic.objectsForReview.contract.decline.submit"}</button>
+			</form>
+		</details>
+
+	{elseif $view == 'leave'}
+		<h1>{translate key="plugins.generic.objectsForReview.leave.title"}</h1>
+		<p class="ofrReserveObject">{$objectDescription|strip_unsafe_html}</p>
+		<p>{translate key="plugins.generic.objectsForReview.leave.description" name=$reviewerName|escape}</p>
+		<form method="post" action="{url op="respond"}">
+			{csrf}
+			<input type="hidden" name="decision" value="leave" />
+			<input type="hidden" name="key" value="{$key|escape}" />
+			<button type="submit" class="pkp_button">{translate key="plugins.generic.objectsForReview.leave.submit"}</button>
+		</form>
+
+	{else}
+		<h1>{translate key="plugins.generic.objectsForReview.response.$view.title"}</h1>
+		<p class="ofrReserveObject">{$objectDescription|strip_unsafe_html}</p>
+		<p class="ofrResponseMessage">{translate key="plugins.generic.objectsForReview.response.$view" dueDate=$dueDate|date_format:$dateFormatShort}</p>
+	{/if}
+
+	<p><a href="{url op="index"}">{translate key="plugins.generic.objectsForReview.backToList"}</a></p>
+</div>
+
+<style>
+	.ofrResponse { max-width: 48rem; }
+	.ofrResponse .ofrReserveObject { font-style: italic; }
+	.ofrResponse .ofrButtons { margin: 1.5rem 0; }
+	.ofrResponse .ofrDecline { margin: 1.5rem 0; border-top: 1px solid #ddd; padding-top: 1rem; }
+	.ofrResponse .ofrDecline summary { cursor: pointer; font-weight: bold; }
+</style>
+
+{include file="frontend/components/footer.tpl"}

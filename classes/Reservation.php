@@ -9,8 +9,8 @@
  * @ingroup plugins_generic_objectsForReview
  *
  * @brief Reservation terms: contract text, due date limits, delivery
- *  preferences, validation of the reservation form and the reservation data
- *  stored with an ObjectForReview.
+ *  preferences, validation of the contract form and the contract data
+ *  stored with an Assignment.
  */
 
 namespace APP\plugins\generic\objectsForReview\classes;
@@ -41,7 +41,7 @@ class Reservation {
 		return $days === null ? self::DEFAULT_REMINDER_DAYS : (int) $days;
 	}
 
-	/** Reservation data stored as object settings (see ObjectForReviewDAO::getAdditionalFieldNames()) */
+	/** Contract data stored as assignment settings (see AssignmentDAO::getAdditionalFieldNames()) */
 	const FIELDS = ['dateReserved', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote', 'reminderSent'];
 
 	/** Personal data that is erased once it is no longer needed */
@@ -129,10 +129,9 @@ class Reservation {
 	}
 
 	/**
-	 * Store reservation data with the object.
+	 * Store the contract data with the assignment.
 	 */
-	public static function apply(ObjectForReview $object, int $userId, array $data): void {
-		$object->setUserId($userId);
+	public static function apply(Assignment $object, array $data): void {
 		foreach (self::FIELDS as $field) {
 			if (($data[$field] ?? '') === '') {
 				$object->unsetData($field); // unset fields are deleted from the settings table
@@ -143,28 +142,19 @@ class Reservation {
 	}
 
 	/**
-	 * Remove the reservation (on cancellation).
+	 * Erase personal data that is no longer needed (when the review is attached
+	 * to a submission, or the assignment ends).
 	 */
-	public static function clear(ObjectForReview $object): void {
-		$object->setUserId(null);
-		foreach (self::FIELDS as $field) {
-			$object->unsetData($field);
-		}
-	}
-
-	/**
-	 * Erase personal data that is no longer needed (when the object is attached to a submission).
-	 */
-	public static function erasePersonalData(ObjectForReview $object): void {
+	public static function erasePersonalData(Assignment $object): void {
 		foreach (self::PERSONAL_FIELDS as $field) {
 			$object->unsetData($field);
 		}
 	}
 
 	/**
-	 * Reservation data of an object for display.
+	 * Contract data of an assignment for display.
 	 */
-	public static function getDisplayData(ObjectForReview $object): array {
+	public static function getDisplayData(Assignment $object): array {
 		$preference = $object->getData('copyPreference');
 		return [
 			'dateReserved' => $object->getData('dateReserved'),
@@ -181,7 +171,7 @@ class Reservation {
 	/**
 	 * Reservation details as HTML for the notification email, in the email's locale.
 	 */
-	public static function getEmailDetails(ObjectForReview $object, $context, ?string $locale = null): string {
+	public static function getEmailDetails(Assignment $object, $context, ?string $locale = null): string {
 		$locale = $locale ?? $context->getPrimaryLocale();
 		$t = fn ($key) => __('plugins.generic.objectsForReview.' . $key, [], $locale);
 		$dateFormat = PKPString::convertStrftimeFormat($context->getLocalizedDateFormatShort($locale));

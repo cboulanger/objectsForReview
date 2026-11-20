@@ -21,13 +21,24 @@ Open <http://localhost:8080/index.php/test>. Set `OJS_PORT` to use a different p
 | --- | --- | --- |
 | `admin` | `ojsadmin` | Site admin, journal manager |
 | `author` | `ojsauthor` | Author |
+| `bre` | `ojsbre` | Book review editor (plugin role, base role Section editor) |
+| `reviewer2` | `ojsreviewer2` | Author (a second bidder) |
 
 On first start, the container installs the plugin's database tables and enables the plugin in the test journal. Where to find it:
 
-- Manager: left menu › Objects for Review (Rezensionsangebote)
+- Manager and book review editor: left menu › Objects for Review (Rezensionsangebote)
 - Author: submission wizard, "For the Editors" step
 
-Changes to the plugin's database schema (`ObjectsForReviewSchemaMigration.php`) or `version.xml` take effect only in a fresh container (`dev/ojs-dev.sh reset`).
+Emails are not sent; they are written to the container log (`dev/ojs-dev.sh logs`), including the one-click links. Emails sent by the scheduled task appear in its output:
+
+```sh
+dev/ojs-dev.sh shell
+php lib/pkp/tools/scheduler.php test --name="APP\plugins\generic\objectsForReview\classes\ReservationReminder"
+```
+
+To add the workflow accounts to an existing container: `php tools/devSetup.php users` (after copying `plugins/generic/objectsForReview/dev/devSetup.php` to `tools/`).
+
+The plugin upgrades its own tables when it loads (`schemaVersion` plugin setting, see `ObjectsForReviewSchemaMigration::SCHEMA_VERSION`), so schema changes also reach existing installations.
 
 ## Podman on macOS
 

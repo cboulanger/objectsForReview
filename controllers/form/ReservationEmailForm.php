@@ -8,22 +8,27 @@
  * @class ReservationEmailForm
  * @ingroup plugins_generic_objectsForReview
  *
- * @brief Email the reviewer of a reservation, or cancel the reservation with an
- *  optional notification (like unassigning a reviewer). The message is
- *  prefilled from an email template and recorded in the audit trail.
+ * @brief A workflow step taken by the book review editor, with a prefilled,
+ *  editable email that is recorded in the audit trail (like unassigning a
+ *  reviewer in OJS):
+ *  - message: email the reviewer or selected bidder
+ *  - cancel: cancel a contract offer or reservation, optionally notifying the person
+ *  - contractOffer: select a bidder and send the contract link
+ *  - unsuccessful: tell the remaining bidders that someone else writes the review
+ *    (they stay on the list), optionally by email
  */
 
 namespace APP\plugins\generic\objectsForReview\controllers\form;
 
 use APP\core\Application;
 use APP\facades\Repo;
-use APP\plugins\generic\objectsForReview\classes\Reservation;
+use APP\plugins\generic\objectsForReview\classes\ActionLink;
+use APP\plugins\generic\objectsForReview\classes\Assignment;
+use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
 use APP\plugins\generic\objectsForReview\classes\ReservationEmailEventType;
-use APP\plugins\generic\objectsForReview\classes\ReservationLog;
 use APP\plugins\generic\objectsForReview\classes\ReservationMailer;
 use APP\plugins\generic\objectsForReview\controllers\ReservationActionsHandler;
 use APP\template\TemplateManager;
-use PKP\db\DAORegistry;
 use PKP\form\validation\FormValidatorCSRF;
 use PKP\form\validation\FormValidatorCustom;
 use PKP\form\validation\FormValidatorPost;
@@ -32,38 +37,83 @@ class ReservationEmailForm extends \PKP\form\Form {
 
 	const MODE_MESSAGE = 'message';
 	const MODE_CANCEL = 'cancel';
+	const MODE_CONTRACT_OFFER = 'contractOffer';
+	const MODE_UNSUCCESSFUL = 'unsuccessful';
+
+	/** Modes in which sending the email is optional */
+	const OPTIONAL_EMAIL_MODES = [self::MODE_CANCEL, self::MODE_UNSUCCESSFUL];
+
+	/** Handler operation that saves each mode */
+	const SAVE_OPS = [
+		self::MODE_MESSAGE => 'sendEmail',
+		self::MODE_CANCEL => 'cancel',
+		self::MODE_CONTRACT_OFFER => 'offerContract',
+		self::MODE_UNSUCCESSFUL => 'notifyUnsuccessful',
+	];
 
 	protected $plugin;
 	protected $context;
 	protected $object;
+	/** @var Assignment[] */
+	protected array $assignments;
 	protected string $mode;
-	protected $reviewer;
+	/** @var \PKP\user\User[] assignmentId => user */
+	protected array $recipients = [];
 
-	public function __construct($plugin, $context, $object, string $mode) {
+	/**
+	 * @param Assignment[] $assignments One assignment, or several for MODE_UNSUCCESSFUL
+	 */
+	public function __construct($plugin, $context, $object, array $assignments, string $mode) {
 		parent::__construct($plugin->getTemplateResource('reservationEmailForm.tpl'));
 		$this->plugin = $plugin;
 		$this->context = $context;
 		$this->object = $object;
+		$this->assignments = $assignments;
 		$this->mode = $mode;
-		$this->reviewer = Repo::user()->get((int) $object->getUserId(), true);
+		foreach ($assignments as $assignment) {
+			if ($user = Repo::user()->get($assignment->getUserId(), true)) {
+				$this->recipients[$assignment->getId()] = $user;
+			}
+		}
 
-		// Subject and body are needed whenever an email is sent
-		$needsEmail = fn () => $this->mode === self::MODE_MESSAGE || $this->getData('sendEmail');
+		$needsEmail = fn () => !in_array($this->mode, self::OPTIONAL_EMAIL_MODES, true) || $this->getData('sendEmail');
 		$this->addCheck(new FormValidatorCustom($this, 'subject', 'required', 'plugins.generic.objectsForReview.reservations.subjectRequired',
 			fn ($subject) => !$needsEmail() || trim((string) $subject) !== ''));
 		$this->addCheck(new FormValidatorCustom($this, 'body', 'required', 'plugins.generic.objectsForReview.reservations.bodyRequired',
 			fn ($body) => !$needsEmail() || trim(strip_tags((string) $body)) !== ''));
+		if ($mode === self::MODE_CONTRACT_OFFER) {
+			$this->addCheck(new FormValidatorCustom($this, 'body', 'required', 'plugins.generic.objectsForReview.contractOffer.linkRequired',
+				fn ($body) => str_contains((string) $body, '{$contractUrl}')));
+		}
 		$this->addCheck(new FormValidatorPost($this));
 		$this->addCheck(new FormValidatorCSRF($this));
 	}
 
 	protected function emailType(): ReservationEmailEventType {
-		return $this->mode === self::MODE_CANCEL ? ReservationEmailEventType::CANCELLED_BY_EDITOR : ReservationEmailEventType::MESSAGE;
+		return match ($this->mode) {
+			self::MODE_CANCEL => ReservationEmailEventType::CANCELLED_BY_EDITOR,
+			self::MODE_CONTRACT_OFFER => AssignmentWorkflow::isAfterDropout(AssignmentWorkflow::dao()->getByObjectId($this->object->getId()))
+				? ReservationEmailEventType::CONTRACT_OFFER_AGAIN
+				: ReservationEmailEventType::CONTRACT_OFFER,
+			self::MODE_UNSUCCESSFUL => ReservationEmailEventType::BID_UNSUCCESSFUL,
+			default => ReservationEmailEventType::MESSAGE,
+		};
 	}
 
 	public function initData() {
 		$sender = Application::get()->getRequest()->getUser();
-		[$subject, $body] = ReservationMailer::compose($this->context, $this->emailType(), $this->object, $this->reviewer, $sender);
+		$single = count($this->assignments) === 1 && $this->mode !== self::MODE_UNSUCCESSFUL;
+		$assignment = $single ? reset($this->assignments) : null;
+		$extra = [];
+		if ($this->mode === self::MODE_CONTRACT_OFFER) {
+			// The deadline the offer will get
+			[$days] = AssignmentWorkflow::getContractDays($this->plugin, $this->context->getId());
+			$deadline = (new \DateTimeImmutable('today'))->modify("+{$days} days")->format('Y-m-d');
+			$extra['contractDeadline'] = date(\PKP\core\PKPString::convertStrftimeFormat($this->context->getLocalizedDateFormatShort()), strtotime($deadline));
+		}
+		// In batches, {$recipientName} is filled in per recipient when sending
+		$recipient = $assignment ? ($this->recipients[$assignment->getId()] ?? null) : null;
+		[$subject, $body] = ReservationMailer::compose($this->context, $this->emailType(), $this->object, $assignment, $recipient, $sender, $extra);
 		$this->setData('subject', $subject);
 		$this->setData('body', $body);
 		$this->setData('sendEmail', true);
@@ -74,29 +124,55 @@ class ReservationEmailForm extends \PKP\form\Form {
 	}
 
 	public function fetch($request, $template = null, $display = false) {
+		$recipients = [];
+		foreach ($this->recipients as $user) {
+			$recipients[] = ['name' => $user->getFullName(), 'email' => $user->getEmail()];
+		}
+		$first = $recipients[0] ?? ['name' => '', 'email' => ''];
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign([
 			'mode' => $this->mode,
 			'objectId' => $this->object->getId(),
+			'assignmentIds' => array_map(fn ($a) => $a->getId(), $this->assignments),
 			'objectDescription' => $this->object->getDescription(),
-			'reviewerName' => $this->reviewer->getFullName(),
-			'reviewerEmail' => $this->reviewer->getEmail(),
+			'recipients' => $recipients,
+			'reviewerName' => $first['name'],
+			'optionalEmail' => in_array($this->mode, self::OPTIONAL_EMAIL_MODES, true),
+			'cancelOffer' => $this->mode === self::MODE_CANCEL && reset($this->assignments)?->getStatus() === Assignment::STATUS_OFFERED,
 			'actionUrl' => $request->getDispatcher()->url($request, Application::ROUTE_COMPONENT, null,
-				ReservationActionsHandler::COMPONENT, $this->mode === self::MODE_CANCEL ? 'cancel' : 'sendEmail'),
+				ReservationActionsHandler::COMPONENT, self::SAVE_OPS[$this->mode]),
 		]);
 		return parent::fetch($request, $template, $display);
 	}
 
 	public function execute(...$functionArgs) {
 		$sender = Application::get()->getRequest()->getUser();
-		if ($this->mode === self::MODE_MESSAGE || $this->getData('sendEmail')) {
-			ReservationMailer::send($this->context, $this->emailType(), $this->object, $this->reviewer, $sender,
-				trim($this->getData('subject')), $this->getData('body'));
-		}
-		if ($this->mode === self::MODE_CANCEL) {
-			ReservationLog::logEvent($this->object, ReservationLog::EVENT_CANCELLED_BY_EDITOR, $sender, $this->reviewer);
-			Reservation::clear($this->object);
-			DAORegistry::getDAO('ObjectForReviewDAO')->updateObject($this->object);
+		$sendEmail = !in_array($this->mode, self::OPTIONAL_EMAIL_MODES, true) || $this->getData('sendEmail');
+		$type = $this->emailType();
+		$subject = trim((string) $this->getData('subject'));
+		$body = (string) $this->getData('body');
+
+		foreach ($this->assignments as $assignment) {
+			$recipient = $this->recipients[$assignment->getId()] ?? null;
+			$late = [];
+			switch ($this->mode) {
+				case self::MODE_CANCEL:
+					AssignmentWorkflow::cancelByEditor($this->object, $assignment, $sender);
+					break;
+				case self::MODE_CONTRACT_OFFER:
+					$key = AssignmentWorkflow::offerContract($this->plugin, $this->context, $this->object, $assignment, $sender);
+					$late['contractUrl'] = ActionLink::url($this->context, $key);
+					break;
+				case self::MODE_UNSUCCESSFUL:
+					AssignmentWorkflow::markUnsuccessful($this->object, $assignment, $sender);
+					$key = ActionLink::create($assignment->getId(), ActionLink::ACTION_LEAVE,
+						(new \DateTimeImmutable('today'))->modify('+' . ActionLink::DEFAULT_VALIDITY_DAYS . ' days')->format('Y-m-d 23:59:59'));
+					$late['removeUrl'] = ActionLink::url($this->context, $key);
+					break;
+			}
+			if ($sendEmail && $recipient) {
+				ReservationMailer::send($this->context, $type, $this->object, $recipient, $sender, $subject, $body, $late);
+			}
 		}
 		parent::execute(...$functionArgs);
 	}

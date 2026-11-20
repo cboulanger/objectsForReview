@@ -15,4 +15,10 @@
   <email key="OFR_MESSAGE" subject="emails.ofrMessage.subject" name="emails.ofrMessage.name" body="emails.ofrMessage.body"/>
   <email key="OFR_CANCEL_BY_EDITOR" subject="emails.ofrCancelByEditor.subject" name="emails.ofrCancelByEditor.name" body="emails.ofrCancelByEditor.body"/>
   <email key="OFR_REMINDER" subject="emails.ofrReminder.subject" name="emails.ofrReminder.name" body="emails.ofrReminder.body"/>
+  <email key="OFR_CONTRACT_OFFER" subject="emails.ofrContractOffer.subject" name="emails.ofrContractOffer.name" body="emails.ofrContractOffer.body"/>
+  <email key="OFR_CONTRACT_OFFER_AGAIN" subject="emails.ofrContractOfferAgain.subject" name="emails.ofrContractOfferAgain.name" body="emails.ofrContractOfferAgain.body"/>
+  <email key="OFR_CONTRACT_OFFER_REMINDER" subject="emails.ofrContractReminder.subject" name="emails.ofrContractReminder.name" body="emails.ofrContractReminder.body"/>
+  <email key="OFR_BID_UNSUCCESSFUL" subject="emails.ofrBidUnsuccessful.subject" name="emails.ofrBidUnsuccessful.name" body="emails.ofrBidUnsuccessful.body"/>
+  <email key="OFR_BID_NEW" subject="emails.ofrBidNew.subject" name="emails.ofrBidNew.name" body="emails.ofrBidNew.body"/>
+  <email key="OFR_CONTRACT_DECLINED" subject="emails.ofrContractDeclined.subject" name="emails.ofrContractDeclined.name" body="emails.ofrContractDeclined.body"/>
 </emails>

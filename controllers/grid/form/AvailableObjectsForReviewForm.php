@@ -15,7 +15,9 @@
  */
 namespace APP\plugins\generic\objectsForReview\controllers\grid\form;
 
-use APP\plugins\generic\objectsForReview\classes\ObjectsForReviewDAO;
+use APP\core\Application;
+use APP\plugins\generic\objectsForReview\classes\ObjectForReview;
+use APP\plugins\generic\objectsForReview\classes\Roles;
 use APP\plugins\generic\objectsForReview\ObjectsForReviewPlugin;
 use APP\template\TemplateManager;
 use PKP\db\DAORegistry;
@@ -48,6 +50,11 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 		$this->addCheck(new \PKP\form\validation\FormValidator($this, 'resourceType', 'required', 'plugins.generic.objectsForReview.resourceTypeRequired'));
 		$this->addCheck(new \PKP\form\validation\FormValidator($this, 'title', 'required', 'plugins.generic.objectsForReview.titleRequired'));
 		$this->addCheck(new \PKP\form\validation\FormValidator($this, 'identifier', 'required', 'plugins.generic.objectsForReview.identifierRequired'));
+		$this->addCheck(new \PKP\form\validation\FormValidatorInSet($this, 'assignmentMode', 'required', 'plugins.generic.objectsForReview.offer.modeRequired', ObjectForReview::MODES));
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'bidDeadline', 'optional', 'plugins.generic.objectsForReview.offer.bidDeadlineInvalid',
+			fn ($date) => ($d = \DateTimeImmutable::createFromFormat('!Y-m-d', (string) $date)) && $d->format('Y-m-d') === $date));
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'responsibleEditorId', 'optional', 'plugins.generic.objectsForReview.offer.editorInvalid',
+			fn ($id) => isset(Roles::getMembers($this->plugin, (int) $this->contextId, Roles::EDITOR)[(int) $id])));
 		$this->addCheck(new \PKP\form\validation\FormValidatorPost($this));
 		$this->addCheck(new \PKP\form\validation\FormValidatorCSRF($this));
 
@@ -67,6 +74,18 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 			$this->setData('title', $objectForReview->getTitle());
 			$this->setData('year', $objectForReview->getYear());
 			$this->setData('publisher', $objectForReview->getPublisher());
+			$this->setData('assignmentMode', $objectForReview->getAssignmentMode());
+			$this->setData('bidDeadline', $objectForReview->getData('bidDeadline'));
+			$this->setData('responsibleEditorId', $objectForReview->getResponsibleEditorId());
+		} else {
+			// Defaults for new offers: settings, or the current user if they are a book review editor
+			$userId = Application::get()->getRequest()->getUser()?->getId();
+			$this->setData('assignmentMode', $this->plugin->getSetting($this->contextId, 'ofrDefaultMode') ?: ObjectForReview::MODE_DIRECT);
+			$editorId = (int) $this->plugin->getSetting($this->contextId, 'ofrDefaultEditorId');
+			if (!$editorId && Roles::isBookReviewEditor($this->plugin, (int) $this->contextId, $userId)) {
+				$editorId = $userId;
+			}
+			$this->setData('responsibleEditorId', $editorId ?: null);
 		}
 	}
 
@@ -74,7 +93,7 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 	 * @copydoc Form::readInputData()
 	 */
 	function readInputData() {
-		$this->readUserVars(array('identifierType', 'resourceType', 'identifier', 'authors', 'title', 'year', 'publisher'));
+		$this->readUserVars(array('identifierType', 'resourceType', 'identifier', 'authors', 'title', 'year', 'publisher', 'assignmentMode', 'bidDeadline', 'responsibleEditorId'));
 	}
 
 	/**
@@ -88,6 +107,12 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 		$templateMgr->assign('identifierTypes', $identifierTypes);
 		$templateMgr->assign('resourceTypes', $resourceTypes);
 		$templateMgr->assign('identifierLookupTemplate', $this->plugin->getTemplateResource('identifierLookup.tpl'));
+		$templateMgr->assign('assignmentModes', [
+			ObjectForReview::MODE_DIRECT => __('plugins.generic.objectsForReview.offer.mode.direct'),
+			ObjectForReview::MODE_BIDDING => __('plugins.generic.objectsForReview.offer.mode.bidding'),
+		]);
+		$templateMgr->assign('bookReviewEditors', ['' => __('plugins.generic.objectsForReview.offer.noEditor')]
+			+ Roles::getMembers($this->plugin, (int) $this->contextId, Roles::EDITOR));
 		return parent::fetch($request);
 	}
 
@@ -115,6 +140,9 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 		$objectForReview->setTitle($title);		$objectForReview->setYear($this->getData('year'));
 		$objectForReview->setPublisher($this->getData('publisher'));
 		$objectForReview->setCreator("manager");
+		$objectForReview->setOfferSetting('assignmentMode', $this->getData('assignmentMode') === ObjectForReview::MODE_BIDDING ? ObjectForReview::MODE_BIDDING : null);
+		$objectForReview->setOfferSetting('bidDeadline', $this->getData('assignmentMode') === ObjectForReview::MODE_BIDDING ? $this->getData('bidDeadline') : null);
+		$objectForReview->setOfferSetting('responsibleEditorId', (int) $this->getData('responsibleEditorId') ?: null);
 
 		if ($objectId) {
 			$objectForReviewDao->updateObject($objectForReview);

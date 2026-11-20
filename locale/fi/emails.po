@@ -84,3 +84,75 @@ msgstr "Muistutus: arviosi määräpäivä on {$dueDate}"
 
 msgid "emails.ofrReminder.body"
 msgstr "<p>Hyvä {$recipientName},</p><p>muistutamme ystävällisesti, että seuraavan julkaisun arviosi määräpäivä on <strong>{$dueDate}</strong>:<br />{$objectDescription}</p><p>Jos tarvitset lisää aikaa, ota yhteyttä toimitukseen mahdollisimman pian.</p><p>Ystävällisin terveisin<br />{$contextName}</p>"
+
+msgid "emails.ofrContractOffer.name"
+msgstr "Arviointisopimus: sopimustarjous"
+
+msgid "emails.ofrContractOffer.description"
+msgstr "Lähetetään kirja-arvioiden toimittajan valitsemalle hakijalle, ja siinä on linkki arviointisopimukseen."
+
+msgid "emails.ofrContractOffer.subject"
+msgstr "Sinut on valittu arvioijaksi"
+
+msgid "emails.ofrContractOffer.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>kiitos kiinnostuksestasi. Tarjoamme sinulle mielellämme seuraavan teoksen arvioinnin:<br />{$objectDescription}</p><p>Hyväksy arviointisopimus tai hylkää tarjous viimeistään <strong>{$contractDeadline}</strong>:<br /><a href=\"{$contractUrl}\">{$contractUrl}</a></p><p>Ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrContractOfferAgain.name"
+msgstr "Arviointisopimus: tarjous peruutuksen jälkeen"
+
+msgid "emails.ofrContractOfferAgain.description"
+msgstr "Lähetetään listalla olevalle hakijalle, kun aiemmin valittu arvioija on perunut."
+
+msgid "emails.ofrContractOfferAgain.subject"
+msgstr "Hakemasi teoksen arviointi on jälleen vapaana"
+
+msgid "emails.ofrContractOfferAgain.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>hait seuraavan teoksen arvioijaksi:<br />{$objectDescription}</p><p>Arviointi on jälleen vapaana, ja tarjoamme sitä mielellämme sinulle. Jos olet yhä kiinnostunut, hyväksy arviointisopimus viimeistään <strong>{$contractDeadline}</strong> tai hylkää tarjous:<br /><a href=\"{$contractUrl}\">{$contractUrl}</a></p><p>Ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrContractReminder.name"
+msgstr "Muistutus sopimustarjouksesta"
+
+msgid "emails.ofrContractReminder.description"
+msgstr "Lähetetään automaattisesti valitulle hakijalle, joka ei ole vielä vastannut sopimustarjoukseen."
+
+msgid "emails.ofrContractReminder.subject"
+msgstr "Muistutus: vastaa arviointitarjoukseen viimeistään {$contractDeadline}"
+
+msgid "emails.ofrContractReminder.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>muistutamme ystävällisesti, että olemme tarjonneet sinulle seuraavan teoksen arviointia:<br />{$objectDescription}</p><p>Hyväksy arviointisopimus tai hylkää tarjous viimeistään <strong>{$contractDeadline}</strong>:<br /><a href=\"{$contractUrl}\">{$contractUrl}</a></p><p>Ystävällisin terveisin<br />{$contextName}</p>"
+
+msgid "emails.ofrBidUnsuccessful.name"
+msgstr "Hakijaa ei valittu"
+
+msgid "emails.ofrBidUnsuccessful.description"
+msgstr "Lähetetään muille hakijoille, kun sopimus on hyväksytty. He pysyvät listalla siltä varalta, ettei arviota synny."
+
+msgid "emails.ofrBidUnsuccessful.subject"
+msgstr "Hakemuksesi arvioijaksi"
+
+msgid "emails.ofrBidUnsuccessful.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>kiitos hakemuksestasi seuraavan teoksen arvioijaksi:<br />{$objectDescription}</p><p>Annoimme arvioinnin tällä kertaa toiselle hakijalle. Pidämme sinut listallamme ja voimme ottaa yhteyttä, jos arviota ei synny.</p><p>Jos haluat mieluummin, että sinut poistetaan listalta, käytä tätä linkkiä:<br /><a href=\"{$removeUrl}\">{$removeUrl}</a></p><p>Ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrBidNew.name"
+msgstr "Uusi hakemus (kirja-arvioiden toimittajalle)"
+
+msgid "emails.ofrBidNew.description"
+msgstr "Lähetetään automaattisesti vastuulliselle kirja-arvioiden toimittajalle, kun joku hakee arvioijaksi."
+
+msgid "emails.ofrBidNew.subject"
+msgstr "Uusi hakemus arvioijaksi: {$objectDescription}"
+
+msgid "emails.ofrBidNew.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>{$bidderName} on hakenut seuraavan teoksen arvioijaksi:<br />{$objectDescription}</p><p>Perustelut:<br />{$bidStatement}</p><p>Voit valita hakijoiden joukosta täällä: <a href=\"{$deskUrl}\">{$deskUrl}</a></p>"
+
+msgid "emails.ofrContractDeclined.name"
+msgstr "Sopimus hylätty tai vanhentunut (kirja-arvioiden toimittajalle)"
+
+msgid "emails.ofrContractDeclined.description"
+msgstr "Lähetetään automaattisesti vastuulliselle kirja-arvioiden toimittajalle, kun valittu hakija hylkää sopimustarjouksen tai ei vastaa ajoissa."
+
+msgid "emails.ofrContractDeclined.subject"
+msgstr "Arviointitarjousta ei hyväksytty: {$objectDescription}"
+
+msgid "emails.ofrContractDeclined.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>{$reviewerName} ei hyväksynyt tarjousta arvioida seuraava teos:<br />{$objectDescription}</p><p>{$declineReason}</p><p>Valitse toinen hakija tai avaa haku uudelleen: <a href=\"{$deskUrl}\">{$deskUrl}</a></p>"

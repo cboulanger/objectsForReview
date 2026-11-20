@@ -29,12 +29,40 @@ class ReservationLog {
 	const EVENT_CANCELLED_BY_REVIEWER = 0x1F0F202;
 	const EVENT_CANCELLED_BY_EDITOR = 0x1F0F203;
 	const EVENT_ATTACHED = 0x1F0F204;
+	const EVENT_BID = 0x1F0F205;
+	const EVENT_BID_WITHDRAWN = 0x1F0F206;
+	const EVENT_CONTRACT_OFFERED = 0x1F0F207;
+	const EVENT_CONTRACT_ACCEPTED = 0x1F0F208;
+	const EVENT_CONTRACT_DECLINED = 0x1F0F209;
+	const EVENT_CONTRACT_EXPIRED = 0x1F0F20A;
+	const EVENT_CONTRACT_WITHDRAWN = 0x1F0F20B;
+	const EVENT_BIDDER_UNSUCCESSFUL = 0x1F0F20C;
+	const EVENT_BIDDING_REOPENED = 0x1F0F20D;
+	const EVENT_MODE_DIRECT = 0x1F0F20E;
+	const EVENT_OFFER_CLOSED = 0x1F0F20F;
+	const EVENT_OFFER_REOPENED = 0x1F0F210;
+	const EVENT_LIST_DISCARDED = 0x1F0F211;
+	const EVENT_COMPLETED = 0x1F0F212;
 
 	const EVENT_MESSAGES = [
 		self::EVENT_RESERVED => 'plugins.generic.objectsForReview.history.event.reserved',
 		self::EVENT_CANCELLED_BY_REVIEWER => 'plugins.generic.objectsForReview.history.event.cancelledByReviewer',
 		self::EVENT_CANCELLED_BY_EDITOR => 'plugins.generic.objectsForReview.history.event.cancelledByEditor',
 		self::EVENT_ATTACHED => 'plugins.generic.objectsForReview.history.event.attached',
+		self::EVENT_BID => 'plugins.generic.objectsForReview.history.event.bid',
+		self::EVENT_BID_WITHDRAWN => 'plugins.generic.objectsForReview.history.event.bidWithdrawn',
+		self::EVENT_CONTRACT_OFFERED => 'plugins.generic.objectsForReview.history.event.contractOffered',
+		self::EVENT_CONTRACT_ACCEPTED => 'plugins.generic.objectsForReview.history.event.contractAccepted',
+		self::EVENT_CONTRACT_DECLINED => 'plugins.generic.objectsForReview.history.event.contractDeclined',
+		self::EVENT_CONTRACT_EXPIRED => 'plugins.generic.objectsForReview.history.event.contractExpired',
+		self::EVENT_CONTRACT_WITHDRAWN => 'plugins.generic.objectsForReview.history.event.contractWithdrawn',
+		self::EVENT_BIDDER_UNSUCCESSFUL => 'plugins.generic.objectsForReview.history.event.bidderUnsuccessful',
+		self::EVENT_BIDDING_REOPENED => 'plugins.generic.objectsForReview.history.event.biddingReopened',
+		self::EVENT_MODE_DIRECT => 'plugins.generic.objectsForReview.history.event.modeDirect',
+		self::EVENT_OFFER_CLOSED => 'plugins.generic.objectsForReview.history.event.offerClosed',
+		self::EVENT_OFFER_REOPENED => 'plugins.generic.objectsForReview.history.event.offerReopened',
+		self::EVENT_LIST_DISCARDED => 'plugins.generic.objectsForReview.history.event.listDiscarded',
+		self::EVENT_COMPLETED => 'plugins.generic.objectsForReview.history.event.completed',
 	];
 
 	/**
@@ -63,7 +91,7 @@ class ReservationLog {
 	/**
 	 * Log a sent email (like Repo::emailLogEntry()->logMailable(), but for an object for review).
 	 */
-	public static function logEmail($object, ReservationEmailEventType $eventType, ?User $sender, User $recipient,
+	public static function logEmail($object, ReservationEmailEventType $eventType, ?User $sender, User|string $recipient,
 			string $from, string $subject, string $body): void {
 		$entry = new EmailLogEntry();
 		$entry->assocType = self::ASSOC_TYPE;
@@ -72,13 +100,17 @@ class ReservationLog {
 		$entry->senderId = $sender?->getId();
 		$entry->dateSent = Core::getCurrentDate();
 		$entry->fromAddress = $from;
-		$entry->recipients = '"' . $recipient->getFullName() . '" <' . $recipient->getEmail() . '>';
+		$entry->recipients = $recipient instanceof User
+			? '"' . $recipient->getFullName() . '" <' . $recipient->getEmail() . '>'
+			: $recipient;
 		$entry->ccRecipients = '';
 		$entry->bccRecipients = '';
 		$entry->subject = $subject;
 		$entry->body = $body;
 		$entry->save();
-		DB::table('email_log_users')->insert(['email_log_id' => $entry->id, 'user_id' => $recipient->getId()]);
+		if ($recipient instanceof User) {
+			DB::table('email_log_users')->insert(['email_log_id' => $entry->id, 'user_id' => $recipient->getId()]);
+		}
 	}
 
 	/**
