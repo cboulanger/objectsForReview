@@ -49,14 +49,14 @@ Requirements: OJS 3.5 and PHP 8.2 or later.
 
      ```sh
      cd /path/to/ojs/plugins/generic
-     git clone -b stable-3_5_0 https://github.com/cboulanger/objectsForReview.git objectsForReview
+     git clone https://github.com/cboulanger/objectsForReview.git objectsForReview
      ```
 
      The folder must be called `objectsForReview`;
    - or building an archive and uploading it under *Website Settings › Plugins › Upload a new plugin*:
 
      ```sh
-     git archive --prefix=objectsForReview/ -o objectsForReview.tar.gz stable-3_5_0
+     git archive --prefix=objectsForReview/ -o objectsForReview.tar.gz main
      ```
 
 2. If you cloned the plugin, register it from the OJS folder:
