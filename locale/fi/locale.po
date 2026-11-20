@@ -408,7 +408,7 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Arvioitavat julkaisut: muistutukset ennen määräpäivää"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "{$context}: {$reminders} määräpäivämuistutus(ta), {$contractReminders} sopimustarjousmuistutus(ta), {$expired} vanhentunut(ta) sopimustarjous(ta), {$publisherReminders} kustantajamuistutus(ta), {$expiredInvitations} vanhentunut(ta) kutsu(a)."
+msgstr "{$context}: {$reminders} määräpäivämuistutus(ta), {$contractReminders} sopimustarjousmuistutus(ta), {$expired} vanhentunut(ta) sopimustarjous(ta), {$publisherReminders} kustantajamuistutus(ta), {$expiredInvitations} vanhentunut(ta) kutsu(a), {$invitationReminders} kutsumuistutus(ta)."
 
 msgid "plugins.generic.objectsForReview.identifierTypeRequired"
 msgstr "Valitse tunnisteen tyyppi."
@@ -1443,7 +1443,76 @@ msgid "plugins.generic.objectsForReview.settings.invitationDays"
 msgstr "Kutsut"
 
 msgid "plugins.generic.objectsForReview.settings.invitationDays.description"
-msgstr "Päivät, joiden kuluessa kutsuttujen on vastattava. Hakukutsuissa käytetään tarjouksen hakuaikaa, jos sellainen on."
+msgstr "Päivät, joiden kuluessa kutsuttujen on vastattava, ja monenko päivän kuluttua heitä muistutetaan (0: ei muistutusta). Hakukutsuissa käytetään tarjouksen hakuaikaa, jos sellainen on."
 
 msgid "plugins.generic.objectsForReview.settings.invitationDays.invalid"
 msgstr "Anna päivien määrä väliltä 1–90."
+
+msgid "plugins.generic.objectsForReview.status.invitationWithdrawn"
+msgstr "Kutsu peruttu"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationReminder"
+msgstr "Kutsumuistutus"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationExhausted"
+msgstr "Toimittajalle ilmoitettu: kutsulista käyty läpi"
+
+msgid "plugins.generic.objectsForReview.history.event.roundStarted"
+msgstr "Peräkkäinen kutsukierros aloitettu"
+
+msgid "plugins.generic.objectsForReview.history.event.roundStopped"
+msgstr "Kutsukierros päätetty"
+
+msgid "plugins.generic.objectsForReview.history.event.roundExhausted"
+msgstr "Kutsukierros saavutti listan lopun"
+
+msgid "plugins.generic.objectsForReview.history.event.roundCompleted"
+msgstr "Kutsukierros päättyi: varannut {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationWithdrawn"
+msgstr "Kutsu henkilölle {$recipientName} peruttu"
+
+msgid "plugins.generic.objectsForReview.history.event.roundContinued"
+msgstr "Kutsukierrosta jatkettu"
+
+msgid "plugins.generic.objectsForReview.invitation.round.description"
+msgstr "Aloittaa peräkkäisen kierroksen. Ensin kutsutaan {$name}. Jokainen kieltäytyminen tai kutsu, johon ei vastata {$days} päivän kuluessa, kutsuu automaattisesti listan seuraavan henkilön tällä tekstillä, kunnes joku varaa teoksen."
+
+msgid "plugins.generic.objectsForReview.invitation.round.hint"
+msgstr "{$recipientName}, {$invitationDeadline} ja {$invitationUrl} täytetään kullekin henkilölle, kun hänen kutsunsa lähetetään."
+
+msgid "plugins.generic.objectsForReview.invitation.round.start"
+msgstr "Aloita peräkkäinen kierros"
+
+msgid "plugins.generic.objectsForReview.invitation.round.hideOffer"
+msgstr "Piilota julkisesta luettelosta kutsukierroksen ajaksi"
+
+msgid "plugins.generic.objectsForReview.invitation.round.explain"
+msgstr "Kutsuu listalla odottavat henkilöt automaattisesti yksi kerrallaan."
+
+msgid "plugins.generic.objectsForReview.invitation.round.running"
+msgstr "Peräkkäinen kierros, aloitettu {$date}, aloittaja {$name}"
+
+msgid "plugins.generic.objectsForReview.invitation.round.exhausted"
+msgstr "Kierros saavutti listan lopun ilman varausta. Lisää henkilöitä ja jatka kierrosta tai lopeta se."
+
+msgid "plugins.generic.objectsForReview.invitation.round.current"
+msgstr "Kutsuttuna nyt: {$name} (vastaus viimeistään {$deadline})"
+
+msgid "plugins.generic.objectsForReview.invitation.round.next"
+msgstr "Seuraavaksi: {$name} ({$number} odottaa)"
+
+msgid "plugins.generic.objectsForReview.invitation.round.noneWaiting"
+msgstr "Listalla ei odota muita."
+
+msgid "plugins.generic.objectsForReview.invitation.round.continue"
+msgstr "Jatka kierrosta"
+
+msgid "plugins.generic.objectsForReview.invitation.round.stop"
+msgstr "Lopeta kierros"
+
+msgid "plugins.generic.objectsForReview.invitation.round.stop.confirm"
+msgstr "Lopetetaanko kierros? Avoin kutsu perutaan, eikä ketään muuta kutsuta."
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays.reminderInvalid"
+msgstr "Anna, monenko päivän kuluttua kutsuttuja muistutetaan (0: ei muistutusta); määrän on oltava pienempi kuin vastausaika."

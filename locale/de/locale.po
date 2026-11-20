@@ -428,7 +428,7 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Rezensionsangebote: Erinnerungen vor dem Abgabetermin"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "Für {$context}: {$reminders} Erinnerung(en) an Fälligkeiten, {$contractReminders} Erinnerung(en) an Vertragsangebote, {$expired} abgelaufene(s) Vertragsangebot(e), {$publisherReminders} Erinnerung(en) an Verlage, {$expiredInvitations} abgelaufene Einladung(en)."
+msgstr "Für {$context}: {$reminders} Erinnerung(en) an Fälligkeiten, {$contractReminders} Erinnerung(en) an Vertragsangebote, {$expired} abgelaufene(s) Vertragsangebot(e), {$publisherReminders} Erinnerung(en) an Verlage, {$expiredInvitations} abgelaufene Einladung(en), {$invitationReminders} Erinnerung(en) an Einladungen."
 
 msgid "plugins.generic.objectsForReview.identifierTypeRequired"
 msgstr "Bitte wählen Sie einen Identifikatortyp."
@@ -1463,7 +1463,76 @@ msgid "plugins.generic.objectsForReview.settings.invitationDays"
 msgstr "Einladungen"
 
 msgid "plugins.generic.objectsForReview.settings.invitationDays.description"
-msgstr "Tage, die Eingeladene für ihre Antwort haben. Einladungen zur Bewerbung für ein Angebot mit Bewerbungsfrist verwenden diese Frist."
+msgstr "Tage, die Eingeladene für ihre Antwort haben, und nach wie vielen Tagen sie erinnert werden (0: keine Erinnerung). Einladungen zur Bewerbung für ein Angebot mit Bewerbungsfrist verwenden diese Frist."
 
 msgid "plugins.generic.objectsForReview.settings.invitationDays.invalid"
 msgstr "Bitte geben Sie eine Anzahl von Tagen zwischen 1 und 90 ein."
+
+msgid "plugins.generic.objectsForReview.status.invitationWithdrawn"
+msgstr "Einladung zurückgezogen"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationReminder"
+msgstr "Erinnerung an die Einladung"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationExhausted"
+msgstr "Redaktion benachrichtigt: Einladungsliste ausgeschöpft"
+
+msgid "plugins.generic.objectsForReview.history.event.roundStarted"
+msgstr "Fortlaufende Einladungsrunde gestartet"
+
+msgid "plugins.generic.objectsForReview.history.event.roundStopped"
+msgstr "Einladungsrunde beendet"
+
+msgid "plugins.generic.objectsForReview.history.event.roundExhausted"
+msgstr "Einladungsrunde hat das Ende der Liste erreicht"
+
+msgid "plugins.generic.objectsForReview.history.event.roundCompleted"
+msgstr "Einladungsrunde beendet: reserviert von {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationWithdrawn"
+msgstr "Einladung an {$recipientName} zurückgezogen"
+
+msgid "plugins.generic.objectsForReview.history.event.roundContinued"
+msgstr "Einladungsrunde fortgesetzt"
+
+msgid "plugins.generic.objectsForReview.invitation.round.description"
+msgstr "Startet eine fortlaufende Runde. Zuerst wird {$name} eingeladen. Jede Absage oder nicht innerhalb von {$days} Tagen beantwortete Einladung lädt automatisch die nächste Person auf der Liste mit diesem Text ein, bis jemand das Werk reserviert."
+
+msgid "plugins.generic.objectsForReview.invitation.round.hint"
+msgstr "{$recipientName}, {$invitationDeadline} und {$invitationUrl} werden für jede Person beim Versand ihrer Einladung eingesetzt."
+
+msgid "plugins.generic.objectsForReview.invitation.round.start"
+msgstr "Fortlaufende Runde starten"
+
+msgid "plugins.generic.objectsForReview.invitation.round.hideOffer"
+msgstr "Während der Einladungsrunde aus der öffentlichen Liste nehmen"
+
+msgid "plugins.generic.objectsForReview.invitation.round.explain"
+msgstr "Lädt die wartenden Personen auf der Liste automatisch nacheinander ein."
+
+msgid "plugins.generic.objectsForReview.invitation.round.running"
+msgstr "Fortlaufende Runde, gestartet am {$date} von {$name}"
+
+msgid "plugins.generic.objectsForReview.invitation.round.exhausted"
+msgstr "Die Runde hat das Ende der Liste ohne Reservierung erreicht. Fügen Sie weitere Personen hinzu und setzen Sie die Runde fort, oder beenden Sie sie."
+
+msgid "plugins.generic.objectsForReview.invitation.round.current"
+msgstr "Derzeit eingeladen: {$name} (Antwort bis {$deadline})"
+
+msgid "plugins.generic.objectsForReview.invitation.round.next"
+msgstr "Als Nächstes: {$name} ({$number} wartend)"
+
+msgid "plugins.generic.objectsForReview.invitation.round.noneWaiting"
+msgstr "Niemand sonst wartet auf der Liste."
+
+msgid "plugins.generic.objectsForReview.invitation.round.continue"
+msgstr "Runde fortsetzen"
+
+msgid "plugins.generic.objectsForReview.invitation.round.stop"
+msgstr "Runde beenden"
+
+msgid "plugins.generic.objectsForReview.invitation.round.stop.confirm"
+msgstr "Runde beenden? Die offene Einladung wird zurückgezogen, und niemand weiteres wird eingeladen."
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays.reminderInvalid"
+msgstr "Bitte geben Sie an, nach wie vielen Tagen Eingeladene erinnert werden (0: keine Erinnerung); es müssen weniger Tage sein als die Antwortfrist."

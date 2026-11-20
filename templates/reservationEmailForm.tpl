@@ -44,6 +44,12 @@
 			{/fbvFormSection}
 		{/if}
 
+		{if $hideOfferOption}
+			{fbvFormSection list=true}
+				{fbvElement type="checkbox" id="hideOffer" value="1" checked=$hideOffer label="plugins.generic.objectsForReview.invitation.round.hideOffer"}
+			{/fbvFormSection}
+		{/if}
+
 		{if !$noEmail}
 		{if $optionalEmail}
 			{fbvFormSection list=true}

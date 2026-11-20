@@ -33,6 +33,8 @@ enum ReservationEmailEventType: int implements EmailLogEventType
 	case INVITATION_RESERVE = 0x1F0F111;
 	case INVITATION_BID = 0x1F0F112;
 	case INVITATION_DECLINED = 0x1F0F113;
+	case INVITATION_REMINDER = 0x1F0F114;
+	case INVITATION_EXHAUSTED = 0x1F0F115;
 
 	public function labelKey(): string
 	{
@@ -56,6 +58,8 @@ enum ReservationEmailEventType: int implements EmailLogEventType
 			self::INVITATION_RESERVE => 'plugins.generic.objectsForReview.history.email.invitationReserve',
 			self::INVITATION_BID => 'plugins.generic.objectsForReview.history.email.invitationBid',
 			self::INVITATION_DECLINED => 'plugins.generic.objectsForReview.history.email.invitationDeclined',
+			self::INVITATION_REMINDER => 'plugins.generic.objectsForReview.history.email.invitationReminder',
+			self::INVITATION_EXHAUSTED => 'plugins.generic.objectsForReview.history.email.invitationExhausted',
 		};
 	}
 }

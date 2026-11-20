@@ -37,9 +37,11 @@ class Assignment extends DataObject {
 	const STATUS_INVITED = 'invited';
 	const STATUS_INVITATION_DECLINED = 'invitationDeclined';
 	const STATUS_INVITATION_EXPIRED = 'invitationExpired';
+	const STATUS_INVITATION_WITHDRAWN = 'invitationWithdrawn';
 
 	/** People on an invitation list */
-	const INVITATION_STATUSES = [self::STATUS_LISTED, self::STATUS_INVITED, self::STATUS_INVITATION_DECLINED, self::STATUS_INVITATION_EXPIRED];
+	const INVITATION_STATUSES = [self::STATUS_LISTED, self::STATUS_INVITED, self::STATUS_INVITATION_DECLINED, self::STATUS_INVITATION_EXPIRED,
+		self::STATUS_INVITATION_WITHDRAWN];
 
 	/** Invitations that are not finished yet */
 	const OPEN_INVITATION_STATUSES = [self::STATUS_LISTED, self::STATUS_INVITED];

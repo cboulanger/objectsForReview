@@ -134,6 +134,8 @@ class AssignmentWorkflow {
 	 * @param ?Assignment $invitation The user's invitation, which becomes the reservation
 	 */
 	public static function reserve($plugin, $context, ObjectForReview $object, User $user, array $data, ?Assignment $invitation = null): Assignment {
+		// Through the invitation link, or an invitation record reused for a reservation/bid on the public page
+		$viaInvitation = $invitation !== null;
 		$invitation ??= self::dao()->getByObjectAndUser($object->getId(), $user->getId(), Assignment::INVITATION_STATUSES);
 		$assignment = $invitation ?? self::dao()->newDataObject();
 		$assignment->setObjectId($object->getId());
@@ -152,8 +154,9 @@ class AssignmentWorkflow {
 			self::dao()->insertObject($assignment);
 		}
 		self::syncReviewer($object);
-		ReservationLog::logEvent($object, $invitation ? ReservationLog::EVENT_RESERVED_VIA_INVITATION : ReservationLog::EVENT_RESERVED,
+		ReservationLog::logEvent($object, $viaInvitation ? ReservationLog::EVENT_RESERVED_VIA_INVITATION : ReservationLog::EVENT_RESERVED,
 			$user, $user, ['reviewDueDate' => $data['dueDate']]);
+		InvitationWorkflow::onReserved($object, $assignment);
 		$plugin->notifyEditor($user, $object, 'OFR_NEW_RESERVATION', Reservation::getEmailDetails($assignment, $context));
 		self::sendConfirmation($plugin, $context, $object, $assignment, $user);
 		return $assignment;
@@ -164,6 +167,8 @@ class AssignmentWorkflow {
 	 * @param ?Assignment $invitation The user's invitation, which becomes the bid
 	 */
 	public static function bid($plugin, $context, ObjectForReview $object, User $user, string $statement, ?Assignment $invitation = null): Assignment {
+		// Through the invitation link, or an invitation record reused for a reservation/bid on the public page
+		$viaInvitation = $invitation !== null;
 		$invitation ??= self::dao()->getByObjectAndUser($object->getId(), $user->getId(), Assignment::INVITATION_STATUSES);
 		$assignment = $invitation ?? self::dao()->newDataObject();
 		$assignment->setObjectId($object->getId());
@@ -182,7 +187,7 @@ class AssignmentWorkflow {
 		} else {
 			self::dao()->insertObject($assignment);
 		}
-		ReservationLog::logEvent($object, $invitation ? ReservationLog::EVENT_BID_VIA_INVITATION : ReservationLog::EVENT_BID, $user, $user);
+		ReservationLog::logEvent($object, $viaInvitation ? ReservationLog::EVENT_BID_VIA_INVITATION : ReservationLog::EVENT_BID, $user, $user);
 		ReservationMailer::notifyEditor($plugin, $context, ReservationEmailEventType::BID_NEW, $object, $assignment, [
 			'bidderName' => htmlspecialchars($user->getFullName()),
 			'bidStatement' => $statement !== '' ? nl2br(htmlspecialchars($statement)) : '–',
@@ -248,6 +253,7 @@ class AssignmentWorkflow {
 		self::syncReviewer($object);
 		$reviewer = Repo::user()->get($assignment->getUserId(), true);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_CONTRACT_ACCEPTED, $reviewer, $reviewer, ['reviewDueDate' => $data['dueDate']]);
+		InvitationWorkflow::onReserved($object, $assignment);
 		$plugin->notifyEditor($reviewer, $object, 'OFR_NEW_RESERVATION', Reservation::getEmailDetails($assignment, $context));
 		self::sendConfirmation($plugin, $context, $object, $assignment, $reviewer);
 	}

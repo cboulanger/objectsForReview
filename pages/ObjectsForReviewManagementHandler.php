@@ -269,6 +269,7 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$contextId = $context->getId();
 		$assignments = AssignmentWorkflow::dao()->getByObjectId($object->getId());
 		$canInvite = InvitationWorkflow::canInvite($object, $assignments);
+		$roundActive = InvitationWorkflow::isRoundActive($object);
 		$userCache = [];
 
 		// Current reservations per user (to avoid overloading people)
@@ -294,7 +295,8 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$rows = [];
 		foreach ($list as $index => $assignment) {
 			$status = $assignment->getStatus();
-			$sendable = $canInvite && in_array($status, InvitationWorkflow::SENDABLE_STATUSES, true);
+			// While a sequential round runs, it sends the invitations
+			$sendable = $canInvite && !$roundActive && in_array($status, InvitationWorkflow::SENDABLE_STATUSES, true);
 			$rows[] = $personData($assignment->getUserId()) + [
 				'assignmentId' => $assignment->getId(),
 				'status' => $status,
@@ -326,6 +328,17 @@ class ObjectsForReviewManagementHandler extends Handler {
 		}
 
 		$state = AssignmentWorkflow::getState($object, $assignments);
+		$current = $roundActive ? InvitationWorkflow::getCurrent($object) : null;
+		$waiting = $roundActive ? InvitationWorkflow::getWaiting($object) : [];
+		$round = $roundActive ? [
+			'started' => $object->getData('invitationStarted'),
+			'startedBy' => $this->userName((int) $object->getData('invitationStartedBy'), $userCache),
+			'exhausted' => InvitationWorkflow::isExhausted($object),
+			'current' => $current ? $personData($current->getUserId())['name'] : null,
+			'currentDeadline' => $current?->getData('invitationDeadline'),
+			'next' => $waiting ? $personData($waiting[0]->getUserId())['name'] : null,
+			'waitingCount' => count($waiting),
+		] : null;
 		return $this->display($request, 'invite', 'plugins.generic.objectsForReview.invitation.title', [
 			'object' => $this->objectRow($object),
 			'objectId' => $object->getId(),
@@ -334,6 +347,11 @@ class ObjectsForReviewManagementHandler extends Handler {
 			'canInvite' => $canInvite,
 			'canEdit' => !$object->getData('offerClosed') && !$object->getSubmissionId(),
 			'deadline' => InvitationWorkflow::getDeadline($this->plugin, $object),
+			'round' => $round,
+			'roundAction' => InvitationWorkflow::canStartRound($object, $assignments)
+				? $this->linkAction($request, 'roundForm', ['objectId' => $object->getId()],
+					'plugins.generic.objectsForReview.invitation.round.start', 'modal_email', 'round-' . $object->getId())
+				: null,
 			'rows' => $rows,
 			'query' => $query,
 			'results' => $results,
@@ -401,6 +419,12 @@ class ObjectsForReviewManagementHandler extends Handler {
 				break;
 			case 'reorder':
 				InvitationWorkflow::reorder($object, array_filter(explode(',', (string) $request->getUserVar('order'))), $editor);
+				break;
+			case 'stopRound':
+				InvitationWorkflow::stopRound($object, $editor);
+				break;
+			case 'continueRound':
+				InvitationWorkflow::continueRound($this->plugin, $request->getContext(), $object, $editor);
 				break;
 		}
 		$request->redirect(null, self::PAGE, 'invite', [$object->getId()], array_filter($params));

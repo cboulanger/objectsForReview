@@ -618,6 +618,8 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 				. ' .objectsForReviewManagement .ofrDragHandle { cursor: move; color: #888; letter-spacing: -0.2em; margin-right: 0.25rem; }'
 				. ' .objectsForReviewManagement tr.ofrDragging { opacity: 0.4; }'
 				. ' .objectsForReviewManagement .ofrInviteHistory { margin-left: 1rem; }'
+				. ' .objectsForReviewManagement .ofrRound { border-left: 4px solid #006798; background: #f3f8fb; padding: 0.75rem 1rem; margin: 1rem 0; }'
+				. ' .objectsForReviewManagement .ofrRound p { margin: 0.25rem 0; }'
 				. ' .objectsForReviewManagement .ofrNewInvitee .ofrField { margin-bottom: 0.75rem; }'
 				. ' .objectsForReviewManagement .ofrNewInvitee label { display: block; font-weight: bold; }'
 				. ' .objectsForReviewManagement .ofrNewInvitee input { width: 100%; max-width: 30rem; }'

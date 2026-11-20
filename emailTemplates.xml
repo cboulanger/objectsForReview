@@ -30,5 +30,7 @@
   <email key="OFR_INVITATION_RESERVE" subject="emails.ofrInvitationReserve.subject" name="emails.ofrInvitationReserve.name" body="emails.ofrInvitationReserve.body"/>
   <email key="OFR_INVITATION_BID" subject="emails.ofrInvitationBid.subject" name="emails.ofrInvitationBid.name" body="emails.ofrInvitationBid.body"/>
   <email key="OFR_INVITATION_DECLINED" subject="emails.ofrInvitationDeclined.subject" name="emails.ofrInvitationDeclined.name" body="emails.ofrInvitationDeclined.body"/>
+  <email key="OFR_INVITATION_REMINDER" subject="emails.ofrInvitationReminder.subject" name="emails.ofrInvitationReminder.name" body="emails.ofrInvitationReminder.body"/>
+  <email key="OFR_INVITATION_EXHAUSTED" subject="emails.ofrInvitationExhausted.subject" name="emails.ofrInvitationExhausted.name" body="emails.ofrInvitationExhausted.body"/>
   <email key="OFR_CONFIRMATION" subject="emails.ofrConfirmation.subject" name="emails.ofrConfirmation.name" body="emails.ofrConfirmation.body"/>
 </emails>

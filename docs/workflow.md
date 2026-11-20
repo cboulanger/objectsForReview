@@ -188,7 +188,23 @@ The email contains a personal link and an answer deadline: by default 7 days, or
 
 Reserving or applying through an invitation works exactly like doing it on the public page. From then on, the normal workflow applies: the confirmation, the review copy, or your choice on To-do.
 
-If an invitee declines or doesn't answer by the deadline, you are notified, and the list shows the status. You can then invite the next person, or send the same person a new invitation with **Invite again**. Invitations stop working when the work has been reserved, bidding has closed, or the offer is closed. Every step is recorded in the history.
+If an invitee declines or doesn't answer by the deadline, you are notified, and the list shows the status. You can then invite the next person, or send the same person a new invitation with **Invite again**. If a reminder is set up in the settings, invitees who haven't answered get one before the deadline. When someone reserves the work, other pending invitations are withdrawn. Invitations also stop working when bidding has closed or the offer is closed. Every step is recorded in the history.
+
+**Sequential rounds** (direct reservation only). Instead of sending each invitation yourself, you can let the plugin work through the list. Click **Start sequential round** and edit the invitation email once. The name, the deadline and the link are filled in for each person. The box **Hide from the public list during the invitation round** is ticked by default, so that nobody else can reserve the work while an invitee is still deciding. The work stays hidden after the round until you show it again.
+
+![Starting a sequential round](images/invite-round.png)
+
+The first person waiting on the list is invited at once. When they decline, or the deadline passes, the next person is invited automatically with the same text. A passed deadline is caught by the daily task, so the next invitation can go out up to a day later. A decline is only recorded in the history; you are not notified each time. The invitation page shows who is invited now, until when, and who is next.
+
+![A sequential round in progress](images/invite-round-running.png)
+
+The round ends when:
+
+- **someone reserves the work**, through the invitation or on the public page;
+- **you stop it** with **Stop round**: the pending invitation is withdrawn, and nobody further down the list is contacted;
+- **the list runs out**: you receive an email. Add more people and click **Continue round**, or stop the round.
+
+People can be added to the list while a round is running; they are invited after the others. People who declined or didn't answer are never invited again automatically, only with **Invite again** once the round is over.
 
 To invite people without others reserving the work first, hide the offer from the public list. Invitation links keep working for hidden offers.
 

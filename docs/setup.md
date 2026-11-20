@@ -37,13 +37,16 @@ A daily task:
 
 - reminds reviewers before their review is due;
 - reminds selected bidders who have not answered a contract offer, and expires offers that are not answered in time;
-- reminds publishers of unanswered copy requests.
+- reminds publishers of unanswered copy requests;
+- handles invitations: reminds invitees, ends unanswered ones and, in sequential rounds, invites the next person.
 
 OJS 3.5 runs it through its task scheduler. The recommended setup is a cron job on the server that runs the scheduler every minute:
 
 ```cron
 * * * * * cd /path/to/ojs && php lib/pkp/tools/scheduler.php run >> /dev/null 2>&1
 ```
+
+Run it as the web server's user (for example in that user's crontab). Otherwise the task creates cache files the web server can't write to.
 
 The alternative is to set `task_runner = On` in the `[schedule]` section of `config.inc.php`, so tasks run at the end of web requests. This is simpler but less reliable on quiet sites. See the [PKP admin guide](https://docs.pkp.sfu.ca/admin-guide/en/deploy-scheduled-tasks) for details.
 
@@ -94,7 +97,7 @@ Open *Objects for Review › Settings*, or the plugin's *Settings* link in the p
 | Default responsible book review editor | Preselected for new offers. If none is set, the book review editor who creates an offer becomes responsible for it. |
 | Contract offers: Days to answer / Reminder after | How long a selected bidder has to accept the agreement (default 14 days), and when they are reminded (default after 7 days; 0: no reminder). |
 | Reminders to publishers | Days after which an unanswered copy request is repeated to the publisher contact, and the interval between reminders (default 14; 0: no reminders). |
-| Invitations | Days invitees have to answer an invitation (default 7). Invitations to apply for an offer with a bid deadline use that deadline. |
+| Invitations: Days to answer / Reminder after | Days invitees have to answer an invitation (default 7; invitations to apply for an offer with a bid deadline use that deadline), and after how many days they are reminded (default 0: no reminder). |
 
 ## Email templates
 
@@ -122,7 +125,9 @@ All emails are editable under *Settings › Emails*. They are in English, German
 | `OFR_PUBLISHER_NOTIFICATION` | publisher contact | The review has been published |
 | `OFR_INVITATION_RESERVE` | invitee | Invitation to review a work with direct reservation (with the invitation link) |
 | `OFR_INVITATION_BID` | invitee | Invitation to apply for the review of a work offered for bidding (with the invitation link) |
-| `OFR_INVITATION_DECLINED` | book review editor | An invitee declined, or did not answer by the deadline |
+| `OFR_INVITATION_DECLINED` | book review editor | An invitee declined, or did not answer by the deadline (not during sequential rounds) |
+| `OFR_INVITATION_REMINDER` | invitee | Automatic reminder of an unanswered invitation (if set up) |
+| `OFR_INVITATION_EXHAUSTED` | book review editor | A sequential round reached the end of the list without a reservation |
 
 Some values are only filled in when an email is sent: the one-click links (`{$contractUrl}`, `{$copySentUrl}`, `{$receivedUrl}`, `{$returnSentUrl}`, `{$returnReceivedUrl}`, `{$retractUrl}`, `{$removeUrl}`, `{$invitationUrl}`), the recipient's name (`{$recipientName}`) and the return address (`{$returnAddress}`). Keep these placeholders when editing a template. Contract offers and invitations can't be sent without their link placeholder; in the other emails, a missing link is added at the end.
 

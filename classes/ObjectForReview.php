@@ -37,9 +37,15 @@ class ObjectForReview extends \PKP\core\DataObject {
 	 *   (stored as true/false; offers from before the review copy workflow: true)
 	 * - notifyPublisher: the publisher wants to be notified of the published review
 	 * - publisherNotified: date the publisher was notified
+	 * Invitation round (see InvitationWorkflow), while one is running:
+	 * - invitationMode: 'sequential'
+	 * - invitationSubject, invitationBody: the email text edited when the round started
+	 * - invitationStarted, invitationStartedBy: when and by whom (the sender of the emails)
+	 * - invitationExhausted: date the round reached the end of the list
 	 */
 	const OFFER_FIELDS = ['assignmentMode', 'bidDeadline', 'biddingClosed', 'responsibleEditorId', 'offerClosed', 'hidden',
-		'publisherContactId', 'journalHoldsCopy', 'returnRequired', 'notifyPublisher', 'publisherNotified'];
+		'publisherContactId', 'journalHoldsCopy', 'returnRequired', 'notifyPublisher', 'publisherNotified',
+		'invitationMode', 'invitationSubject', 'invitationBody', 'invitationStarted', 'invitationStartedBy', 'invitationExhausted'];
 
 	function isHidden(): bool {
 		return (bool) $this->getData('hidden');

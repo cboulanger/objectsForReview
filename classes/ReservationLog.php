@@ -66,6 +66,12 @@ class ReservationLog {
 	const EVENT_RESERVED_VIA_INVITATION = 0x1F0F227;
 	const EVENT_BID_VIA_INVITATION = 0x1F0F228;
 	const EVENT_INVITATIONS_ENDED = 0x1F0F229;
+	const EVENT_ROUND_STARTED = 0x1F0F22A;
+	const EVENT_ROUND_STOPPED = 0x1F0F22B;
+	const EVENT_ROUND_EXHAUSTED = 0x1F0F22C;
+	const EVENT_ROUND_COMPLETED = 0x1F0F22D;
+	const EVENT_INVITATION_WITHDRAWN = 0x1F0F22E;
+	const EVENT_ROUND_CONTINUED = 0x1F0F22F;
 
 	const EVENT_MESSAGES = [
 		self::EVENT_RESERVED => 'plugins.generic.objectsForReview.history.event.reserved',
@@ -96,6 +102,12 @@ class ReservationLog {
 		self::EVENT_RESERVED_VIA_INVITATION => 'plugins.generic.objectsForReview.history.event.reservedViaInvitation',
 		self::EVENT_BID_VIA_INVITATION => 'plugins.generic.objectsForReview.history.event.bidViaInvitation',
 		self::EVENT_INVITATIONS_ENDED => 'plugins.generic.objectsForReview.history.event.invitationsEnded',
+		self::EVENT_ROUND_STARTED => 'plugins.generic.objectsForReview.history.event.roundStarted',
+		self::EVENT_ROUND_STOPPED => 'plugins.generic.objectsForReview.history.event.roundStopped',
+		self::EVENT_ROUND_EXHAUSTED => 'plugins.generic.objectsForReview.history.event.roundExhausted',
+		self::EVENT_ROUND_COMPLETED => 'plugins.generic.objectsForReview.history.event.roundCompleted',
+		self::EVENT_INVITATION_WITHDRAWN => 'plugins.generic.objectsForReview.history.event.invitationWithdrawn',
+		self::EVENT_ROUND_CONTINUED => 'plugins.generic.objectsForReview.history.event.roundContinued',
 		self::EVENT_LIST_DISCARDED => 'plugins.generic.objectsForReview.history.event.listDiscarded',
 		self::EVENT_COMPLETED => 'plugins.generic.objectsForReview.history.event.completed',
 		self::EVENT_COPY_REQUESTED => 'plugins.generic.objectsForReview.history.event.copyRequested',

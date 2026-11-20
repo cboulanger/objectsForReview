@@ -69,7 +69,8 @@
 		{/fbvFormSection}
 
 		{fbvFormSection label="plugins.generic.objectsForReview.settings.invitationDays" description="plugins.generic.objectsForReview.settings.invitationDays.description"}
-			{fbvElement type="text" id="ofrInvitationDays" value=$ofrInvitationDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
+			{fbvElement type="text" label="plugins.generic.objectsForReview.settings.contractDays.deadline" id="ofrInvitationDays" value=$ofrInvitationDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
+			{fbvElement type="text" label="plugins.generic.objectsForReview.settings.contractDays.reminder" id="ofrInvitationReminderDays" value=$ofrInvitationReminderDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
 		{/fbvFormSection}
 
 		{if $standalone}

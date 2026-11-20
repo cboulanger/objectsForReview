@@ -51,6 +51,8 @@ class ReservationActionsHandler extends Handler {
 		'notifyUnsuccessful' => ReservationEmailForm::MODE_UNSUCCESSFUL,
 		'invitationForm' => ReservationEmailForm::MODE_INVITATION,
 		'sendInvitation' => ReservationEmailForm::MODE_INVITATION,
+		'roundForm' => ReservationEmailForm::MODE_ROUND,
+		'startRound' => ReservationEmailForm::MODE_ROUND,
 	];
 
 	const OFFER_ACTIONS = ['reopenBidding', 'switchToDirect', 'closeOffer', 'reopenOffer'];
@@ -90,6 +92,8 @@ class ReservationActionsHandler extends Handler {
 	public function notifyUnsuccessful($args, $request) { return $this->saveForm($request, 'notifyUnsuccessful'); }
 	public function invitationForm($args, $request) { return $this->showForm($request, 'invitationForm'); }
 	public function sendInvitation($args, $request) { return $this->saveForm($request, 'sendInvitation'); }
+	public function roundForm($args, $request) { return $this->showForm($request, 'roundForm'); }
+	public function startRound($args, $request) { return $this->saveForm($request, 'startRound'); }
 
 	public function reopenBidding($args, $request) { return $this->offerAction($request, 'reopenBidding'); }
 	public function switchToDirect($args, $request) { return $this->offerAction($request, 'switchToDirect'); }
@@ -168,7 +172,7 @@ class ReservationActionsHandler extends Handler {
 	protected function showForm($request, string $op) {
 		[$object, $assignments] = $this->getTarget($request, self::FORM_OPS[$op]);
 		if (!$object) {
-			return new JSONMessage(false, __(self::FORM_OPS[$op] === ReservationEmailForm::MODE_INVITATION
+			return new JSONMessage(false, __(in_array(self::FORM_OPS[$op], [ReservationEmailForm::MODE_INVITATION, ReservationEmailForm::MODE_ROUND], true)
 				? 'plugins.generic.objectsForReview.desk.notPossible' : 'plugins.generic.objectsForReview.reservations.notReserved'));
 		}
 		ReservationMailer::ensureTemplates($this->plugin, $request->getContext()->getId());
@@ -180,7 +184,7 @@ class ReservationActionsHandler extends Handler {
 	protected function saveForm($request, string $op) {
 		[$object, $assignments] = $this->getTarget($request, self::FORM_OPS[$op]);
 		if (!$object || !$request->checkCSRF()) {
-			return new JSONMessage(false, __(self::FORM_OPS[$op] === ReservationEmailForm::MODE_INVITATION
+			return new JSONMessage(false, __(in_array(self::FORM_OPS[$op], [ReservationEmailForm::MODE_INVITATION, ReservationEmailForm::MODE_ROUND], true)
 				? 'plugins.generic.objectsForReview.desk.notPossible' : 'plugins.generic.objectsForReview.reservations.notReserved'));
 		}
 		$form = new ReservationEmailForm($this->plugin, $request->getContext(), $object, $assignments, self::FORM_OPS[$op]);
@@ -246,6 +250,11 @@ class ReservationActionsHandler extends Handler {
 		$all = AssignmentWorkflow::dao()->getByObjectId($object->getId());
 		$state = AssignmentWorkflow::getState($object, $all);
 
+		if ($mode === ReservationEmailForm::MODE_ROUND) {
+			// Everyone waiting on the list, in order (the first is invited now)
+			return InvitationWorkflow::canStartRound($object, $all) ? [$object, InvitationWorkflow::getWaiting($object)] : [null, []];
+		}
+
 		if ($mode === ReservationEmailForm::MODE_UNSUCCESSFUL) {
 			// Remaining bidders, once someone has the review
 			$bidders = AssignmentWorkflow::filter($all, [Assignment::STATUS_BID]);
@@ -271,7 +280,7 @@ class ReservationActionsHandler extends Handler {
 			ReservationEmailForm::MODE_CONTRACT_OFFER => $assignment->isBidder()
 				&& in_array($state, [AssignmentWorkflow::STATE_OPEN, AssignmentWorkflow::STATE_SELECTION], true),
 			ReservationEmailForm::MODE_INVITATION => in_array($assignment->getStatus(), InvitationWorkflow::SENDABLE_STATUSES, true)
-				&& InvitationWorkflow::canInvite($object, $all),
+				&& InvitationWorkflow::canInvite($object, $all) && !InvitationWorkflow::isRoundActive($object),
 			default => in_array($assignment->getStatus(), [Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED], true),
 		};
 		return $allowed ? [$object, [$assignment]] : [null, []];

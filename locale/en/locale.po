@@ -429,7 +429,7 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Objects for review: reminders before the due date"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "For {$context}: {$reminders} due date reminder(s), {$contractReminders} contract offer reminder(s), {$expired} expired contract offer(s), {$publisherReminders} publisher reminder(s), {$expiredInvitations} expired invitation(s)."
+msgstr "For {$context}: {$reminders} due date reminder(s), {$contractReminders} contract offer reminder(s), {$expired} expired contract offer(s), {$publisherReminders} publisher reminder(s), {$expiredInvitations} expired invitation(s), {$invitationReminders} invitation reminder(s)."
 
 msgid "plugins.generic.objectsForReview.identifierTypeRequired"
 msgstr "Please select an identifier type."
@@ -1464,7 +1464,76 @@ msgid "plugins.generic.objectsForReview.settings.invitationDays"
 msgstr "Invitations"
 
 msgid "plugins.generic.objectsForReview.settings.invitationDays.description"
-msgstr "Days invitees have to answer an invitation. Invitations to apply for an offer with a bid deadline use that deadline."
+msgstr "Days invitees have to answer an invitation, and after how many days they are reminded (0: no reminder). Invitations to apply for an offer with a bid deadline use that deadline."
 
 msgid "plugins.generic.objectsForReview.settings.invitationDays.invalid"
 msgstr "Please enter a number of days between 1 and 90."
+
+msgid "plugins.generic.objectsForReview.status.invitationWithdrawn"
+msgstr "Invitation withdrawn"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationReminder"
+msgstr "Invitation reminder"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationExhausted"
+msgstr "Editor notified: invitation list exhausted"
+
+msgid "plugins.generic.objectsForReview.history.event.roundStarted"
+msgstr "Sequential invitation round started"
+
+msgid "plugins.generic.objectsForReview.history.event.roundStopped"
+msgstr "Invitation round ended"
+
+msgid "plugins.generic.objectsForReview.history.event.roundExhausted"
+msgstr "Invitation round reached the end of the list"
+
+msgid "plugins.generic.objectsForReview.history.event.roundCompleted"
+msgstr "Invitation round ended: reserved by {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationWithdrawn"
+msgstr "Invitation to {$recipientName} withdrawn"
+
+msgid "plugins.generic.objectsForReview.history.event.roundContinued"
+msgstr "Invitation round continued"
+
+msgid "plugins.generic.objectsForReview.invitation.round.description"
+msgstr "Starts a sequential round. {$name} is invited first. Each decline, or invitation not answered within {$days} days, automatically invites the next person on the list with this text, until someone reserves the work."
+
+msgid "plugins.generic.objectsForReview.invitation.round.hint"
+msgstr "{$recipientName}, {$invitationDeadline} and {$invitationUrl} are filled in for each person when their invitation is sent."
+
+msgid "plugins.generic.objectsForReview.invitation.round.start"
+msgstr "Start sequential round"
+
+msgid "plugins.generic.objectsForReview.invitation.round.hideOffer"
+msgstr "Hide from the public list during the invitation round"
+
+msgid "plugins.generic.objectsForReview.invitation.round.explain"
+msgstr "Invites the people waiting on the list one after another, automatically."
+
+msgid "plugins.generic.objectsForReview.invitation.round.running"
+msgstr "Sequential round started on {$date} by {$name}"
+
+msgid "plugins.generic.objectsForReview.invitation.round.exhausted"
+msgstr "The round has reached the end of the list without a reservation. Add more people and continue the round, or stop it."
+
+msgid "plugins.generic.objectsForReview.invitation.round.current"
+msgstr "Currently invited: {$name} (answer by {$deadline})"
+
+msgid "plugins.generic.objectsForReview.invitation.round.next"
+msgstr "Next: {$name} ({$number} waiting)"
+
+msgid "plugins.generic.objectsForReview.invitation.round.noneWaiting"
+msgstr "Nobody else is waiting on the list."
+
+msgid "plugins.generic.objectsForReview.invitation.round.continue"
+msgstr "Continue round"
+
+msgid "plugins.generic.objectsForReview.invitation.round.stop"
+msgstr "Stop round"
+
+msgid "plugins.generic.objectsForReview.invitation.round.stop.confirm"
+msgstr "Stop the round? The pending invitation is withdrawn, and nobody else is invited."
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays.reminderInvalid"
+msgstr "Please enter after how many days invitees are reminded (0: no reminder); it must be fewer than the days to answer."

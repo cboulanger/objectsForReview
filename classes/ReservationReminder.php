@@ -50,8 +50,7 @@ class ReservationReminder extends ScheduledTask {
 			$counts = [
 				'reminders' => $this->sendDueDateReminders($plugin, $context),
 				'publisherReminders' => $this->sendPublisherReminders($plugin, $context),
-				'expiredInvitations' => $this->expireInvitations($plugin, $context),
-			] + $this->processContractOffers($plugin, $context);
+			] + $this->processInvitations($plugin, $context) + $this->processContractOffers($plugin, $context);
 			if (array_sum($counts)) {
 				$this->addExecutionLogEntry(__('plugins.generic.objectsForReview.reminder.sent', $counts + ['context' => $context->getLocalizedName()]));
 			}
@@ -154,20 +153,38 @@ class ReservationReminder extends ScheduledTask {
 	}
 
 	/**
-	 * Invitations not answered by their deadline (InvitationWorkflow).
-	 * @return int Number of expired invitations
+	 * Invitations (InvitationWorkflow): expire those not answered by their
+	 * deadline (in a sequential round, the next person is invited), and remind
+	 * invitees who haven't answered yet.
+	 * @return array ['expiredInvitations' => int, 'invitationReminders' => int]
 	 */
-	protected function expireInvitations($plugin, $context): int {
+	protected function processInvitations($plugin, $context): array {
 		$today = date('Y-m-d');
-		$count = 0;
+		$reminderDays = InvitationWorkflow::getReminderDays($plugin, $context->getId());
+		$counts = ['expiredInvitations' => 0, 'invitationReminders' => 0];
 		foreach ($this->assignments($context, [Assignment::STATUS_INVITED]) as [$object, $assignment]) {
-			$deadline = $assignment->getData('invitationDeadline');
-			if ($deadline && $deadline < $today) {
+			// Reload: an earlier step in this run (advancing a round) may have changed the object
+			$object = (new ObjectForReviewDAO())->getById($object->getId());
+			$assignment = AssignmentWorkflow::dao()->getById($assignment->getId());
+			if (!$object || !$assignment || $assignment->getStatus() !== Assignment::STATUS_INVITED) {
+				continue;
+			}
+			$deadline = (string) $assignment->getData('invitationDeadline');
+			if ($deadline !== '' && $deadline < $today) {
 				InvitationWorkflow::expire($plugin, $context, $object, $assignment);
-				$count++;
+				$counts['expiredInvitations']++;
+				continue;
+			}
+			$invited = substr((string) $assignment->getData('dateInvited'), 0, 10);
+			if ($reminderDays <= 0 || $invited === '' || $assignment->getData('invitationReminderSent')
+					|| (new \DateTimeImmutable($invited))->modify("+{$reminderDays} days")->format('Y-m-d') > $today) {
+				continue;
+			}
+			if (InvitationWorkflow::sendReminder($plugin, $context, $object, $assignment)) {
+				$counts['invitationReminders']++;
 			}
 		}
-		return $count;
+		return $counts;
 	}
 
 	/**

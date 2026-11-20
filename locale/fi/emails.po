@@ -276,3 +276,27 @@ msgstr "Kutsua ei hyväksytty: {$objectDescription}"
 
 msgid "emails.ofrInvitationDeclined.body"
 msgstr "<p>Hyvä {$recipientName},</p><p>{$inviteeName} ei arvioi seuraavaa teosta:<br />{$objectDescription}</p><p>{$declineReason}</p><p>Voit kutsua jonkun muun kutsusivulla: <a href=\"{$invitationListUrl}\">{$invitationListUrl}</a></p>"
+
+msgid "emails.ofrInvitationReminder.name"
+msgstr "Kutsumuistutus"
+
+msgid "emails.ofrInvitationReminder.description"
+msgstr "Lähetetään automaattisesti kutsutulle, joka ei ole vastannut, lisäosan asetuksissa määritetyn päivämäärän kuluttua."
+
+msgid "emails.ofrInvitationReminder.subject"
+msgstr "Muistutus: kutsu koskien teosta {$objectDescription}"
+
+msgid "emails.ofrInvitationReminder.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>muistutamme ystävällisesti kutsustamme, joka koskee seuraavaa teosta:<br />{$objectDescription}</p><p>Kerro meille viimeistään <strong>{$invitationDeadline}</strong>, haluatko ottaa sen vastaan:<br /><a href=\"{$invitationUrl}\">{$invitationUrl}</a></p><p>Ystävällisin terveisin<br />{$contextName}</p>"
+
+msgid "emails.ofrInvitationExhausted.name"
+msgstr "Kutsulista käyty läpi (kirja-arvioiden toimittajalle)"
+
+msgid "emails.ofrInvitationExhausted.description"
+msgstr "Lähetetään automaattisesti vastuulliselle kirja-arvioiden toimittajalle, kun peräkkäinen kutsukierros saavuttaa listan lopun ilman varausta."
+
+msgid "emails.ofrInvitationExhausted.subject"
+msgstr "Kutsukierros ilman tulosta: {$objectDescription}"
+
+msgid "emails.ofrInvitationExhausted.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>kaikki seuraavan teoksen kutsulistalla olevat ovat kieltäytyneet tai jättäneet vastaamatta:<br />{$objectDescription}</p><p>Voit lisätä henkilöitä ja jatkaa kierrosta tai lopettaa sen: <a href=\"{$invitationListUrl}\">{$invitationListUrl}</a></p>"

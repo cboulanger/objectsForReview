@@ -17,6 +17,7 @@
  *  - unsuccessful: tell the remaining bidders that someone else writes the review
  *    (they stay on the list), optionally by email
  *  - invitation: invite someone on the invitation list (InvitationWorkflow)
+ *  - round: start a sequential invitation round (the text is stored and reused)
  */
 
 namespace APP\plugins\generic\objectsForReview\controllers\form;
@@ -42,6 +43,7 @@ class ReservationEmailForm extends \PKP\form\Form {
 	const MODE_CONTRACT_OFFER = 'contractOffer';
 	const MODE_UNSUCCESSFUL = 'unsuccessful';
 	const MODE_INVITATION = 'invitation';
+	const MODE_ROUND = 'round';
 
 	/** Modes in which sending the email is optional */
 	const OPTIONAL_EMAIL_MODES = [self::MODE_CANCEL, self::MODE_UNSUCCESSFUL];
@@ -53,6 +55,7 @@ class ReservationEmailForm extends \PKP\form\Form {
 		self::MODE_CONTRACT_OFFER => 'offerContract',
 		self::MODE_UNSUCCESSFUL => 'notifyUnsuccessful',
 		self::MODE_INVITATION => 'sendInvitation',
+		self::MODE_ROUND => 'startRound',
 	];
 
 	protected $plugin;
@@ -89,7 +92,7 @@ class ReservationEmailForm extends \PKP\form\Form {
 			$this->addCheck(new FormValidatorCustom($this, 'body', 'required', 'plugins.generic.objectsForReview.contractOffer.linkRequired',
 				fn ($body) => str_contains((string) $body, '{$contractUrl}')));
 		}
-		if ($mode === self::MODE_INVITATION) {
+		if (in_array($mode, [self::MODE_INVITATION, self::MODE_ROUND], true)) {
 			$this->addCheck(new FormValidatorCustom($this, 'body', 'required', 'plugins.generic.objectsForReview.invitation.linkRequired',
 				fn ($body) => str_contains((string) $body, '{$invitationUrl}')));
 		}
@@ -104,14 +107,15 @@ class ReservationEmailForm extends \PKP\form\Form {
 				? ReservationEmailEventType::CONTRACT_OFFER_AGAIN
 				: ReservationEmailEventType::CONTRACT_OFFER,
 			self::MODE_UNSUCCESSFUL => ReservationEmailEventType::BID_UNSUCCESSFUL,
-			self::MODE_INVITATION => InvitationWorkflow::getEmailType($this->object),
+			self::MODE_INVITATION, self::MODE_ROUND => InvitationWorkflow::getEmailType($this->object),
 			default => ReservationEmailEventType::MESSAGE,
 		};
 	}
 
 	public function initData() {
 		$sender = Application::get()->getRequest()->getUser();
-		$single = count($this->assignments) === 1 && $this->mode !== self::MODE_UNSUCCESSFUL;
+		// Batches and rounds: {$recipientName} (and the deadline) are filled in for each recipient
+		$single = count($this->assignments) === 1 && !in_array($this->mode, [self::MODE_UNSUCCESSFUL, self::MODE_ROUND], true);
 		$assignment = $single ? reset($this->assignments) : null;
 		$extra = [];
 		if ($this->mode === self::MODE_CONTRACT_OFFER) {
@@ -129,10 +133,11 @@ class ReservationEmailForm extends \PKP\form\Form {
 		$this->setData('subject', $subject);
 		$this->setData('body', $body);
 		$this->setData('sendEmail', true);
+		$this->setData('hideOffer', true);
 	}
 
 	public function readInputData() {
-		$this->readUserVars(['subject', 'body', 'sendEmail']);
+		$this->readUserVars(['subject', 'body', 'sendEmail', 'hideOffer']);
 	}
 
 	public function fetch($request, $template = null, $display = false) {
@@ -158,6 +163,15 @@ class ReservationEmailForm extends \PKP\form\Form {
 			]),
 			'bodyHint' => __('plugins.generic.objectsForReview.invitation.linkHint'),
 			'submitKey' => 'plugins.generic.objectsForReview.invitation.send',
+		] : []) + ($this->mode === self::MODE_ROUND ? [
+			'stepDescription' => __('plugins.generic.objectsForReview.invitation.round.description', [
+				'name' => $first['name'],
+				'days' => InvitationWorkflow::getInvitationDays($this->plugin, (int) $this->context->getId()),
+			]),
+			'hideOfferOption' => true,
+			'hideOffer' => (bool) $this->getData('hideOffer'),
+			'bodyHint' => __('plugins.generic.objectsForReview.invitation.round.hint'),
+			'submitKey' => 'plugins.generic.objectsForReview.invitation.round.start',
 		] : []) + [
 			'actionUrl' => $request->getDispatcher()->url($request, Application::ROUTE_COMPONENT, null,
 				ReservationActionsHandler::COMPONENT, self::SAVE_OPS[$this->mode]),
@@ -171,6 +185,11 @@ class ReservationEmailForm extends \PKP\form\Form {
 
 	public function execute(...$functionArgs) {
 		$sender = Application::get()->getRequest()->getUser();
+		if ($this->mode === self::MODE_ROUND) {
+			InvitationWorkflow::startRound($this->plugin, $this->context, $this->object, $sender,
+				trim((string) $this->getData('subject')), (string) $this->getData('body'), (bool) $this->getData('hideOffer'));
+			return parent::execute(...$functionArgs);
+		}
 		$sendEmail = !in_array($this->mode, self::OPTIONAL_EMAIL_MODES, true) || $this->getData('sendEmail');
 		$type = $this->emailType();
 		$subject = trim((string) $this->getData('subject'));

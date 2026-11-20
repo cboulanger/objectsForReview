@@ -34,8 +34,10 @@ Emails are not sent; they are written to the container log (`dev/ojs-dev.sh logs
 
 ```sh
 dev/ojs-dev.sh shell
-php lib/pkp/tools/scheduler.php test --name="APP\plugins\generic\objectsForReview\classes\ReservationReminder"
+runuser -u www-data -- php lib/pkp/tools/scheduler.php test --name="APP\plugins\generic\objectsForReview\classes\ReservationReminder"
 ```
+
+Run it as `www-data`: as root it creates cache files that Apache can't write to afterwards (fix with `chown -R www-data:www-data cache`).
 
 To add the workflow accounts to an existing container: `php tools/devSetup.php users` (after copying `plugins/generic/objectsForReview/dev/devSetup.php` to `tools/`).
 

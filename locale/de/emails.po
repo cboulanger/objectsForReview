@@ -273,3 +273,27 @@ msgstr "Einladung nicht angenommen: {$objectDescription}"
 
 msgid "emails.ofrInvitationDeclined.body"
 msgstr "<p>Liebe/r {$recipientName},</p><p>{$inviteeName} wird das folgende Werk nicht rezensieren:<br />{$objectDescription}</p><p>{$declineReason}</p><p>Auf der Einladungsseite können Sie jemand anderen einladen: <a href=\"{$invitationListUrl}\">{$invitationListUrl}</a></p>"
+
+msgid "emails.ofrInvitationReminder.name"
+msgstr "Erinnerung an eine Einladung"
+
+msgid "emails.ofrInvitationReminder.description"
+msgstr "Wird automatisch an Eingeladene gesendet, die nicht geantwortet haben, nach der in den Plugin-Einstellungen festgelegten Zahl von Tagen."
+
+msgid "emails.ofrInvitationReminder.subject"
+msgstr "Erinnerung: Einladung zu {$objectDescription}"
+
+msgid "emails.ofrInvitationReminder.body"
+msgstr "<p>Liebe/r {$recipientName},</p><p>wir möchten Sie freundlich an unsere Einladung zum folgenden Werk erinnern:<br />{$objectDescription}</p><p>Bitte teilen Sie uns bis zum <strong>{$invitationDeadline}</strong> mit, ob Sie sie annehmen möchten:<br /><a href=\"{$invitationUrl}\">{$invitationUrl}</a></p><p>Mit freundlichen Grüßen<br />{$contextName}</p>"
+
+msgid "emails.ofrInvitationExhausted.name"
+msgstr "Einladungsliste ausgeschöpft (an die Rezensionsredaktion)"
+
+msgid "emails.ofrInvitationExhausted.description"
+msgstr "Wird automatisch an die zuständige Rezensionsredaktion gesendet, wenn eine fortlaufende Einladungsrunde das Ende der Liste ohne Reservierung erreicht."
+
+msgid "emails.ofrInvitationExhausted.subject"
+msgstr "Einladungsrunde ohne Ergebnis: {$objectDescription}"
+
+msgid "emails.ofrInvitationExhausted.body"
+msgstr "<p>Liebe/r {$recipientName},</p><p>alle Personen auf der Einladungsliste für das folgende Werk haben abgesagt oder nicht geantwortet:<br />{$objectDescription}</p><p>Sie können weitere Personen hinzufügen und die Runde fortsetzen oder sie beenden: <a href=\"{$invitationListUrl}\">{$invitationListUrl}</a></p>"

@@ -18,6 +18,11 @@
  *
  *  Declined and expired invitations can be sent again (manually). Once an
  *  invitee reserves or applies, the normal workflow applies (AssignmentWorkflow).
+ *
+ *  Invitations are sent one by one by the editor (manual), or in a sequential
+ *  round (direct reservation only): the text is edited once, the first person
+ *  on the list is invited, and each decline or passed deadline invites the
+ *  next one, until someone reserves, the list is exhausted or the editor stops.
  */
 
 namespace APP\plugins\generic\objectsForReview\classes;
@@ -34,17 +39,20 @@ use PKP\userGroup\UserGroup;
 
 class InvitationWorkflow {
 
+	const MODE_SEQUENTIAL = 'sequential';
+
 	const DEFAULT_INVITATION_DAYS = 7;
 	const MAX_INVITATION_DAYS = 90;
 
 	/** Statuses from which an invitation can be sent (again) */
 	const SENDABLE_STATUSES = [Assignment::STATUS_LISTED, Assignment::STATUS_INVITED,
-		Assignment::STATUS_INVITATION_DECLINED, Assignment::STATUS_INVITATION_EXPIRED];
+		Assignment::STATUS_INVITATION_DECLINED, Assignment::STATUS_INVITATION_EXPIRED, Assignment::STATUS_INVITATION_WITHDRAWN];
 
 	/** Statuses of people who can't be added to the list (again) */
 	const BLOCKING_STATUSES = [Assignment::STATUS_BID, Assignment::STATUS_UNSUCCESSFUL, Assignment::STATUS_OFFERED,
 		Assignment::STATUS_ACCEPTED, Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED,
-		Assignment::STATUS_LISTED, Assignment::STATUS_INVITED, Assignment::STATUS_INVITATION_DECLINED, Assignment::STATUS_INVITATION_EXPIRED];
+		Assignment::STATUS_LISTED, Assignment::STATUS_INVITED, Assignment::STATUS_INVITATION_DECLINED, Assignment::STATUS_INVITATION_EXPIRED,
+		Assignment::STATUS_INVITATION_WITHDRAWN];
 
 	/**
 	 * The invitation list of an object, in order: everyone added to it, also
@@ -94,6 +102,13 @@ class InvitationWorkflow {
 	public static function getInvitationDays($plugin, int $contextId): int {
 		$days = $plugin->getSetting($contextId, 'ofrInvitationDays');
 		return $days === null || $days === '' ? self::DEFAULT_INVITATION_DAYS : max(1, (int) $days);
+	}
+
+	/**
+	 * Days after the invitation on which invitees are reminded (setting ofrInvitationReminderDays; 0: never).
+	 */
+	public static function getReminderDays($plugin, int $contextId): int {
+		return max(0, (int) $plugin->getSetting($contextId, 'ofrInvitationReminderDays'));
 	}
 
 	/**
@@ -227,12 +242,12 @@ class InvitationWorkflow {
 	 * Send (or send again) an invitation: the assignment becomes "invited".
 	 * @return string Key of the one-click link (valid until the deadline)
 	 */
-	public static function invite(ObjectForReview $object, Assignment $assignment, User $editor, string $deadline): string {
+	public static function invite(ObjectForReview $object, Assignment $assignment, ?User $editor, string $deadline): string {
 		if (!in_array($assignment->getStatus(), self::SENDABLE_STATUSES, true)) {
 			throw new \InvalidArgumentException('Assignment ' . $assignment->getId() . ' has status ' . $assignment->getStatus());
 		}
 		ActionLink::invalidate($assignment->getId());
-		$assignment->setData('invitedBy', $editor->getId());
+		$assignment->setData('invitedBy', $editor?->getId() ?? $object->getData('invitationStartedBy'));
 		$assignment->setData('dateInvited', Core::getCurrentDate());
 		$assignment->setData('invitationDeadline', $deadline);
 		$assignment->unsetData('invitationDeclineReason');
@@ -286,6 +301,11 @@ class InvitationWorkflow {
 		ActionLink::invalidate($assignment->getId());
 		$invitee = Repo::user()->get($assignment->getUserId(), true);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_INVITATION_DECLINED, $invitee, $invitee, ReservationLog::viaLink($invitee));
+		if (self::isRoundActive($object)) {
+			// Sequential round: the next person is invited; the decline is only recorded
+			self::advance($plugin, $context, $object);
+			return;
+		}
 		ReservationMailer::notifyEditor($plugin, $context, ReservationEmailEventType::INVITATION_DECLINED, $object, $assignment, [
 			'inviteeName' => htmlspecialchars($invitee?->getFullName() ?? ''),
 			'invitationListUrl' => self::listUrl($context, $object),
@@ -307,6 +327,14 @@ class InvitationWorkflow {
 		ActionLink::invalidate($assignment->getId());
 		$invitee = Repo::user()->get($assignment->getUserId(), true);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_INVITATION_EXPIRED, null, $invitee);
+		if (self::isRoundActive($object)) {
+			self::advance($plugin, $context, $object);
+			return;
+		}
+		if (!self::canInvite($object)) {
+			// The work was taken or bidding has closed: nothing to decide
+			return;
+		}
 		ReservationMailer::notifyEditor($plugin, $context, ReservationEmailEventType::INVITATION_DECLINED, $object, $assignment, [
 			'inviteeName' => htmlspecialchars($invitee?->getFullName() ?? ''),
 			'invitationListUrl' => self::listUrl($context, $object),
@@ -337,5 +365,203 @@ class InvitationWorkflow {
 		if ($open) {
 			ReservationLog::logEvent($object, ReservationLog::EVENT_INVITATIONS_ENDED, $editor, null, ['recipientCount' => count($open)]);
 		}
+		self::clearRound($object);
+	}
+
+	//
+	// Sequential rounds
+	//
+
+	public static function isRoundActive(ObjectForReview $object): bool {
+		return $object->getData('invitationMode') === self::MODE_SEQUENTIAL;
+	}
+
+	/**
+	 * The round reached the end of the list (and waits for more people or for the editor).
+	 */
+	public static function isExhausted(ObjectForReview $object): bool {
+		return self::isRoundActive($object) && (bool) $object->getData('invitationExhausted');
+	}
+
+	/**
+	 * People on the list who haven't been invited yet, in order.
+	 * @return Assignment[]
+	 */
+	public static function getWaiting(ObjectForReview $object): array {
+		return array_values(array_filter(self::getList($object), fn ($a) => $a->getStatus() === Assignment::STATUS_LISTED));
+	}
+
+	/**
+	 * The person currently invited in the round, if any.
+	 */
+	public static function getCurrent(ObjectForReview $object): ?Assignment {
+		foreach (self::getList($object) as $assignment) {
+			if ($assignment->getStatus() === Assignment::STATUS_INVITED) {
+				return $assignment;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Can a sequential round be started?
+	 */
+	public static function canStartRound(ObjectForReview $object, ?array $assignments = null): bool {
+		return !$object->isBidding() && !self::isRoundActive($object) && self::canInvite($object, $assignments)
+			&& self::getWaiting($object) && !self::getCurrent($object);
+	}
+
+	/**
+	 * Start a sequential round: store the text and invite the first person waiting.
+	 * The subject and body keep {$recipientName}, {$invitationDeadline} and
+	 * {$invitationUrl}, which are filled in for each invitee.
+	 */
+	public static function startRound($plugin, $context, ObjectForReview $object, User $editor, string $subject, string $body, bool $hide): void {
+		if (!self::canStartRound($object)) {
+			throw new \InvalidArgumentException('A sequential round cannot be started for object ' . $object->getId());
+		}
+		$object->setOfferSetting('invitationMode', self::MODE_SEQUENTIAL);
+		$object->setOfferSetting('invitationSubject', $subject);
+		$object->setOfferSetting('invitationBody', $body);
+		$object->setOfferSetting('invitationStarted', Core::getCurrentDate());
+		$object->setOfferSetting('invitationStartedBy', $editor->getId());
+		$object->setOfferSetting('invitationExhausted', null);
+		(new ObjectForReviewDAO())->updateObject($object);
+		ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_STARTED, $editor, null);
+		if ($hide) {
+			AssignmentWorkflow::setHidden($object, true, $editor);
+		}
+		self::advance($plugin, $context, $object, $editor);
+	}
+
+	/**
+	 * Invite the next person waiting, or end the round if the list is exhausted.
+	 * @param ?User $actor The editor (when starting or continuing), null when automatic
+	 */
+	public static function advance($plugin, $context, ObjectForReview $object, ?User $actor = null): void {
+		if (!self::isRoundActive($object)) {
+			return;
+		}
+		// The offer changed (e.g. bidding, closed, reserved): the round ends
+		if ($object->isBidding() || !self::canInvite($object)) {
+			self::clearRound($object);
+			ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_STOPPED, $actor, null);
+			return;
+		}
+		$next = self::getWaiting($object)[0] ?? null;
+		if (!$next) {
+			$object->setOfferSetting('invitationExhausted', Core::getCurrentDate());
+			(new ObjectForReviewDAO())->updateObject($object);
+			ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_EXHAUSTED, null, null);
+			ReservationMailer::notifyEditor($plugin, $context, ReservationEmailEventType::INVITATION_EXHAUSTED, $object, null, [
+				'invitationListUrl' => self::listUrl($context, $object),
+			]);
+			return;
+		}
+		self::sendRoundInvitation($plugin, $context, $object, $next, $actor);
+	}
+
+	/**
+	 * Send the round's invitation to one person.
+	 */
+	protected static function sendRoundInvitation($plugin, $context, ObjectForReview $object, Assignment $assignment, ?User $actor): void {
+		$invitee = Repo::user()->get($assignment->getUserId(), true);
+		$sender = Repo::user()->get((int) $object->getData('invitationStartedBy'), true);
+		if (!$invitee) {
+			return;
+		}
+		$deadline = self::getDeadline($plugin, $object);
+		$key = self::invite($object, $assignment, $actor, $deadline);
+		ReservationMailer::send($context, self::getEmailType($object), $object, $invitee, $sender,
+			(string) $object->getData('invitationSubject'), (string) $object->getData('invitationBody'), [
+				'invitationUrl' => ActionLink::url($context, $key),
+				'invitationDeadline' => self::formatDate($context, $deadline),
+			]);
+	}
+
+	/**
+	 * Continue an exhausted round after more people were added.
+	 */
+	public static function continueRound($plugin, $context, ObjectForReview $object, User $editor): bool {
+		if (!self::isExhausted($object) || !self::getWaiting($object)) {
+			return false;
+		}
+		$object->setOfferSetting('invitationExhausted', null);
+		(new ObjectForReviewDAO())->updateObject($object);
+		ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_CONTINUED, $editor, null);
+		self::advance($plugin, $context, $object, $editor);
+		return true;
+	}
+
+	/**
+	 * The editor stops the round: the pending invitation is withdrawn.
+	 */
+	public static function stopRound(ObjectForReview $object, User $editor): bool {
+		if (!self::isRoundActive($object)) {
+			return false;
+		}
+		self::withdrawOpen($object, null);
+		self::clearRound($object);
+		ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_STOPPED, $editor, null);
+		return true;
+	}
+
+	/**
+	 * Someone reserved the object: other pending invitations are withdrawn and a round ends.
+	 */
+	public static function onReserved(ObjectForReview $object, Assignment $reservation): void {
+		self::withdrawOpen($object, $reservation->getId());
+		if (self::isRoundActive($object)) {
+			self::clearRound($object);
+			ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_COMPLETED, null, Repo::user()->get($reservation->getUserId(), true));
+		}
+	}
+
+	/**
+	 * Withdraw pending invitations (their links stop working).
+	 */
+	protected static function withdrawOpen(ObjectForReview $object, ?int $exceptAssignmentId): void {
+		foreach (AssignmentWorkflow::dao()->getByObjectId($object->getId(), [Assignment::STATUS_INVITED]) as $assignment) {
+			if ($assignment->getId() === $exceptAssignmentId) {
+				continue;
+			}
+			ActionLink::invalidate($assignment->getId());
+			$assignment->setStatus(Assignment::STATUS_INVITATION_WITHDRAWN);
+			$assignment->setDateStatus(Core::getCurrentDate());
+			AssignmentWorkflow::dao()->updateObject($assignment);
+			ReservationLog::logEvent($object, ReservationLog::EVENT_INVITATION_WITHDRAWN, null, Repo::user()->get($assignment->getUserId(), true));
+		}
+	}
+
+	protected static function clearRound(ObjectForReview $object): void {
+		if (!$object->getData('invitationMode')) {
+			return;
+		}
+		foreach (['invitationMode', 'invitationSubject', 'invitationBody', 'invitationStarted', 'invitationStartedBy', 'invitationExhausted'] as $name) {
+			$object->setOfferSetting($name, null);
+		}
+		(new ObjectForReviewDAO())->updateObject($object);
+	}
+
+	/**
+	 * Remind an invitee who hasn't answered yet (daily task).
+	 */
+	public static function sendReminder($plugin, $context, ObjectForReview $object, Assignment $assignment): bool {
+		$invitee = Repo::user()->get($assignment->getUserId(), true);
+		$deadline = (string) $assignment->getData('invitationDeadline');
+		if (!$invitee || !self::isAnswerable($object, $assignment)) {
+			return false;
+		}
+		$key = ActionLink::create($assignment->getId(), ActionLink::ACTION_INVITATION, $deadline . ' 23:59:59');
+		$late = ['invitationUrl' => ActionLink::url($context, $key), 'invitationDeadline' => self::formatDate($context, $deadline)];
+		[$subject, $body] = ReservationMailer::compose($context, ReservationEmailEventType::INVITATION_REMINDER, $object, $assignment, $invitee, null, $late);
+		ReservationMailer::send($context, ReservationEmailEventType::INVITATION_REMINDER, $object, $invitee, null, $subject, $body, $late);
+		$assignment->setData('invitationReminderSent', Core::getCurrentDate());
+		AssignmentWorkflow::dao()->updateObject($assignment);
+		return true;
+	}
+
+	public static function formatDate($context, string $date): string {
+		return date(\PKP\core\PKPString::convertStrftimeFormat($context->getLocalizedDateFormatShort()), strtotime($date));
 	}
 }

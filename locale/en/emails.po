@@ -276,3 +276,27 @@ msgstr "Invitation not accepted: {$objectDescription}"
 
 msgid "emails.ofrInvitationDeclined.body"
 msgstr "<p>Dear {$recipientName},</p><p>{$inviteeName} will not review the following work:<br />{$objectDescription}</p><p>{$declineReason}</p><p>You can invite someone else on the invitation page: <a href=\"{$invitationListUrl}\">{$invitationListUrl}</a></p>"
+
+msgid "emails.ofrInvitationReminder.name"
+msgstr "Invitation reminder"
+
+msgid "emails.ofrInvitationReminder.description"
+msgstr "Sent automatically to an invitee who has not answered, after the number of days set in the plugin settings."
+
+msgid "emails.ofrInvitationReminder.subject"
+msgstr "Reminder: invitation regarding {$objectDescription}"
+
+msgid "emails.ofrInvitationReminder.body"
+msgstr "<p>Dear {$recipientName},</p><p>this is a friendly reminder of our invitation regarding the following work:<br />{$objectDescription}</p><p>Please let us know by <strong>{$invitationDeadline}</strong> whether you would like to take it on:<br /><a href=\"{$invitationUrl}\">{$invitationUrl}</a></p><p>Kind regards,<br />{$contextName}</p>"
+
+msgid "emails.ofrInvitationExhausted.name"
+msgstr "Invitation list exhausted (to the book review editor)"
+
+msgid "emails.ofrInvitationExhausted.description"
+msgstr "Sent automatically to the responsible book review editor when a sequential invitation round reaches the end of the list without a reservation."
+
+msgid "emails.ofrInvitationExhausted.subject"
+msgstr "Invitation round without result: {$objectDescription}"
+
+msgid "emails.ofrInvitationExhausted.body"
+msgstr "<p>Dear {$recipientName},</p><p>everyone on the invitation list for the following work has declined or not answered:<br />{$objectDescription}</p><p>You can add more people and continue the round, or stop it: <a href=\"{$invitationListUrl}\">{$invitationListUrl}</a></p>"
