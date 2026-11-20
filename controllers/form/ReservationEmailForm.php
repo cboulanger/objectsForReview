@@ -133,7 +133,8 @@ class ReservationEmailForm extends \PKP\form\Form {
 		$this->setData('subject', $subject);
 		$this->setData('body', $body);
 		$this->setData('sendEmail', true);
-		$this->setData('hideOffer', true);
+		// Hidden by default only in sequential rounds
+		$this->setData('hideOffer', !$this->object->isBidding());
 	}
 
 	public function readInputData() {
@@ -164,14 +165,19 @@ class ReservationEmailForm extends \PKP\form\Form {
 			'bodyHint' => __('plugins.generic.objectsForReview.invitation.linkHint'),
 			'submitKey' => 'plugins.generic.objectsForReview.invitation.send',
 		] : []) + ($this->mode === self::MODE_ROUND ? [
-			'stepDescription' => __('plugins.generic.objectsForReview.invitation.round.description', [
-				'name' => $first['name'],
-				'days' => InvitationWorkflow::getInvitationDays($this->plugin, (int) $this->context->getId()),
-			]),
+			'stepDescription' => $this->object->isBidding()
+				? __('plugins.generic.objectsForReview.invitation.round.descriptionParallel', [
+					'number' => count($recipients),
+					'deadline' => $this->formatDate(InvitationWorkflow::getDeadline($this->plugin, $this->object)),
+				])
+				: __('plugins.generic.objectsForReview.invitation.round.description', [
+					'name' => $first['name'],
+					'days' => InvitationWorkflow::getInvitationDays($this->plugin, (int) $this->context->getId()),
+				]),
 			'hideOfferOption' => true,
 			'hideOffer' => (bool) $this->getData('hideOffer'),
 			'bodyHint' => __('plugins.generic.objectsForReview.invitation.round.hint'),
-			'submitKey' => 'plugins.generic.objectsForReview.invitation.round.start',
+			'submitKey' => $this->object->isBidding() ? 'plugins.generic.objectsForReview.invitation.round.startParallel' : 'plugins.generic.objectsForReview.invitation.round.start',
 		] : []) + [
 			'actionUrl' => $request->getDispatcher()->url($request, Application::ROUTE_COMPONENT, null,
 				ReservationActionsHandler::COMPONENT, self::SAVE_OPS[$this->mode]),

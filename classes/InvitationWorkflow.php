@@ -19,10 +19,14 @@
  *  Declined and expired invitations can be sent again (manually). Once an
  *  invitee reserves or applies, the normal workflow applies (AssignmentWorkflow).
  *
- *  Invitations are sent one by one by the editor (manual), or in a sequential
- *  round (direct reservation only): the text is edited once, the first person
- *  on the list is invited, and each decline or passed deadline invites the
- *  next one, until someone reserves, the list is exhausted or the editor stops.
+ *  Invitations are sent one by one by the editor (manual), or in a round whose
+ *  text is edited once:
+ *  - sequential (direct reservation): the first person on the list is invited,
+ *    and each decline or passed deadline invites the next one, until someone
+ *    reserves, the list is exhausted or the editor stops;
+ *  - all at once (bidding): everyone waiting is invited to apply at the same
+ *    time; the round ends when all have answered, the editor selects a bidder
+ *    or stops it.
  */
 
 namespace APP\plugins\generic\objectsForReview\classes;
@@ -40,6 +44,7 @@ use PKP\userGroup\UserGroup;
 class InvitationWorkflow {
 
 	const MODE_SEQUENTIAL = 'sequential';
+	const MODE_PARALLEL = 'parallel';
 
 	const DEFAULT_INVITATION_DAYS = 7;
 	const MAX_INVITATION_DAYS = 90;
@@ -283,6 +288,7 @@ class InvitationWorkflow {
 	public static function bid($plugin, $context, ObjectForReview $object, Assignment $assignment, string $statement): void {
 		$invitee = Repo::user()->get($assignment->getUserId(), true);
 		AssignmentWorkflow::bid($plugin, $context, $object, $invitee, $statement, $assignment);
+		self::onAnswered($plugin, $context, $object, true);
 	}
 
 	/**
@@ -302,8 +308,8 @@ class InvitationWorkflow {
 		$invitee = Repo::user()->get($assignment->getUserId(), true);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_INVITATION_DECLINED, $invitee, $invitee, ReservationLog::viaLink($invitee));
 		if (self::isRoundActive($object)) {
-			// Sequential round: the next person is invited; the decline is only recorded
-			self::advance($plugin, $context, $object);
+			// In a round, declines are only recorded (sequential: the next person is invited)
+			self::onAnswered($plugin, $context, $object);
 			return;
 		}
 		ReservationMailer::notifyEditor($plugin, $context, ReservationEmailEventType::INVITATION_DECLINED, $object, $assignment, [
@@ -328,7 +334,7 @@ class InvitationWorkflow {
 		$invitee = Repo::user()->get($assignment->getUserId(), true);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_INVITATION_EXPIRED, null, $invitee);
 		if (self::isRoundActive($object)) {
-			self::advance($plugin, $context, $object);
+			self::onAnswered($plugin, $context, $object);
 			return;
 		}
 		if (!self::canInvite($object)) {
@@ -373,7 +379,21 @@ class InvitationWorkflow {
 	//
 
 	public static function isRoundActive(ObjectForReview $object): bool {
-		return $object->getData('invitationMode') === self::MODE_SEQUENTIAL;
+		return in_array($object->getData('invitationMode'), [self::MODE_SEQUENTIAL, self::MODE_PARALLEL], true);
+	}
+
+	/**
+	 * Mode of the running round, or null.
+	 */
+	public static function getRoundMode(ObjectForReview $object): ?string {
+		return self::isRoundActive($object) ? $object->getData('invitationMode') : null;
+	}
+
+	/**
+	 * The kind of round that fits the offer: sequential (direct reservation) or all at once (bidding).
+	 */
+	public static function getRoundModeFor(ObjectForReview $object): string {
+		return $object->isBidding() ? self::MODE_PARALLEL : self::MODE_SEQUENTIAL;
 	}
 
 	/**
@@ -404,15 +424,31 @@ class InvitationWorkflow {
 	}
 
 	/**
-	 * Can a sequential round be started?
+	 * Can a round be started (sequential for direct reservation, all at once for bidding)?
+	 * A sequential round needs nobody else to be invited at the moment.
 	 */
 	public static function canStartRound(ObjectForReview $object, ?array $assignments = null): bool {
-		return !$object->isBidding() && !self::isRoundActive($object) && self::canInvite($object, $assignments)
-			&& self::getWaiting($object) && !self::getCurrent($object);
+		return !self::isRoundActive($object) && self::canInvite($object, $assignments) && self::getWaiting($object)
+			&& ($object->isBidding() || !self::getCurrent($object));
 	}
 
 	/**
-	 * Start a sequential round: store the text and invite the first person waiting.
+	 * Invited people of a round (all at once): [invited now, answered or ended].
+	 */
+	public static function getRoundCounts(ObjectForReview $object): array {
+		$invited = $answered = 0;
+		foreach (self::getList($object) as $assignment) {
+			if (!$assignment->getData('dateInvited')) {
+				continue;
+			}
+			$assignment->getStatus() === Assignment::STATUS_INVITED ? $invited++ : $answered++;
+		}
+		return [$invited, $answered];
+	}
+
+	/**
+	 * Start a round: store the text and invite the first person waiting (sequential)
+	 * or everyone waiting (all at once).
 	 * The subject and body keep {$recipientName}, {$invitationDeadline} and
 	 * {$invitationUrl}, which are filled in for each invitee.
 	 */
@@ -420,18 +456,45 @@ class InvitationWorkflow {
 		if (!self::canStartRound($object)) {
 			throw new \InvalidArgumentException('A sequential round cannot be started for object ' . $object->getId());
 		}
-		$object->setOfferSetting('invitationMode', self::MODE_SEQUENTIAL);
+		$mode = self::getRoundModeFor($object);
+		$object->setOfferSetting('invitationMode', $mode);
 		$object->setOfferSetting('invitationSubject', $subject);
 		$object->setOfferSetting('invitationBody', $body);
 		$object->setOfferSetting('invitationStarted', Core::getCurrentDate());
 		$object->setOfferSetting('invitationStartedBy', $editor->getId());
 		$object->setOfferSetting('invitationExhausted', null);
 		(new ObjectForReviewDAO())->updateObject($object);
-		ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_STARTED, $editor, null);
+		ReservationLog::logEvent($object, $mode === self::MODE_PARALLEL ? ReservationLog::EVENT_ROUND_STARTED_PARALLEL : ReservationLog::EVENT_ROUND_STARTED,
+			$editor, null);
 		if ($hide) {
 			AssignmentWorkflow::setHidden($object, true, $editor);
 		}
-		self::advance($plugin, $context, $object, $editor);
+		$mode === self::MODE_PARALLEL
+			? self::inviteAllWaiting($plugin, $context, $object, $editor)
+			: self::advance($plugin, $context, $object, $editor);
+	}
+
+	/**
+	 * All at once: invite everyone waiting on the list.
+	 */
+	protected static function inviteAllWaiting($plugin, $context, ObjectForReview $object, ?User $actor): void {
+		foreach (self::getWaiting($object) as $assignment) {
+			self::sendRoundInvitation($plugin, $context, $object, $assignment, $actor);
+		}
+	}
+
+	/**
+	 * Someone answered (applied, declined) or didn't (expired). Sequential: invite
+	 * the next person (not after an application). All at once: end the round
+	 * when nobody is left to answer.
+	 */
+	public static function onAnswered($plugin, $context, ObjectForReview $object, bool $applied = false): void {
+		if (self::getRoundMode($object) === self::MODE_SEQUENTIAL && !$applied) {
+			self::advance($plugin, $context, $object);
+		} elseif (self::getRoundMode($object) === self::MODE_PARALLEL && !self::getCurrent($object)) {
+			self::clearRound($object);
+			ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_FINISHED, null, null);
+		}
 	}
 
 	/**
@@ -439,7 +502,7 @@ class InvitationWorkflow {
 	 * @param ?User $actor The editor (when starting or continuing), null when automatic
 	 */
 	public static function advance($plugin, $context, ObjectForReview $object, ?User $actor = null): void {
-		if (!self::isRoundActive($object)) {
+		if (self::getRoundMode($object) !== self::MODE_SEQUENTIAL) {
 			return;
 		}
 		// The offer changed (e.g. bidding, closed, reserved): the round ends
@@ -480,9 +543,15 @@ class InvitationWorkflow {
 	}
 
 	/**
-	 * Continue an exhausted round after more people were added.
+	 * Continue a round after more people were added: an exhausted sequential
+	 * round goes on; all at once, the new people are invited.
 	 */
 	public static function continueRound($plugin, $context, ObjectForReview $object, User $editor): bool {
+		if (self::getRoundMode($object) === self::MODE_PARALLEL && self::getWaiting($object) && self::canInvite($object)) {
+			ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_CONTINUED, $editor, null);
+			self::inviteAllWaiting($plugin, $context, $object, $editor);
+			return true;
+		}
 		if (!self::isExhausted($object) || !self::getWaiting($object)) {
 			return false;
 		}
@@ -504,6 +573,26 @@ class InvitationWorkflow {
 		self::clearRound($object);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_STOPPED, $editor, null);
 		return true;
+	}
+
+	/**
+	 * The editor selected a bidder (bidding closed) or changed the assignment
+	 * mode: pending invitations that can no longer be answered are withdrawn,
+	 * and a round that no longer fits ends.
+	 */
+	public static function onOfferChanged(ObjectForReview $object, ?User $editor): void {
+		$roundMode = self::getRoundMode($object);
+		if ($roundMode && $roundMode !== self::getRoundModeFor($object)) {
+			self::withdrawOpen($object, null);
+			self::clearRound($object);
+			ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_STOPPED, $editor, null);
+		} elseif (!self::canInvite($object)) {
+			self::withdrawOpen($object, null);
+			if ($roundMode) {
+				self::clearRound($object);
+				ReservationLog::logEvent($object, ReservationLog::EVENT_ROUND_STOPPED, $editor, null);
+			}
+		}
 	}
 
 	/**

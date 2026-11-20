@@ -23,6 +23,13 @@ Changed or new in this fork:
 - **Review agreement.** Reviewers accept the journal's terms, set a due date and say how they will get the work. Selected bidders get a contract offer with a deadline, a reminder and a one-click link.
 - **Review copies.** The plugin tracks each copy from the request to the publisher (or from the journal's stock) to receipt. If no review comes, it tracks the return to the journal or the publisher. After publication, the publisher can be notified.
 - **Publisher contacts.** People at publishers are stored as users who never log in. They confirm their steps ("copy sent", "returned copy arrived") with one-click links in the emails.
+- **Hiding offers.** A work can be taken off the public list without ending anything, for example while particular people are invited.
+- **Inviting reviewers.** Build an invitation list for a work from the journal's users or new people, then invite:
+  - one by one, with a personalised email;
+  - in a sequential round that moves to the next person automatically after a decline or a passed deadline (direct reservation);
+  - or everyone at once (bidding).
+
+  Invitees reserve, apply or decline with a one-click link.
 - **Reservation management.** Editors can email reviewers, cancel reservations and see overdue reviews. A daily task sends reminders to reviewers, selected bidders and publishers.
 - **Audit trail.** Every step and every email is recorded in the offer's history.
 - **Privacy.** Delivery addresses and phone numbers are deleted once the copy has arrived, and bid statements once the review is published. Copies are never forwarded from one reviewer to the next.

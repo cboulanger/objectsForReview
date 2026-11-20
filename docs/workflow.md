@@ -133,6 +133,42 @@ stateDiagram-v2
     ReturnSent: Sent back
 ```
 
+### Invitations
+
+How invitations work, from building the list to the answer. The mode depends on the offer: sequential rounds for direct reservation, "all at once" for bidding; manual invitations work for both.
+
+```mermaid
+flowchart TD
+    A["BRE: Invite reviewers"] --> L["Build the list:<br/>address book or new person,<br/>reorder"]
+    L --> M{"How to invite"}
+
+    M -->|"Sequential round<br/>(direct reservation)"| E1["Edit the invitation email once"]
+    E1 --> S1["Invite the next person on the list"]
+    S1 --> R1{"Answer by the deadline?"}
+    R1 -->|"Reserves"| ACC["Reserved:<br/>agreement, review copy, ..."]
+    R1 -->|"Declines"| N{"Anyone left on the list?"}
+    R1 -->|"No answer"| N
+    N -->|"yes, automatically"| S1
+    N -->|"no"| X["BRE notified: list exhausted<br/>add people and continue, or stop"]
+    X -.->|"Continue round"| S1
+
+    M -->|"All at once<br/>(bidding)"| E2["Edit the invitation email once"]
+    E2 --> P["Invite everyone on the list"]
+    P --> R2{"Each invitee"}
+    R2 -->|"Applies"| BID["Bid: BRE selects on To-do"]
+    R2 -->|"Declines / no answer"| D["Recorded in the history"]
+    BID --> SEL["BRE selects a bidder:<br/>open invitations withdrawn"]
+
+    M -->|"Manual"| MAN["BRE sends a personalised<br/>invitation to one person"]
+    MAN --> R3{"Answer by the deadline?"}
+    R3 -->|"Reserves"| ACC
+    R3 -->|"Applies"| BID
+    R3 -->|"Declines / no answer"| NB["BRE notified,<br/>decides who is next"]
+    NB --> MAN
+
+    ST["BRE stops the round"] -.-> Z["Pending invitations withdrawn,<br/>links stop working"]
+```
+
 ## Step by step
 
 ### 1. Offering a work
@@ -205,6 +241,20 @@ The round ends when:
 - **the list runs out**: you receive an email. Add more people and click **Continue round**, or stop the round.
 
 People can be added to the list while a round is running; they are invited after the others. People who declined or didn't answer are never invited again automatically, only with **Invite again** once the round is over.
+
+**All at once** (bidding only). For a bidding offer, the button reads **Invite everyone on the list**. You edit the email once, and everyone waiting on the list is invited to apply at the same time. The deadline is the offer's bid deadline, or the default number of days if it has none. Here the box for hiding the offer is not ticked by default, since others may apply too.
+
+- Applications appear on To-do under *Choose a reviewer*, as usual.
+- Declines are recorded in the history, without an email to you.
+- People added to the list later can be invited with **Invite the new people**.
+
+The round ends when everyone has answered, when you select a bidder (which closes bidding and withdraws invitations that are still open), or when you stop it.
+
+**On To-do**, the section **Invitations** lists every work with a round in progress or invitations waiting for an answer. It shows the mode, who is invited and until when, and in a sequential round who is next. Rounds that reached the end of the list are marked. From there you can go to the invitation page (**Invite more**) or stop a round.
+
+![Invitations on the To-do page](images/todo-invitations.png)
+
+Changing an offer's assignment mode ends a round that no longer fits, and withdraws its pending invitations.
 
 To invite people without others reserving the work first, hide the offer from the public list. Invitation links keep working for hidden offers.
 

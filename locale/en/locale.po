@@ -1508,7 +1508,7 @@ msgstr "Start sequential round"
 msgid "plugins.generic.objectsForReview.invitation.round.hideOffer"
 msgstr "Hide from the public list during the invitation round"
 
-msgid "plugins.generic.objectsForReview.invitation.round.explain"
+msgid "plugins.generic.objectsForReview.invitation.round.explain.reserve"
 msgstr "Invites the people waiting on the list one after another, automatically."
 
 msgid "plugins.generic.objectsForReview.invitation.round.running"
@@ -1537,3 +1537,57 @@ msgstr "Stop the round? The pending invitation is withdrawn, and nobody else is 
 
 msgid "plugins.generic.objectsForReview.settings.invitationDays.reminderInvalid"
 msgstr "Please enter after how many days invitees are reminded (0: no reminder); it must be fewer than the days to answer."
+
+msgid "plugins.generic.objectsForReview.history.event.roundStartedParallel"
+msgstr "Invitations sent to everyone on the list (all at once)"
+
+msgid "plugins.generic.objectsForReview.history.event.roundFinished"
+msgstr "Invitation round finished: everyone has answered"
+
+msgid "plugins.generic.objectsForReview.invitation.round.descriptionParallel"
+msgstr "Invites everyone waiting on the list ({$number}) at the same time to apply for this review, until {$deadline}. You choose among the applicants on To-do."
+
+msgid "plugins.generic.objectsForReview.invitation.round.startParallel"
+msgstr "Invite everyone on the list"
+
+msgid "plugins.generic.objectsForReview.invitation.round.explain.bid"
+msgstr "Sends the invitation to apply to everyone waiting on the list at once."
+
+msgid "plugins.generic.objectsForReview.invitation.round.runningParallel"
+msgstr "Invitations sent to everyone on {$date} by {$name}"
+
+msgid "plugins.generic.objectsForReview.invitation.round.parallelCounts"
+msgstr "Waiting for an answer: {$invited} · answered: {$answered}"
+
+msgid "plugins.generic.objectsForReview.invitation.round.newPeople"
+msgstr "{$number} added since, not invited yet"
+
+msgid "plugins.generic.objectsForReview.invitation.round.inviteNew"
+msgstr "Invite the new people"
+
+msgid "plugins.generic.objectsForReview.invitation.round.stop.confirmParallel"
+msgstr "Stop the round? Pending invitations are withdrawn."
+
+msgid "plugins.generic.objectsForReview.invitation.round.exhaustedShort"
+msgstr "End of the list reached without a reservation"
+
+msgid "plugins.generic.objectsForReview.desk.invitations"
+msgstr "Invitations"
+
+msgid "plugins.generic.objectsForReview.invitation.mode"
+msgstr "Mode"
+
+msgid "plugins.generic.objectsForReview.invitation.mode.sequential"
+msgstr "Sequential round"
+
+msgid "plugins.generic.objectsForReview.invitation.mode.parallel"
+msgstr "All at once"
+
+msgid "plugins.generic.objectsForReview.invitation.mode.manual"
+msgstr "Sent individually"
+
+msgid "plugins.generic.objectsForReview.invitation.inviteMore"
+msgstr "Invite more"
+
+msgid "plugins.generic.objectsForReview.invitation.openPage"
+msgstr "Invitation page"

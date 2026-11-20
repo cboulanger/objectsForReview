@@ -22,7 +22,7 @@
 			{load_url_in_div id="objectsForReviewSettingsContainer" url=$settingsUrl}
 
 		{elseif $view == 'desk'}
-			{if !$selection && !$offers && !$unsuccessful && !$copies && !$notifications && !$overdue}
+			{if !$selection && !$offers && !$unsuccessful && !$copies && !$notifications && !$overdue && !$invitations}
 				<p class="ofrDeskEmpty">{translate key="plugins.generic.objectsForReview.desk.empty"}</p>
 			{/if}
 
@@ -84,6 +84,44 @@
 						</div>
 					</section>
 				{/foreach}
+			{/if}
+
+			{if $invitations}
+				<h2>{translate key="plugins.generic.objectsForReview.desk.invitations"}</h2>
+				<table class="ofrTable">
+					<thead>
+						<tr>
+							<th>{translate key="plugins.generic.objectsForReview.column.object"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.invitation.mode"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.status.invited"}</th>
+							<th>{translate key="grid.columns.actions"}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach from=$invitations item=row}
+							<tr>
+								<td>{include file=$ofrObjectCell row=$row}</td>
+								<td>{translate key="plugins.generic.objectsForReview.invitation.mode.`$row.mode`"}</td>
+								<td>
+									{if $row.exhausted}
+										<span class="ofrWarning">{translate key="plugins.generic.objectsForReview.invitation.round.exhaustedShort"}</span>
+									{else}
+										{foreach from=$row.invited item=name name=invited}{$name|escape}{if !$smarty.foreach.invited.last}<br />{/if}{/foreach}
+										{if $row.deadline}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.column.answerBy"}: {$row.deadline|date_format:$dateFormatShort}</div>{/if}
+									{/if}
+									{if $row.mode == 'sequential' && $row.next}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.invitation.round.next" name=$row.next|escape number=$row.waitingCount}</div>{/if}
+									{if $row.mode == 'parallel' && $row.waitingCount}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.invitation.round.newPeople" number=$row.waitingCount}</div>{/if}
+								</td>
+								<td class="ofrActions">
+									<a href="{$row.inviteUrl|escape}">{if $row.exhausted}{translate key="plugins.generic.objectsForReview.invitation.inviteMore"}{else}{translate key="plugins.generic.objectsForReview.invitation.openPage"}{/if}</a>
+									{if $row.roundActive}
+										{include file=$ofrInviteButton do="stopRound" objectId=$row.objectId assignmentId=0 returnTo="desk" labelKey="plugins.generic.objectsForReview.invitation.round.stop" symbol="" confirmKey="plugins.generic.objectsForReview.invitation.round.stop.confirm"}
+									{/if}
+								</td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
 			{/if}
 
 			{if $offers}

@@ -17,6 +17,15 @@
 	</p>
 	{if $round}
 		<div class="ofrRound">
+			{if $round.mode == 'parallel'}
+				<p><strong>{translate key="plugins.generic.objectsForReview.invitation.round.runningParallel" date=$round.started|date_format:$dateFormatShort name=$round.startedBy|escape}</strong></p>
+				<p>{translate key="plugins.generic.objectsForReview.invitation.round.parallelCounts" invited=$round.invitedCount answered=$round.answeredCount}</p>
+				{if $round.next}<p class="ofrDetail">{translate key="plugins.generic.objectsForReview.invitation.round.newPeople" number=$round.waitingCount}</p>{/if}
+				<div class="ofrInlineActions">
+					{if $round.next && $canInvite}{include file=$ofrInviteButton do="continueRound" assignmentId=0 labelKey="plugins.generic.objectsForReview.invitation.round.inviteNew" symbol=""}{/if}
+					{include file=$ofrInviteButton do="stopRound" assignmentId=0 labelKey="plugins.generic.objectsForReview.invitation.round.stop" symbol="" confirmKey="plugins.generic.objectsForReview.invitation.round.stop.confirmParallel"}
+				</div>
+			{else}
 			<p><strong>{translate key="plugins.generic.objectsForReview.invitation.round.running" date=$round.started|date_format:$dateFormatShort name=$round.startedBy|escape}</strong></p>
 			{if $round.exhausted}
 				<p class="ofrWarning">{translate key="plugins.generic.objectsForReview.invitation.round.exhausted"}</p>
@@ -30,11 +39,12 @@
 				{if $round.exhausted && $round.next}{include file=$ofrInviteButton do="continueRound" assignmentId=0 labelKey="plugins.generic.objectsForReview.invitation.round.continue" symbol=""}{/if}
 				{include file=$ofrInviteButton do="stopRound" assignmentId=0 labelKey="plugins.generic.objectsForReview.invitation.round.stop" symbol="" confirmKey="plugins.generic.objectsForReview.invitation.round.stop.confirm"}
 			</div>
+			{/if}
 		</div>
 	{elseif $canInvite}
 		<p class="ofrDetail">{translate key="plugins.generic.objectsForReview.invitation.manualNote" deadline=$deadline|date_format:$dateFormatShort}</p>
 		{if $roundAction}
-			<p>{include file="linkAction/linkAction.tpl" action=$roundAction contextId="ofrInvite"} <span class="ofrDetail">{translate key="plugins.generic.objectsForReview.invitation.round.explain"}</span></p>
+			<p>{include file="linkAction/linkAction.tpl" action=$roundAction contextId="ofrInvite"} <span class="ofrDetail">{translate key="plugins.generic.objectsForReview.invitation.round.explain.$kind"}</span></p>
 		{/if}
 	{elseif $canEdit}
 		<p class="ofrWarning">{translate key="plugins.generic.objectsForReview.invitation.notPossible"}</p>

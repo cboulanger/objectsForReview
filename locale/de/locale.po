@@ -1507,7 +1507,7 @@ msgstr "Fortlaufende Runde starten"
 msgid "plugins.generic.objectsForReview.invitation.round.hideOffer"
 msgstr "Während der Einladungsrunde aus der öffentlichen Liste nehmen"
 
-msgid "plugins.generic.objectsForReview.invitation.round.explain"
+msgid "plugins.generic.objectsForReview.invitation.round.explain.reserve"
 msgstr "Lädt die wartenden Personen auf der Liste automatisch nacheinander ein."
 
 msgid "plugins.generic.objectsForReview.invitation.round.running"
@@ -1536,3 +1536,57 @@ msgstr "Runde beenden? Die offene Einladung wird zurückgezogen, und niemand wei
 
 msgid "plugins.generic.objectsForReview.settings.invitationDays.reminderInvalid"
 msgstr "Bitte geben Sie an, nach wie vielen Tagen Eingeladene erinnert werden (0: keine Erinnerung); es müssen weniger Tage sein als die Antwortfrist."
+
+msgid "plugins.generic.objectsForReview.history.event.roundStartedParallel"
+msgstr "Einladungen an alle auf der Liste gesendet (alle gleichzeitig)"
+
+msgid "plugins.generic.objectsForReview.history.event.roundFinished"
+msgstr "Einladungsrunde abgeschlossen: alle haben geantwortet"
+
+msgid "plugins.generic.objectsForReview.invitation.round.descriptionParallel"
+msgstr "Lädt alle wartenden Personen auf der Liste ({$number}) gleichzeitig ein, sich um diese Rezension zu bewerben, bis zum {$deadline}. Sie wählen unter Aufgaben aus den Bewerbungen aus."
+
+msgid "plugins.generic.objectsForReview.invitation.round.startParallel"
+msgstr "Alle auf der Liste einladen"
+
+msgid "plugins.generic.objectsForReview.invitation.round.explain.bid"
+msgstr "Sendet die Einladung zur Bewerbung gleichzeitig an alle wartenden Personen auf der Liste."
+
+msgid "plugins.generic.objectsForReview.invitation.round.runningParallel"
+msgstr "Einladungen an alle gesendet am {$date} von {$name}"
+
+msgid "plugins.generic.objectsForReview.invitation.round.parallelCounts"
+msgstr "Antwort ausstehend: {$invited} · geantwortet: {$answered}"
+
+msgid "plugins.generic.objectsForReview.invitation.round.newPeople"
+msgstr "{$number} seitdem hinzugefügt, noch nicht eingeladen"
+
+msgid "plugins.generic.objectsForReview.invitation.round.inviteNew"
+msgstr "Neue Personen einladen"
+
+msgid "plugins.generic.objectsForReview.invitation.round.stop.confirmParallel"
+msgstr "Runde beenden? Offene Einladungen werden zurückgezogen."
+
+msgid "plugins.generic.objectsForReview.invitation.round.exhaustedShort"
+msgstr "Ende der Liste ohne Reservierung erreicht"
+
+msgid "plugins.generic.objectsForReview.desk.invitations"
+msgstr "Einladungen"
+
+msgid "plugins.generic.objectsForReview.invitation.mode"
+msgstr "Verfahren"
+
+msgid "plugins.generic.objectsForReview.invitation.mode.sequential"
+msgstr "Fortlaufende Runde"
+
+msgid "plugins.generic.objectsForReview.invitation.mode.parallel"
+msgstr "Alle gleichzeitig"
+
+msgid "plugins.generic.objectsForReview.invitation.mode.manual"
+msgstr "Einzeln gesendet"
+
+msgid "plugins.generic.objectsForReview.invitation.inviteMore"
+msgstr "Weitere einladen"
+
+msgid "plugins.generic.objectsForReview.invitation.openPage"
+msgstr "Einladungsseite"

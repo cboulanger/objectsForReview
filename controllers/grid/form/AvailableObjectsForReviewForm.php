@@ -168,6 +168,9 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 
 		if ($objectId) {
 			$objectForReviewDao->updateObject($objectForReview);
+			// A changed assignment mode or bid deadline may end an invitation round
+			\APP\plugins\generic\objectsForReview\classes\InvitationWorkflow::onOfferChanged($objectForReview,
+				\APP\core\Application::get()->getRequest()->getUser());
 		} else {
 			$objectForReview = $objectForReviewDao->insertObject($objectForReview);
 		}

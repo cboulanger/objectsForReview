@@ -93,7 +93,7 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$context = $request->getContext();
 		$contextId = $context->getId();
 		$assignmentsByObject = AssignmentWorkflow::dao()->getByContextId($contextId);
-		$selection = $offers = $unsuccessful = $closed = $copies = $notifications = $overdue = [];
+		$selection = $offers = $unsuccessful = $closed = $copies = $notifications = $overdue = $invitations = [];
 		$today = date('Y-m-d');
 		$userCache = [];
 
@@ -130,6 +130,23 @@ class ObjectsForReviewManagementHandler extends Handler {
 						['switchToDirect', 'closeOffer']
 					)),
 					'historyAction' => $this->assignmentActions($request, $object, null, ['history'])['history'],
+				];
+			}
+
+			// Invitations: running rounds and pending manual invitations
+			$invited = AssignmentWorkflow::filter($assignments, [Assignment::STATUS_INVITED]);
+			if (InvitationWorkflow::isRoundActive($object) || $invited) {
+				$waiting = InvitationWorkflow::getWaiting($object);
+				$deadlines = array_filter(array_map(fn ($a) => $a->getData('invitationDeadline'), $invited));
+				$invitations[] = $row + [
+					'mode' => InvitationWorkflow::getRoundMode($object) ?? 'manual',
+					'exhausted' => InvitationWorkflow::isExhausted($object),
+					'invited' => array_map(fn ($a) => $this->userName($a->getUserId(), $userCache), $invited),
+					'deadline' => $deadlines ? min($deadlines) : null,
+					'next' => $waiting ? $this->userName($waiting[0]->getUserId(), $userCache) : null,
+					'waitingCount' => count($waiting),
+					'roundActive' => InvitationWorkflow::isRoundActive($object),
+					'inviteUrl' => $request->getRouter()->url($request, null, self::PAGE, 'invite', [$object->getId()]),
 				];
 			}
 
@@ -191,6 +208,8 @@ class ObjectsForReviewManagementHandler extends Handler {
 			'copies' => $copies,
 			'notifications' => $notifications,
 			'overdue' => $overdue,
+			'invitations' => $invitations,
+			'ofrInviteButton' => $this->plugin->getTemplateResource('inviteButton.tpl'),
 		]);
 	}
 
@@ -330,7 +349,11 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$state = AssignmentWorkflow::getState($object, $assignments);
 		$current = $roundActive ? InvitationWorkflow::getCurrent($object) : null;
 		$waiting = $roundActive ? InvitationWorkflow::getWaiting($object) : [];
+		[$roundInvited, $roundAnswered] = InvitationWorkflow::getRoundCounts($object);
 		$round = $roundActive ? [
+			'mode' => InvitationWorkflow::getRoundMode($object),
+			'invitedCount' => $roundInvited,
+			'answeredCount' => $roundAnswered,
 			'started' => $object->getData('invitationStarted'),
 			'startedBy' => $this->userName((int) $object->getData('invitationStartedBy'), $userCache),
 			'exhausted' => InvitationWorkflow::isExhausted($object),
@@ -350,7 +373,8 @@ class ObjectsForReviewManagementHandler extends Handler {
 			'round' => $round,
 			'roundAction' => InvitationWorkflow::canStartRound($object, $assignments)
 				? $this->linkAction($request, 'roundForm', ['objectId' => $object->getId()],
-					'plugins.generic.objectsForReview.invitation.round.start', 'modal_email', 'round-' . $object->getId())
+					$object->isBidding() ? 'plugins.generic.objectsForReview.invitation.round.startParallel' : 'plugins.generic.objectsForReview.invitation.round.start',
+					'modal_email', 'round-' . $object->getId())
 				: null,
 			'rows' => $rows,
 			'query' => $query,
@@ -426,6 +450,9 @@ class ObjectsForReviewManagementHandler extends Handler {
 			case 'continueRound':
 				InvitationWorkflow::continueRound($this->plugin, $request->getContext(), $object, $editor);
 				break;
+		}
+		if ($request->getUserVar('returnTo') === 'desk') {
+			$request->redirect(null, self::PAGE, 'desk');
 		}
 		$request->redirect(null, self::PAGE, 'invite', [$object->getId()], array_filter($params));
 	}

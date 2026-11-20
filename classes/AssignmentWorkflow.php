@@ -234,6 +234,7 @@ class AssignmentWorkflow {
 
 		$object->setOfferSetting('biddingClosed', true);
 		(new ObjectForReviewDAO())->updateObject($object);
+		InvitationWorkflow::onOfferChanged($object, $editor);
 
 		$reviewer = Repo::user()->get($assignment->getUserId(), true);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_CONTRACT_OFFERED, $editor, $reviewer);
@@ -392,6 +393,7 @@ class AssignmentWorkflow {
 		$object->setOfferSetting('bidDeadline', $bidDeadline);
 		(new ObjectForReviewDAO())->updateObject($object);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_BIDDING_REOPENED, $editor, null);
+		InvitationWorkflow::onOfferChanged($object, $editor);
 	}
 
 	/**
@@ -402,6 +404,7 @@ class AssignmentWorkflow {
 		$object->setOfferSetting('biddingClosed', null);
 		(new ObjectForReviewDAO())->updateObject($object);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_MODE_DIRECT, $editor, null);
+		InvitationWorkflow::onOfferChanged($object, $editor);
 	}
 
 	public static function closeOffer(ObjectForReview $object, User $editor): void {

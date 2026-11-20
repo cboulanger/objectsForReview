@@ -1487,7 +1487,7 @@ msgstr "Aloita peräkkäinen kierros"
 msgid "plugins.generic.objectsForReview.invitation.round.hideOffer"
 msgstr "Piilota julkisesta luettelosta kutsukierroksen ajaksi"
 
-msgid "plugins.generic.objectsForReview.invitation.round.explain"
+msgid "plugins.generic.objectsForReview.invitation.round.explain.reserve"
 msgstr "Kutsuu listalla odottavat henkilöt automaattisesti yksi kerrallaan."
 
 msgid "plugins.generic.objectsForReview.invitation.round.running"
@@ -1516,3 +1516,57 @@ msgstr "Lopetetaanko kierros? Avoin kutsu perutaan, eikä ketään muuta kutsuta
 
 msgid "plugins.generic.objectsForReview.settings.invitationDays.reminderInvalid"
 msgstr "Anna, monenko päivän kuluttua kutsuttuja muistutetaan (0: ei muistutusta); määrän on oltava pienempi kuin vastausaika."
+
+msgid "plugins.generic.objectsForReview.history.event.roundStartedParallel"
+msgstr "Kutsut lähetetty kaikille listalla oleville (kaikki kerralla)"
+
+msgid "plugins.generic.objectsForReview.history.event.roundFinished"
+msgstr "Kutsukierros päättyi: kaikki ovat vastanneet"
+
+msgid "plugins.generic.objectsForReview.invitation.round.descriptionParallel"
+msgstr "Kutsuu kaikki listalla odottavat ({$number}) samanaikaisesti hakemaan tämän teoksen arvioijaksi {$deadline} mennessä. Valitset hakijoista Tehtävät-sivulla."
+
+msgid "plugins.generic.objectsForReview.invitation.round.startParallel"
+msgstr "Kutsu kaikki listalla olevat"
+
+msgid "plugins.generic.objectsForReview.invitation.round.explain.bid"
+msgstr "Lähettää hakukutsun kerralla kaikille listalla odottaville."
+
+msgid "plugins.generic.objectsForReview.invitation.round.runningParallel"
+msgstr "Kutsut lähetetty kaikille {$date}, lähettäjä {$name}"
+
+msgid "plugins.generic.objectsForReview.invitation.round.parallelCounts"
+msgstr "Vastausta odotetaan: {$invited} · vastanneet: {$answered}"
+
+msgid "plugins.generic.objectsForReview.invitation.round.newPeople"
+msgstr "{$number} lisätty sen jälkeen, ei vielä kutsuttu"
+
+msgid "plugins.generic.objectsForReview.invitation.round.inviteNew"
+msgstr "Kutsu uudet henkilöt"
+
+msgid "plugins.generic.objectsForReview.invitation.round.stop.confirmParallel"
+msgstr "Lopetetaanko kierros? Avoimet kutsut perutaan."
+
+msgid "plugins.generic.objectsForReview.invitation.round.exhaustedShort"
+msgstr "Listan loppu saavutettu ilman varausta"
+
+msgid "plugins.generic.objectsForReview.desk.invitations"
+msgstr "Kutsut"
+
+msgid "plugins.generic.objectsForReview.invitation.mode"
+msgstr "Tapa"
+
+msgid "plugins.generic.objectsForReview.invitation.mode.sequential"
+msgstr "Peräkkäinen kierros"
+
+msgid "plugins.generic.objectsForReview.invitation.mode.parallel"
+msgstr "Kaikki kerralla"
+
+msgid "plugins.generic.objectsForReview.invitation.mode.manual"
+msgstr "Lähetetty yksitellen"
+
+msgid "plugins.generic.objectsForReview.invitation.inviteMore"
+msgstr "Kutsu lisää"
+
+msgid "plugins.generic.objectsForReview.invitation.openPage"
+msgstr "Kutsusivu"
