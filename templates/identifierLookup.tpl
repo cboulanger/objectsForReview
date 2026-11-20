@@ -46,20 +46,6 @@
 			}
 		}
 
-		function setTitle(value) {
-			var $title = field('title'),
-				editor = window.tinymce && tinymce.get($title.attr('id'));
-			if (!value) {
-				return;
-			}
-			if (editor) {
-				editor.setContent($('<div>').text(value).html());
-				editor.fire('change');
-			} else {
-				$title.val(value).trigger('change');
-			}
-		}
-
 		function toggle() {
 			var type = currentType();
 			$box.toggle(!!type);
@@ -89,7 +75,7 @@
 					setValue('identifier', data.identifier);
 					setValue('resourceType', data.resourceType);
 					setValue('authors', data.authors);
-					setTitle(data.title);
+					setValue('title', data.title);
 					setValue('publisher', data.publisher);
 					setValue('year', data.year);
 					$status.text(data.message || $box.data(type + 'Done'));

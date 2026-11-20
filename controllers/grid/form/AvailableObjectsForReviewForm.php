@@ -81,6 +81,7 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 			$this->setData('identifier', $objectForReview->getIdentifier());
 			$this->setData('authors', $objectForReview->getAuthors());
 			$this->setData('title', $objectForReview->getTitle());
+			$this->setData('description', $objectForReview->getDescription());
 			$this->setData('year', $objectForReview->getYear());
 			$this->setData('publisher', $objectForReview->getPublisher());
 			$this->setData('assignmentMode', $objectForReview->getAssignmentMode());
@@ -107,7 +108,7 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 	 * @copydoc Form::readInputData()
 	 */
 	function readInputData() {
-		$this->readUserVars(array('identifierType', 'resourceType', 'identifier', 'authors', 'title', 'year', 'publisher', 'assignmentMode', 'bidDeadline', 'responsibleEditorId',
+		$this->readUserVars(array('identifierType', 'resourceType', 'identifier', 'authors', 'title', 'description', 'year', 'publisher', 'assignmentMode', 'bidDeadline', 'responsibleEditorId',
 			'publisherContactId', 'journalHoldsCopy', 'returnRequired', 'notifyPublisher'));
 	}
 
@@ -154,8 +155,10 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 		$objectForReview->setIdentifierType($this->getData('identifierType'));
 		$objectForReview->setResourceType($this->getData('resourceType'));
 		$objectForReview->setAuthors($this->getData('authors'));
-		$title = str_replace(['<p>', '</p>'], '', $this->getData('title'));
-		$objectForReview->setTitle($title);		$objectForReview->setYear($this->getData('year'));
+		$objectForReview->setTitle(trim((string) $this->getData('title')));
+		$description = trim((string) $this->getData('description'));
+		$objectForReview->setDescription(trim(strip_tags($description)) === '' ? null : $description);
+		$objectForReview->setYear($this->getData('year'));
 		$objectForReview->setPublisher($this->getData('publisher'));
 		$objectForReview->setCreator("manager");
 		$objectForReview->setOfferSetting('assignmentMode', $this->getData('assignmentMode') === ObjectForReview::MODE_BIDDING ? ObjectForReview::MODE_BIDDING : null);

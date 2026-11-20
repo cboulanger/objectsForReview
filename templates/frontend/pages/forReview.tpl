@@ -35,13 +35,16 @@
       </tr>
 			{foreach from=$objectsForReview item=objectForReview}
       <tr>
-				<td data-sort='{$objectForReview.title|strip_tags}'>
-            {$objectForReview.title|strip_unsafe_html}<br />
+				<td data-sort="{$objectForReview.title|escape}">
+            {$objectForReview.title|escape}<br />
             {$objectForReview.identifierType|escape}:
             {if $objectForReview.identifierUrl}
               <a href="{$objectForReview.identifierUrl|escape}" target="_blank" rel="noopener noreferrer">{$objectForReview.identifier|escape}</a>
             {else}
               {$objectForReview.identifier|escape}
+            {/if}
+            {if $objectForReview.description}
+              <div class="ofrObjectDescription">{$objectForReview.description|strip_unsafe_html}</div>
             {/if}
 				</td>
         <td>
@@ -89,14 +92,14 @@
             </form>
           {elseif $o.reservable}
             {if $currentUser}
-              <a class="pkp_button ofrReserveButton" id="reserveObject-{$o.objectId|escape}" href="{url op="index" reserve=$o.objectId}" data-object-id="{$o.objectId|escape}" data-description="{$o.description|strip_tags|escape}">{translate key='plugins.generic.objectsForReview.reserve'}</a>
+              <a class="pkp_button ofrReserveButton" id="reserveObject-{$o.objectId|escape}" href="{url op="index" reserve=$o.objectId}" data-object-id="{$o.objectId|escape}" data-description="{$o.citation|strip_tags|escape}">{translate key='plugins.generic.objectsForReview.reserve'}</a>
             {else}
               {translate key='plugins.generic.objectsForReview.objectAvailable'}
             {/if}
           {elseif $o.biddingOpen}
             {if $o.bidDeadline}<p class="ofrBidDeadline">{translate key="plugins.generic.objectsForReview.bid.deadline" deadline=$o.bidDeadline|date_format:$dateFormatShort}</p>{/if}
             {if $currentUser}
-              <button type="button" class="pkp_button ofrBidButton" data-object-id="{$o.objectId|escape}" data-description="{$o.description|strip_tags|escape}">{translate key='plugins.generic.objectsForReview.bid'}</button>
+              <button type="button" class="pkp_button ofrBidButton" data-object-id="{$o.objectId|escape}" data-description="{$o.citation|strip_tags|escape}">{translate key='plugins.generic.objectsForReview.bid'}</button>
             {else}
               {translate key='plugins.generic.objectsForReview.bid.open'}
             {/if}
@@ -134,6 +137,8 @@
 				#ofrBidDialog textarea { width: 100%; box-sizing: border-box; }
 				#ofrBidDialog .ofrHint { font-size: 0.875rem; color: #555; }
 				.ofrMyStatus, .ofrBidDeadline { font-size: 0.875rem; margin: 0 0 0.5rem; }
+				.ofrObjectDescription { font-size: 0.875rem; margin-top: 0.5rem; }
+				.ofrObjectDescription p { margin: 0 0 0.25rem; }
 			</style>
 			<script>
 				(function () {ldelim}

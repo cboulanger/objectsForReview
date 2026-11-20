@@ -152,7 +152,7 @@ class ReservationEmailForm extends \PKP\form\Form {
 			'mode' => $this->mode,
 			'objectId' => $this->object->getId(),
 			'assignmentIds' => array_map(fn ($a) => $a->getId(), $this->assignments),
-			'objectDescription' => $this->object->getDescription(),
+			'objectDescription' => $this->object->getCitation(),
 			'recipients' => $recipients,
 			'reviewerName' => $first['name'],
 			'optionalEmail' => in_array($this->mode, self::OPTIONAL_EMAIL_MODES, true),

@@ -177,7 +177,7 @@ flowchart TD
 
 ### 1. Offering a work
 
-Under **Offered works › Add work**, enter the work. With a DOI or ISBN, the lookup button fills in the authors, title, publisher and year.
+Under **Offered works › Add work**, enter the work. With a DOI or ISBN, the lookup button fills in the authors, title, publisher and year. The optional **Description** (formatted text) appears below the title in the public list, e.g. to say what the work is about or what kind of review you are looking for.
 
 ![The offer form](images/offer-form.png)
 

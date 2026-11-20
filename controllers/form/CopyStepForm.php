@@ -144,7 +144,7 @@ class CopyStepForm extends \PKP\form\Form {
 			'step' => $this->step,
 			'objectId' => $this->object->getId(),
 			'assignmentIds' => [$this->assignment->getId()],
-			'objectDescription' => $this->object->getDescription(),
+			'objectDescription' => $this->object->getCitation(),
 			'stepDescription' => __('plugins.generic.objectsForReview.copy.step.' . $this->step . '.description', [
 				'reviewer' => $this->reviewer?->getFullName() ?? '',
 				'publisher' => CopyWorkflow::getPublisherContact($this->object)?->getFullName() ?? '',

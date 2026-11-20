@@ -114,7 +114,7 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 			$gridData[$objectId] = array(
 				'identifierType' => $objectForReview->getIdentifierType(),
 				'identifier' => $objectForReview->getIdentifier(),
-				'description' => $objectForReview->getDescription(),
+				'description' => $objectForReview->getCitation(),
 				'user' => $userName,
 				'hidden' => $objectForReview->isHidden(),
 			);

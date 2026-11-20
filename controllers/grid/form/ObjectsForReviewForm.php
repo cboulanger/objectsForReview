@@ -147,8 +147,7 @@ class ObjectsForReviewForm extends \PKP\form\Form {
 		$objectForReview->setIdentifierType($this->getData('identifierType'));
 		$objectForReview->setResourceType($this->getData('resourceType'));	
 		$objectForReview->setAuthors($this->getData('authors'));
-		$title = str_replace(['<p>', '</p>'], '', $this->getData('title'));
-		$objectForReview->setTitle($title);
+		$objectForReview->setTitle(trim((string) $this->getData('title')));
 		$objectForReview->setYear($this->getData('year'));
 		$objectForReview->setPublisher($this->getData('publisher'));
 		$objectForReview->setCreator("workflow");

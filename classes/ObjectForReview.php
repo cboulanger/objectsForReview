@@ -200,10 +200,10 @@ class ObjectForReview extends \PKP\core\DataObject {
 	}
 
 	/**
-	 * Get description.
+	 * Get the citation: "Authors: Title. Publisher. Year."
 	 * @return string
 	 */
-	function getDescription() {
+	function getCitation() {
 		$description = $this->getData('title');
 		if ($this->getData('authors'))
 			$description = $this->getData('authors') . ": " . $description;
@@ -261,6 +261,22 @@ class ObjectForReview extends \PKP\core\DataObject {
 	 */
 	function getTitle() {
 		return $this->getData('title');
+	}
+
+	/**
+	 * Set description (rich text: what the work is about, why it is offered).
+	 * @param $description string
+	 */
+	function setDescription($description) {
+		return $this->setData('description', $description);
+	}
+
+	/**
+	 * Get description (rich text).
+	 * @return string|null
+	 */
+	function getDescription() {
+		return $this->getData('description');
 	}
 
 	/**

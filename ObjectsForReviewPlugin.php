@@ -486,7 +486,7 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 					'identifierType' => $objectForReview->getIdentifierType(),
 					'identifier' => $objectForReview->getIdentifier(),
 					'identifierUrl' => $objectForReview->getIdentifierUrl(),
-					'description' => $objectForReview->getDescription()
+					'description' => $objectForReview->getCitation()
 				);
 			}
 
@@ -515,7 +515,7 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 		if ($objectsForReview){
 			$objects = array();
 			while ($objectForReview = $objectsForReview->next()) {
-				$objects[] = $objectForReview->getDescription();
+				$objects[] = $objectForReview->getCitation();
 			}
 
 			if ($objects){
@@ -770,7 +770,7 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 	 * @param $template Send either the reserve or cancel mail
 	 */
 	public function notifyEditor($user, $object, $mailTemplate, $reservationDetails = '') {
-		$objectDescription = $object->getDescription();
+		$objectDescription = $object->getCitation();
 
 		// The offer's journal (also outside a web request, e.g. in scheduled tasks)
 		$context = Application::get()->getRequest()->getContext()

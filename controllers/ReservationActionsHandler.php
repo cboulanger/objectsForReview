@@ -163,7 +163,7 @@ class ReservationActionsHandler extends Handler {
 		}
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign([
-			'objectDescription' => $object->getDescription(),
+			'objectDescription' => $object->getCitation(),
 			'history' => ReservationLog::getHistory($object),
 		]);
 		return new JSONMessage(true, $templateMgr->fetch($this->plugin->getTemplateResource('reservationHistory.tpl')));

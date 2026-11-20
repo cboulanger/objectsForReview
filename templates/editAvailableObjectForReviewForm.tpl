@@ -44,7 +44,11 @@
 		{/fbvFormSection}
 
 		{fbvFormSection label="plugins.generic.objectsForReview.itemTitle" for="title"}
-			{fbvElement type="textarea" multilingual=false name="title" id="title" value=$title rich=true height=$fbvStyles.height.SHORT}
+			{fbvElement type="text" id="title" value=$title maxlength="255" inline=true multilingual=false size=$fbvStyles.size.LARGE}
+		{/fbvFormSection}
+
+		{fbvFormSection label="plugins.generic.objectsForReview.itemDescription" description="plugins.generic.objectsForReview.itemDescription.description" for="description"}
+			{fbvElement type="textarea" multilingual=false name="description" id="description" value=$description rich=true height=$fbvStyles.height.SHORT}
 		{/fbvFormSection}
 
 		{fbvFormSection label="plugins.generic.objectsForReview.itemPublisher" for="publisher"}

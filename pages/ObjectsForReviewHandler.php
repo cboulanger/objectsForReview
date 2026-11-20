@@ -96,6 +96,7 @@ class ObjectsForReviewHandler extends Handler {
 				'title' => $objectForReview->getTitle(),
 				'publisher' => $objectForReview->getPublisher(),
 				'year' => $objectForReview->getYear(),
+				'citation' => $objectForReview->getCitation(),
 				'description' => $objectForReview->getDescription(),
 				'state' => AssignmentWorkflow::getState($objectForReview, $assignments),
 				'bidding' => $objectForReview->isBidding(),
@@ -408,7 +409,7 @@ class ObjectsForReviewHandler extends Handler {
 		$templateMgr->assign($this->contractTemplateData($request, $formState) + $extra + [
 			'view' => $view,
 			'objectId' => $object?->getId(),
-			'objectDescription' => $object?->getDescription(),
+			'objectDescription' => $object?->getCitation(),
 			'reviewerName' => $assignment ? Repo::user()->get($assignment->getUserId(), true)?->getFullName() : null,
 			'publisherName' => $object ? CopyWorkflow::getPublisherContact($object)?->getFullName() : null,
 			'contractDeadline' => $assignment?->getData('contractDeadline'),

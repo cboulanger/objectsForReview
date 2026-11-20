@@ -621,7 +621,7 @@ class ObjectsForReviewManagementHandler extends Handler {
 	protected function objectRow($object) {
 		return [
 			'objectId' => $object->getId(),
-			'description' => $object->getDescription(),
+			'description' => $object->getCitation(),
 			'identifierType' => $object->getIdentifierType(),
 			'identifier' => $object->getIdentifier(),
 			'identifierUrl' => $object->getIdentifierUrl(),

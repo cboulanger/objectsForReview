@@ -105,7 +105,7 @@ class ReservationMailer {
 		$dateFormat = PKPString::convertStrftimeFormat($context->getLocalizedDateFormatShort($locale));
 		$formatDate = fn ($date) => $date ? date($dateFormat, strtotime($date)) : '';
 		$params = [
-			'objectDescription' => htmlspecialchars(strip_tags($object->getDescription())),
+			'objectDescription' => htmlspecialchars(strip_tags($object->getCitation())),
 			'dueDate' => $formatDate($assignment?->getData('dueDate')),
 			'contractDeadline' => $formatDate($assignment?->getData('contractDeadline')),
 			'contextName' => htmlspecialchars($context->getLocalizedName($locale)),

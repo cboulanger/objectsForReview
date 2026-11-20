@@ -13,7 +13,7 @@
 		<input type="hidden" name="objectId" value="{$reserveOpenObjectId|escape}" />
 
 		<h2 id="ofrReserveDialogTitle">{translate key="plugins.generic.objectsForReview.reserve.title"}</h2>
-		<p class="ofrReserveObject">{if $reserveOpenObjectId}{$objectsForReview[$reserveOpenObjectId].description|strip_unsafe_html}{/if}</p>
+		<p class="ofrReserveObject">{if $reserveOpenObjectId}{$objectsForReview[$reserveOpenObjectId].citation|strip_unsafe_html}{/if}</p>
 
 		{include file=$contractFieldsTemplate}
 

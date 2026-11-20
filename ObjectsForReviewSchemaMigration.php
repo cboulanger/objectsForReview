@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Schema;
 class ObjectsForReviewSchemaMigration extends Migration
 {
     /** Increase when tables or data migrations are added */
-    const SCHEMA_VERSION = 3;
+    const SCHEMA_VERSION = 4;
 
     /** Reservation fields that were stored with the object before schema version 2 */
     const LEGACY_RESERVATION_FIELDS = ['dateReserved', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote', 'reminderSent'];
@@ -106,6 +106,26 @@ class ObjectsForReviewSchemaMigration extends Migration
 
         $this->migrateReservations();
         $this->initCopyStatus();
+        $this->plainTextTitles();
+    }
+
+    /**
+     * Schema version 4: titles were entered in a rich text editor; they are plain text now.
+     */
+    protected function plainTextTitles(): void
+    {
+        $titles = DB::table('objects_for_review_settings')->where('setting_name', 'title')->get();
+        foreach ($titles as $row) {
+            $plain = trim(html_entity_decode(strip_tags((string) $row->setting_value), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+            $plain = preg_replace('/\s+/u', ' ', $plain);
+            if ($plain !== $row->setting_value) {
+                DB::table('objects_for_review_settings')
+                    ->where('object_id', $row->object_id)
+                    ->where('locale', $row->locale)
+                    ->where('setting_name', 'title')
+                    ->update(['setting_value' => $plain]);
+            }
+        }
     }
 
     /**

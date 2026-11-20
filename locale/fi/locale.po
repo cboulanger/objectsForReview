@@ -95,6 +95,12 @@ msgstr "Tekijät"
 msgid "plugins.generic.objectsForReview.itemTitle"
 msgstr "Nimike"
 
+msgid "plugins.generic.objectsForReview.itemDescription"
+msgstr "Kuvaus"
+
+msgid "plugins.generic.objectsForReview.itemDescription.description"
+msgstr "Valinnainen. Näytetään nimikkeen alla arvioitavaksi tarjottujen teosten luettelossa."
+
 msgid "plugins.generic.objectsForReview.itemPublisher"
 msgstr "Julkaisija"
 

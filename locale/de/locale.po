@@ -95,6 +95,12 @@ msgstr "Autor/innen"
 msgid "plugins.generic.objectsForReview.itemTitle"
 msgstr "Titel"
 
+msgid "plugins.generic.objectsForReview.itemDescription"
+msgstr "Beschreibung"
+
+msgid "plugins.generic.objectsForReview.itemDescription.description"
+msgstr "Optional. Wird in der Liste der angebotenen Werke unter dem Titel angezeigt."
+
 msgid "plugins.generic.objectsForReview.itemPublisher"
 msgstr "Verlag"
 
