@@ -21,4 +21,9 @@
   <email key="OFR_BID_UNSUCCESSFUL" subject="emails.ofrBidUnsuccessful.subject" name="emails.ofrBidUnsuccessful.name" body="emails.ofrBidUnsuccessful.body"/>
   <email key="OFR_BID_NEW" subject="emails.ofrBidNew.subject" name="emails.ofrBidNew.name" body="emails.ofrBidNew.body"/>
   <email key="OFR_CONTRACT_DECLINED" subject="emails.ofrContractDeclined.subject" name="emails.ofrContractDeclined.name" body="emails.ofrContractDeclined.body"/>
+  <email key="OFR_COPY_REQUEST" subject="emails.ofrCopyRequest.subject" name="emails.ofrCopyRequest.name" body="emails.ofrCopyRequest.body"/>
+  <email key="OFR_COPY_SENT" subject="emails.ofrCopySent.subject" name="emails.ofrCopySent.name" body="emails.ofrCopySent.body"/>
+  <email key="OFR_RETURN_REQUEST" subject="emails.ofrReturnRequest.subject" name="emails.ofrReturnRequest.name" body="emails.ofrReturnRequest.body"/>
+  <email key="OFR_RETURN_SENT" subject="emails.ofrReturnSent.subject" name="emails.ofrReturnSent.name" body="emails.ofrReturnSent.body"/>
+  <email key="OFR_PUBLISHER_NOTIFICATION" subject="emails.ofrPublisherNotification.subject" name="emails.ofrPublisherNotification.name" body="emails.ofrPublisherNotification.body"/>
 </emails>

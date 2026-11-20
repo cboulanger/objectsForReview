@@ -23,6 +23,11 @@ enum ReservationEmailEventType: int implements EmailLogEventType
 	case BID_UNSUCCESSFUL = 0x1F0F107;
 	case BID_NEW = 0x1F0F108;
 	case CONTRACT_DECLINED = 0x1F0F109;
+	case COPY_REQUEST = 0x1F0F10A;
+	case COPY_SENT = 0x1F0F10B;
+	case RETURN_REQUEST = 0x1F0F10C;
+	case RETURN_SENT = 0x1F0F10D;
+	case PUBLISHER_NOTIFICATION = 0x1F0F10E;
 
 	public function labelKey(): string
 	{
@@ -36,6 +41,11 @@ enum ReservationEmailEventType: int implements EmailLogEventType
 			self::BID_UNSUCCESSFUL => 'plugins.generic.objectsForReview.history.email.bidUnsuccessful',
 			self::BID_NEW => 'plugins.generic.objectsForReview.history.email.bidNew',
 			self::CONTRACT_DECLINED => 'plugins.generic.objectsForReview.history.email.contractDeclined',
+			self::COPY_REQUEST => 'plugins.generic.objectsForReview.history.email.copyRequest',
+			self::COPY_SENT => 'plugins.generic.objectsForReview.history.email.copySent',
+			self::RETURN_REQUEST => 'plugins.generic.objectsForReview.history.email.returnRequest',
+			self::RETURN_SENT => 'plugins.generic.objectsForReview.history.email.returnSent',
+			self::PUBLISHER_NOTIFICATION => 'plugins.generic.objectsForReview.history.email.publisherNotification',
 		};
 	}
 }

@@ -43,6 +43,17 @@ class ReservationLog {
 	const EVENT_OFFER_REOPENED = 0x1F0F210;
 	const EVENT_LIST_DISCARDED = 0x1F0F211;
 	const EVENT_COMPLETED = 0x1F0F212;
+	const EVENT_COPY_REQUESTED = 0x1F0F213;
+	const EVENT_COPY_SENT_JOURNAL = 0x1F0F214;
+	const EVENT_COPY_SENT_PUBLISHER = 0x1F0F215;
+	const EVENT_COPY_RECEIVED = 0x1F0F216;
+	const EVENT_COPY_REQUEST_WITHDRAWN = 0x1F0F217;
+	const EVENT_RETURN_REQUESTED_JOURNAL = 0x1F0F218;
+	const EVENT_RETURN_REQUESTED_PUBLISHER = 0x1F0F219;
+	const EVENT_RETURN_SENT = 0x1F0F21A;
+	const EVENT_RETURNED_JOURNAL = 0x1F0F21B;
+	const EVENT_RETURNED_PUBLISHER = 0x1F0F21C;
+	const EVENT_PUBLISHER_NOTIFIED = 0x1F0F21D;
 
 	const EVENT_MESSAGES = [
 		self::EVENT_RESERVED => 'plugins.generic.objectsForReview.history.event.reserved',
@@ -63,6 +74,17 @@ class ReservationLog {
 		self::EVENT_OFFER_REOPENED => 'plugins.generic.objectsForReview.history.event.offerReopened',
 		self::EVENT_LIST_DISCARDED => 'plugins.generic.objectsForReview.history.event.listDiscarded',
 		self::EVENT_COMPLETED => 'plugins.generic.objectsForReview.history.event.completed',
+		self::EVENT_COPY_REQUESTED => 'plugins.generic.objectsForReview.history.event.copyRequested',
+		self::EVENT_COPY_SENT_JOURNAL => 'plugins.generic.objectsForReview.history.event.copySentJournal',
+		self::EVENT_COPY_SENT_PUBLISHER => 'plugins.generic.objectsForReview.history.event.copySentPublisher',
+		self::EVENT_COPY_RECEIVED => 'plugins.generic.objectsForReview.history.event.copyReceived',
+		self::EVENT_COPY_REQUEST_WITHDRAWN => 'plugins.generic.objectsForReview.history.event.copyRequestWithdrawn',
+		self::EVENT_RETURN_REQUESTED_JOURNAL => 'plugins.generic.objectsForReview.history.event.returnRequestedJournal',
+		self::EVENT_RETURN_REQUESTED_PUBLISHER => 'plugins.generic.objectsForReview.history.event.returnRequestedPublisher',
+		self::EVENT_RETURN_SENT => 'plugins.generic.objectsForReview.history.event.returnSent',
+		self::EVENT_RETURNED_JOURNAL => 'plugins.generic.objectsForReview.history.event.returnedJournal',
+		self::EVENT_RETURNED_PUBLISHER => 'plugins.generic.objectsForReview.history.event.returnedPublisher',
+		self::EVENT_PUBLISHER_NOTIFIED => 'plugins.generic.objectsForReview.history.event.publisherNotified',
 	];
 
 	/**
@@ -123,6 +145,7 @@ class ReservationLog {
 		foreach ($events as $event) {
 			$history[] = [
 				'date' => $event->getDateLogged(),
+				'id' => (int) $event->getId(),
 				'type' => 'event',
 				'label' => $event->getTranslatedMessage(),
 				'actor' => $event->getData('userFullName'),
@@ -132,7 +155,8 @@ class ReservationLog {
 		foreach ($emails as $email) {
 			$type = ReservationEmailEventType::tryFrom((int) $email->eventType);
 			$history[] = [
-				'date' => $email->dateSent,
+				'date' => (string) $email->dateSent,
+				'id' => (int) $email->id,
 				'type' => 'email',
 				'label' => $type ? __($type->labelKey()) : __('plugins.generic.objectsForReview.history.email'),
 				'actor' => $email->senderId ? $email->senderFullName : __('plugins.generic.objectsForReview.history.system'),
@@ -141,7 +165,10 @@ class ReservationLog {
 				'body' => $email->body,
 			];
 		}
-		usort($history, fn ($a, $b) => strcmp($b['date'], $a['date']));
+		// Newest first; within the same second by log order (a step's email is sent after its event is logged)
+		usort($history, fn ($a, $b) => strcmp((string) $b['date'], (string) $a['date'])
+			?: (($b['type'] === 'email') <=> ($a['type'] === 'email'))
+			?: $b['id'] <=> $a['id']);
 		return $history;
 	}
 }

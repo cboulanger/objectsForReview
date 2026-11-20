@@ -20,6 +20,7 @@ use APP\handler\Handler;
 use APP\plugins\generic\objectsForReview\classes\ActionLink;
 use APP\plugins\generic\objectsForReview\classes\Assignment;
 use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
+use APP\plugins\generic\objectsForReview\classes\CopyWorkflow;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
 use APP\template\TemplateManager;
 use PKP\db\DAORegistry;
@@ -98,6 +99,7 @@ class ObjectsForReviewHandler extends Handler {
 				'myDate' => $mine?->getDateCreated(),
 				'dueDate' => $myStatus === Assignment::STATUS_ACCEPTED ? $mine->getData('dueDate') : null,
 				'contractDeadline' => $myStatus === Assignment::STATUS_OFFERED ? $mine->getData('contractDeadline') : null,
+				'copyStatus' => $myStatus === Assignment::STATUS_ACCEPTED ? CopyWorkflow::getStatus($mine) : null,
 			];
 		}
 
@@ -146,6 +148,18 @@ class ObjectsForReviewHandler extends Handler {
 		$assignment = AssignmentWorkflow::dao()->getByObjectAndUser($object->getId(), $user->getId(), [Assignment::STATUS_ACCEPTED]);
 		if ($assignment) {
 			AssignmentWorkflow::retract($this->plugin(), $object, $assignment, $user);
+		}
+		$request->redirect(null, 'for-review');
+	}
+
+	/**
+	 * The reviewer confirms that the review copy has arrived.
+	 */
+	function confirmReceipt($args, $request) {
+		[$object, $user, $context] = $this->requirePost($request);
+		$assignment = AssignmentWorkflow::dao()->getByObjectAndUser($object->getId(), $user->getId(), [Assignment::STATUS_ACCEPTED]);
+		if ($assignment && CopyWorkflow::getStatus($assignment) === CopyWorkflow::SENT) {
+			CopyWorkflow::confirmReceipt($this->plugin(), $context, $object, $assignment, $user);
 		}
 		$request->redirect(null, 'for-review');
 	}

@@ -47,6 +47,11 @@ class ReservationMailer {
 		ReservationEmailEventType::BID_UNSUCCESSFUL->value => ObjectsForReviewBidUnsuccessful::class,
 		ReservationEmailEventType::BID_NEW->value => ObjectsForReviewBidNew::class,
 		ReservationEmailEventType::CONTRACT_DECLINED->value => ObjectsForReviewContractDeclined::class,
+		ReservationEmailEventType::COPY_REQUEST->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewCopyRequest::class,
+		ReservationEmailEventType::COPY_SENT->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewCopySent::class,
+		ReservationEmailEventType::RETURN_REQUEST->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewReturnRequest::class,
+		ReservationEmailEventType::RETURN_SENT->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewReturnSent::class,
+		ReservationEmailEventType::PUBLISHER_NOTIFICATION->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewPublisherNotification::class,
 	];
 
 	/** Placeholders filled in by send(), per recipient */

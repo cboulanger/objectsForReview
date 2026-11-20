@@ -60,6 +60,16 @@
             {if $o.dueDate}
               <p class="ofrDueDate">{translate key="plugins.generic.objectsForReview.reserve.yourDueDate" dueDate=$o.dueDate|date_format:$dateFormatShort}</p>
             {/if}
+            {if $o.copyStatus && $o.copyStatus != 'notNeeded' && $o.copyStatus != 'received'}
+              <p class="ofrMyStatus ofrCopyStatus">{translate key="plugins.generic.objectsForReview.copy.reviewerStatus.`$o.copyStatus`"}</p>
+            {/if}
+            {if $o.copyStatus == 'sent'}
+              <form class="pkp_form" method="post" action="{url op="confirmReceipt"}">
+                {csrf}
+                <input type="hidden" name="objectId" value="{$o.objectId|escape}" />
+                <button type="submit" class="pkp_button ofrReceivedButton">{translate key='plugins.generic.objectsForReview.copy.confirmReceipt'}</button>
+              </form>
+            {/if}
             <form class="pkp_form" id="cancelObjectForm-{$o.objectId|escape}" method="post" action="{url op="cancelObject"}" onsubmit="return confirm('{translate|escape:"javascript"|escape key="plugins.generic.objectsForReview.cancel.confirm"}');">
               {csrf}
               <input type="hidden" name="objectId" value="{$o.objectId|escape}" />

@@ -138,6 +138,7 @@ class AssignmentWorkflow {
 		$assignment->setUserId($user->getId());
 		$assignment->setStatus(Assignment::STATUS_ACCEPTED);
 		Reservation::apply($assignment, $data);
+		CopyWorkflow::init($assignment);
 		self::dao()->insertObject($assignment);
 		self::syncReviewer($object);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_RESERVED, $user, $user, ['reviewDueDate' => $data['dueDate']]);
@@ -206,6 +207,7 @@ class AssignmentWorkflow {
 	public static function acceptContract($plugin, $context, ObjectForReview $object, Assignment $assignment, array $data): void {
 		self::requireStatus($assignment, [Assignment::STATUS_OFFERED]);
 		Reservation::apply($assignment, $data);
+		CopyWorkflow::init($assignment);
 		self::setStatus($assignment, Assignment::STATUS_ACCEPTED);
 		ActionLink::invalidate($assignment->getId(), ActionLink::ACTION_CONTRACT);
 		self::syncReviewer($object);
@@ -255,6 +257,7 @@ class AssignmentWorkflow {
 		self::requireStatus($assignment, [Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED]);
 		$wasOffered = $assignment->getStatus() === Assignment::STATUS_OFFERED;
 		Reservation::erasePersonalData($assignment);
+		CopyWorkflow::onAssignmentEnded($assignment);
 		self::setStatus($assignment, Assignment::STATUS_CANCELLED);
 		ActionLink::invalidate($assignment->getId());
 		self::syncReviewer($object);
@@ -269,6 +272,7 @@ class AssignmentWorkflow {
 	public static function retract($plugin, ObjectForReview $object, Assignment $assignment, User $user): void {
 		self::requireStatus($assignment, [Assignment::STATUS_ACCEPTED]);
 		Reservation::erasePersonalData($assignment);
+		CopyWorkflow::onAssignmentEnded($assignment);
 		self::setStatus($assignment, Assignment::STATUS_RETRACTED);
 		ActionLink::invalidate($assignment->getId());
 		self::syncReviewer($object);
@@ -332,7 +336,7 @@ class AssignmentWorkflow {
 			ActionLink::invalidate($assignment->getId());
 		}
 		if ($bidders) {
-			ReservationLog::logEvent($object, ReservationLog::EVENT_LIST_DISCARDED, $editor, null, ['number' => count($bidders)]);
+			ReservationLog::logEvent($object, ReservationLog::EVENT_LIST_DISCARDED, $editor, null, ['recipientCount' => count($bidders)]);
 		}
 	}
 

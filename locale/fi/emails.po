@@ -156,3 +156,63 @@ msgstr "Arviointitarjousta ei hyväksytty: {$objectDescription}"
 
 msgid "emails.ofrContractDeclined.body"
 msgstr "<p>Hyvä {$recipientName},</p><p>{$reviewerName} ei hyväksynyt tarjousta arvioida seuraava teos:<br />{$objectDescription}</p><p>{$declineReason}</p><p>Valitse toinen hakija tai avaa haku uudelleen: <a href=\"{$deskUrl}\">{$deskUrl}</a></p>"
+
+msgid "emails.ofrCopyRequest.name"
+msgstr "Arvostelukappaleen pyyntö (kustantajalle)"
+
+msgid "emails.ofrCopyRequest.description"
+msgstr "Kirja-arvioiden toimittaja lähettää kustantajan yhteyshenkilölle; sisältää toimitusosoitteen (painettu kappale) tai arvioijan sähköpostin (sähköinen kappale)."
+
+msgid "emails.ofrCopyRequest.subject"
+msgstr "Pyyntö arvostelukappaleesta: {$objectDescription}"
+
+msgid "emails.ofrCopyRequest.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>{$reviewerName} arvioi seuraavan teoksen lehteen {$contextName}:<br />{$objectDescription}</p><p>Olisimme kiitollisia, jos voisitte toimittaa arvostelukappaleen ({$copyType}).</p><p>{$deliveryDetails}</p><p>Lämmin kiitos ja ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrCopySent.name"
+msgstr "Arvostelukappale lähetetty (arvioijalle)"
+
+msgid "emails.ofrCopySent.description"
+msgstr "Ilmoittaa arvioijalle, että lehti tai kustantaja on lähettänyt arvostelukappaleen."
+
+msgid "emails.ofrCopySent.subject"
+msgstr "Arvostelukappaleesi on matkalla"
+
+msgid "emails.ofrCopySent.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>sinulle on lähetetty {$copySource} arvostelukappale ({$copyType}) seuraavasta teoksesta:<br />{$objectDescription}</p><p>Kun se on saapunut, vahvista vastaanotto arvioitavien teosten sivulla: <a href=\"{$forReviewUrl}\">{$forReviewUrl}</a></p><p>Arviosi määräpäivä on {$dueDate}.</p><p>Ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrReturnRequest.name"
+msgstr "Arvostelukappaleen palautus (arvioijalle)"
+
+msgid "emails.ofrReturnRequest.description"
+msgstr "Pyytää arvioijaa palauttamaan painetun kappaleen, kun arviota ei kirjoiteta; sisältää palautusosoitteen."
+
+msgid "emails.ofrReturnRequest.subject"
+msgstr "Palauta arvostelukappale"
+
+msgid "emails.ofrReturnRequest.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>koska seuraavan teoksen arviota ei kirjoiteta, pyydämme sinua palauttamaan arvostelukappaleen:<br />{$objectDescription}</p><p>Lähetä se osoitteeseen:<br />{$returnAddress}</p><p>Kiitos ja ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrReturnSent.name"
+msgstr "Arvostelukappale palautettu (kustantajalle)"
+
+msgid "emails.ofrReturnSent.description"
+msgstr "Ilmoittaa kustantajan yhteyshenkilölle, että arvostelukappale on palautumassa."
+
+msgid "emails.ofrReturnSent.subject"
+msgstr "Arvostelukappale palautumassa: {$objectDescription}"
+
+msgid "emails.ofrReturnSent.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>valitettavasti seuraavan teoksen arviota ei julkaista:<br />{$objectDescription}</p><p>Ystävällisesti toimittamanne arvostelukappale on lähetetty teille takaisin.</p><p>Kiitos vielä ja ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrPublisherNotification.name"
+msgstr "Arvio julkaistu (kustantajalle)"
+
+msgid "emails.ofrPublisherNotification.description"
+msgstr "Ilmoittaa kustantajan yhteyshenkilölle arvion julkaisusta, jos kustantaja on sitä pyytänyt."
+
+msgid "emails.ofrPublisherNotification.subject"
+msgstr "Arvio julkaistu: {$objectDescription}"
+
+msgid "emails.ofrPublisherNotification.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>meillä on ilo kertoa, että arvioijan {$reviewerName} arvio seuraavasta teoksesta on julkaistu lehdessä {$contextName}:<br />{$objectDescription}</p><p><a href=\"{$reviewUrl}\">{$reviewUrl}</a></p><p>Kiitos arvostelukappaleesta ja ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"

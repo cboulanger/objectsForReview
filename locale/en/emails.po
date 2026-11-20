@@ -156,3 +156,63 @@ msgstr "Review offer not accepted: {$objectDescription}"
 
 msgid "emails.ofrContractDeclined.body"
 msgstr "<p>Dear {$recipientName},</p><p>{$reviewerName} has not accepted the offer to review the following work:<br />{$objectDescription}</p><p>{$declineReason}</p><p>Please choose another bidder, or reopen bidding: <a href=\"{$deskUrl}\">{$deskUrl}</a></p>"
+
+msgid "emails.ofrCopyRequest.name"
+msgstr "Review copy request (to the publisher)"
+
+msgid "emails.ofrCopyRequest.description"
+msgstr "Sent by the book review editor to the publisher contact, with the delivery address (printed copy) or the reviewer's email (electronic copy)."
+
+msgid "emails.ofrCopyRequest.subject"
+msgstr "Request for a review copy: {$objectDescription}"
+
+msgid "emails.ofrCopyRequest.body"
+msgstr "<p>Dear {$recipientName},</p><p>{$reviewerName} will review the following work for {$contextName}:<br />{$objectDescription}</p><p>We would be grateful if you could provide a review copy ({$copyType}).</p><p>{$deliveryDetails}</p><p>Thank you very much, and kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrCopySent.name"
+msgstr "Review copy sent (to the reviewer)"
+
+msgid "emails.ofrCopySent.description"
+msgstr "Tells the reviewer that the review copy has been sent by the journal or the publisher."
+
+msgid "emails.ofrCopySent.subject"
+msgstr "Your review copy is on its way"
+
+msgid "emails.ofrCopySent.body"
+msgstr "<p>Dear {$recipientName},</p><p>a review copy ({$copyType}) of the following work has been sent to you {$copySource}:<br />{$objectDescription}</p><p>Once it has arrived, please confirm receipt on the page of works for review: <a href=\"{$forReviewUrl}\">{$forReviewUrl}</a></p><p>Your review is due on {$dueDate}.</p><p>Kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrReturnRequest.name"
+msgstr "Return of a review copy (to the reviewer)"
+
+msgid "emails.ofrReturnRequest.description"
+msgstr "Asks the reviewer to return a printed review copy when no review will be written, with the return address."
+
+msgid "emails.ofrReturnRequest.subject"
+msgstr "Please return the review copy"
+
+msgid "emails.ofrReturnRequest.body"
+msgstr "<p>Dear {$recipientName},</p><p>as the review of the following work will not be written, we kindly ask you to return the review copy:<br />{$objectDescription}</p><p>Please send it to:<br />{$returnAddress}</p><p>Thank you, and kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrReturnSent.name"
+msgstr "Review copy returned (to the publisher)"
+
+msgid "emails.ofrReturnSent.description"
+msgstr "Tells the publisher contact that a review copy is on its way back."
+
+msgid "emails.ofrReturnSent.subject"
+msgstr "Review copy on its way back: {$objectDescription}"
+
+msgid "emails.ofrReturnSent.body"
+msgstr "<p>Dear {$recipientName},</p><p>unfortunately, the review of the following work will not appear:<br />{$objectDescription}</p><p>The review copy you kindly provided has been sent back to you.</p><p>Thank you again, and kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrPublisherNotification.name"
+msgstr "Review published (to the publisher)"
+
+msgid "emails.ofrPublisherNotification.description"
+msgstr "Tells the publisher contact that the review has been published, if the publisher asked to be notified."
+
+msgid "emails.ofrPublisherNotification.subject"
+msgstr "Review published: {$objectDescription}"
+
+msgid "emails.ofrPublisherNotification.body"
+msgstr "<p>Dear {$recipientName},</p><p>we are pleased to let you know that the review of the following work by {$reviewerName} has been published in {$contextName}:<br />{$objectDescription}</p><p><a href=\"{$reviewUrl}\">{$reviewUrl}</a></p><p>Thank you for providing the review copy, and kind regards,<br />{$senderName}<br />{$contextName}</p>"

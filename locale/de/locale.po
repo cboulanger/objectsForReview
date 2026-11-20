@@ -851,7 +851,7 @@ msgid "plugins.generic.objectsForReview.history.event.offerReopened"
 msgstr "Angebot wieder geöffnet"
 
 msgid "plugins.generic.objectsForReview.history.event.listDiscarded"
-msgstr "Bewerbungsliste verworfen ({$number})"
+msgstr "Bewerbungsliste verworfen ({$recipientCount})"
 
 msgid "plugins.generic.objectsForReview.history.event.completed"
 msgstr "Rezension von {$recipientName} veröffentlicht"
@@ -888,3 +888,252 @@ msgstr "Bitte geben Sie die Antwortfrist (1–90 Tage) und eine Erinnerung vor F
 
 msgid "plugins.generic.objectsForReview.desk.declineReason"
 msgstr "Grund"
+
+msgid "plugins.generic.objectsForReview.copy.status.notNeeded"
+msgstr "Kein Exemplar nötig"
+
+msgid "plugins.generic.objectsForReview.copy.status.pending"
+msgstr "Exemplar zu organisieren"
+
+msgid "plugins.generic.objectsForReview.copy.status.requested"
+msgstr "Beim Verlag angefordert"
+
+msgid "plugins.generic.objectsForReview.copy.status.sent"
+msgstr "Versandt"
+
+msgid "plugins.generic.objectsForReview.copy.status.received"
+msgstr "Bei der Rezensentin/dem Rezensenten eingegangen"
+
+msgid "plugins.generic.objectsForReview.copy.status.returnRequested"
+msgstr "Rücksendung angefordert"
+
+msgid "plugins.generic.objectsForReview.copy.status.returnSent"
+msgstr "Zurückgeschickt"
+
+msgid "plugins.generic.objectsForReview.copy.status.returned"
+msgstr "Zurückerhalten"
+
+msgid "plugins.generic.objectsForReview.copy.by.journal"
+msgstr "von der Zeitschrift"
+
+msgid "plugins.generic.objectsForReview.copy.by.publisher"
+msgstr "vom Verlag"
+
+msgid "plugins.generic.objectsForReview.copy.to.journal"
+msgstr "an die Zeitschrift"
+
+msgid "plugins.generic.objectsForReview.copy.to.publisher"
+msgstr "an den Verlag"
+
+msgid "plugins.generic.objectsForReview.copy.type.physical"
+msgstr "gedrucktes Exemplar"
+
+msgid "plugins.generic.objectsForReview.copy.type.electronic"
+msgstr "elektronisches Exemplar"
+
+msgid "plugins.generic.objectsForReview.copy.type.have"
+msgstr "kein Exemplar nötig"
+
+msgid "plugins.generic.objectsForReview.copy.type.other"
+msgstr "siehe Anmerkung"
+
+msgid "plugins.generic.objectsForReview.copy.source.journal"
+msgstr "von der Zeitschrift"
+
+msgid "plugins.generic.objectsForReview.copy.source.publisher"
+msgstr "vom Verlag"
+
+msgid "plugins.generic.objectsForReview.copy.delivery.physical"
+msgstr "Bitte senden Sie ein gedrucktes Exemplar an:"
+
+msgid "plugins.generic.objectsForReview.copy.delivery.electronic"
+msgstr "Bitte senden Sie ein elektronisches Exemplar an:"
+
+msgid "plugins.generic.objectsForReview.copy.step.requestCopy"
+msgstr "Exemplar beim Verlag anfordern"
+
+msgid "plugins.generic.objectsForReview.copy.step.requestCopy.description"
+msgstr "{$publisher} um ein Exemplar für {$reviewer} bitten. Die E-Mail enthält die Lieferdaten."
+
+msgid "plugins.generic.objectsForReview.copy.step.sendFromStock"
+msgstr "Exemplar aus dem Bestand senden"
+
+msgid "plugins.generic.objectsForReview.copy.step.sendFromStock.description"
+msgstr "Festhalten, dass die Zeitschrift ihr Exemplar an {$reviewer} geschickt hat."
+
+msgid "plugins.generic.objectsForReview.copy.step.publisherSent"
+msgstr "Verlag hat das Exemplar geschickt"
+
+msgid "plugins.generic.objectsForReview.copy.step.publisherSent.description"
+msgstr "Festhalten, dass der Verlag das Exemplar an {$reviewer} geschickt hat."
+
+msgid "plugins.generic.objectsForReview.copy.step.markReceived"
+msgstr "Als erhalten markieren"
+
+msgid "plugins.generic.objectsForReview.copy.step.markReceived.description"
+msgstr "Festhalten, dass {$reviewer} das Exemplar erhalten hat. Lieferadresse und Telefonnummer werden gelöscht."
+
+msgid "plugins.generic.objectsForReview.copy.step.withdrawRequest"
+msgstr "Anforderung zurückziehen"
+
+msgid "plugins.generic.objectsForReview.copy.step.withdrawRequest.description"
+msgstr "Festhalten, dass das Exemplar nicht mehr benötigt wird. Bitte informieren Sie {$publisher}."
+
+msgid "plugins.generic.objectsForReview.copy.step.requestReturn"
+msgstr "Rücksendung anfordern"
+
+msgid "plugins.generic.objectsForReview.copy.step.requestReturn.description"
+msgstr "Von {$reviewer} wird keine Rezension kommen: Rücksendung des gedruckten Exemplars anfordern. Eine laufende Reservierung wird aufgehoben."
+
+msgid "plugins.generic.objectsForReview.copy.step.returnSent"
+msgstr "Exemplar wurde zurückgeschickt"
+
+msgid "plugins.generic.objectsForReview.copy.step.returnSent.description"
+msgstr "Festhalten, dass {$reviewer} das Exemplar zurückgeschickt hat."
+
+msgid "plugins.generic.objectsForReview.copy.step.returned"
+msgstr "Exemplar ist zurück"
+
+msgid "plugins.generic.objectsForReview.copy.step.returned.description"
+msgstr "Festhalten, dass das Exemplar zurück ist. Ein an die Zeitschrift zurückgegebenes Exemplar steht für die nächste Rezension bereit."
+
+msgid "plugins.generic.objectsForReview.copy.step.notifyPublisher"
+msgstr "Verlag benachrichtigen"
+
+msgid "plugins.generic.objectsForReview.copy.step.notifyPublisher.description"
+msgstr "{$publisher} mitteilen, dass die Rezension von {$reviewer} erschienen ist."
+
+msgid "plugins.generic.objectsForReview.copy.returnTarget"
+msgstr "Zurück an"
+
+msgid "plugins.generic.objectsForReview.copy.returnTargetRequired"
+msgstr "Bitte wählen Sie, wohin das Exemplar zurückgeht."
+
+msgid "plugins.generic.objectsForReview.copy.returnAddressHint"
+msgstr "{$returnAddress} wird beim Versand durch die oben gewählte Adresse ersetzt."
+
+msgid "plugins.generic.objectsForReview.copy.journalHoldsCopy"
+msgstr "Exemplar im Bestand der Zeitschrift"
+
+msgid "plugins.generic.objectsForReview.copy.noSource"
+msgstr "Kein Verlagskontakt und kein Exemplar der Zeitschrift: Angebot bearbeiten"
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.pending"
+msgstr "Die Redaktion organisiert ein Exemplar für Sie."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.requested"
+msgstr "Ein Exemplar wurde beim Verlag angefordert."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.sent"
+msgstr "Ein Exemplar wurde an Sie geschickt."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.returnRequested"
+msgstr "Bitte schicken Sie das Exemplar zurück."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.returnSent"
+msgstr "Exemplar zurückgeschickt."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.returned"
+msgstr "Exemplar zurückerhalten."
+
+msgid "plugins.generic.objectsForReview.copy.confirmReceipt"
+msgstr "Ich habe das Exemplar erhalten"
+
+msgid "plugins.generic.objectsForReview.desk.copies"
+msgstr "Rezensionsexemplare"
+
+msgid "plugins.generic.objectsForReview.desk.notifications"
+msgstr "Verlage über erschienene Rezensionen informieren"
+
+msgid "plugins.generic.objectsForReview.column.copy"
+msgstr "Exemplar"
+
+msgid "plugins.generic.objectsForReview.column.copySource"
+msgstr "Bezugsquelle"
+
+msgid "plugins.generic.objectsForReview.column.reviewer"
+msgstr "Rezensent:in"
+
+msgid "plugins.generic.objectsForReview.offer.copyTitle"
+msgstr "Rezensionsexemplar"
+
+msgid "plugins.generic.objectsForReview.offer.publisherContact"
+msgstr "Verlagskontakt"
+
+msgid "plugins.generic.objectsForReview.offer.publisherContact.description"
+msgstr "Die Person beim Verlag, die Rezensionsexemplare bereitstellt. Verlagskontakte sind Benutzer:innen der Gruppe „Verlagskontakt“ (Benutzer:innen & Rollen); sie müssen sich nicht anmelden."
+
+msgid "plugins.generic.objectsForReview.offer.noPublisherContact"
+msgstr "— keiner —"
+
+msgid "plugins.generic.objectsForReview.offer.noPublisherContacts"
+msgstr "Noch keine Verlagskontakte. Legen Sie sie unter Benutzer:innen & Rollen in der Gruppe „Verlagskontakt“ mit Postanschrift an."
+
+msgid "plugins.generic.objectsForReview.offer.journalHoldsCopy"
+msgstr "Die Zeitschrift hat ein Exemplar dieses Werks"
+
+msgid "plugins.generic.objectsForReview.offer.returnRequired"
+msgstr "Gedruckte Exemplare müssen zurückgeschickt werden, wenn keine Rezension zustande kommt"
+
+msgid "plugins.generic.objectsForReview.offer.notifyPublisher"
+msgstr "Der Verlag möchte über die Veröffentlichung der Rezension informiert werden"
+
+msgid "plugins.generic.objectsForReview.offer.publisherContactInvalid"
+msgstr "Bitte wählen Sie einen Verlagskontakt."
+
+msgid "plugins.generic.objectsForReview.offer.editorAddressRequired"
+msgstr "Exemplare aus dem Bestand gehen an die zuständige Rezensionsredaktion zurück: Bitte wählen Sie eine Person, die eine Postanschrift in ihrem Profil hinterlegt hat."
+
+msgid "plugins.generic.objectsForReview.offer.publisherAddressRequired"
+msgstr "Exemplare gehen gegebenenfalls an den Verlagskontakt zurück: Dessen Postanschrift muss im Profil hinterlegt sein."
+
+msgid "plugins.generic.objectsForReview.offer.notifyNeedsContact"
+msgstr "Bitte wählen Sie den Verlagskontakt, der informiert werden soll."
+
+msgid "plugins.generic.objectsForReview.history.email.copyRequest"
+msgstr "Exemplar beim Verlag angefordert"
+
+msgid "plugins.generic.objectsForReview.history.email.copySent"
+msgstr "Rezensent:in über den Versand informiert"
+
+msgid "plugins.generic.objectsForReview.history.email.returnRequest"
+msgstr "Rücksendung des Exemplars angefordert"
+
+msgid "plugins.generic.objectsForReview.history.email.returnSent"
+msgstr "Verlag über die Rücksendung informiert"
+
+msgid "plugins.generic.objectsForReview.history.email.publisherNotification"
+msgstr "Verlag über die erschienene Rezension informiert"
+
+msgid "plugins.generic.objectsForReview.history.event.copyRequested"
+msgstr "Exemplar für {$recipientName} beim Verlag angefordert"
+
+msgid "plugins.generic.objectsForReview.history.event.copySentJournal"
+msgstr "Exemplar von der Zeitschrift an {$recipientName} geschickt"
+
+msgid "plugins.generic.objectsForReview.history.event.copySentPublisher"
+msgstr "Exemplar vom Verlag an {$recipientName} geschickt"
+
+msgid "plugins.generic.objectsForReview.history.event.copyReceived"
+msgstr "Exemplar bei {$recipientName} eingegangen"
+
+msgid "plugins.generic.objectsForReview.history.event.copyRequestWithdrawn"
+msgstr "Exemplaranforderung für {$recipientName} zurückgezogen"
+
+msgid "plugins.generic.objectsForReview.history.event.returnRequestedJournal"
+msgstr "Rücksendung des Exemplars an die Zeitschrift bei {$recipientName} angefordert"
+
+msgid "plugins.generic.objectsForReview.history.event.returnRequestedPublisher"
+msgstr "Rücksendung des Exemplars an den Verlag bei {$recipientName} angefordert"
+
+msgid "plugins.generic.objectsForReview.history.event.returnSent"
+msgstr "Exemplar von {$recipientName} zurückgeschickt"
+
+msgid "plugins.generic.objectsForReview.history.event.returnedJournal"
+msgstr "Exemplar zurück bei der Zeitschrift (von {$recipientName})"
+
+msgid "plugins.generic.objectsForReview.history.event.returnedPublisher"
+msgstr "Exemplar zurück beim Verlag (von {$recipientName})"
+
+msgid "plugins.generic.objectsForReview.history.event.publisherNotified"
+msgstr "Verlag über die Rezension von {$recipientName} informiert"

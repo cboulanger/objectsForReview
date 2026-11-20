@@ -831,7 +831,7 @@ msgid "plugins.generic.objectsForReview.history.event.offerReopened"
 msgstr "Tarjous avattu uudelleen"
 
 msgid "plugins.generic.objectsForReview.history.event.listDiscarded"
-msgstr "Hakijalista hylätty ({$number})"
+msgstr "Hakijalista hylätty ({$recipientCount})"
 
 msgid "plugins.generic.objectsForReview.history.event.completed"
 msgstr "Henkilön {$recipientName} arvio julkaistu"
@@ -868,3 +868,252 @@ msgstr "Anna vastausaika (1–90 päivää) ja muistutus ennen määräaikaa."
 
 msgid "plugins.generic.objectsForReview.desk.declineReason"
 msgstr "Syy"
+
+msgid "plugins.generic.objectsForReview.copy.status.notNeeded"
+msgstr "Kappaletta ei tarvita"
+
+msgid "plugins.generic.objectsForReview.copy.status.pending"
+msgstr "Kappale järjestettävä"
+
+msgid "plugins.generic.objectsForReview.copy.status.requested"
+msgstr "Pyydetty kustantajalta"
+
+msgid "plugins.generic.objectsForReview.copy.status.sent"
+msgstr "Lähetetty"
+
+msgid "plugins.generic.objectsForReview.copy.status.received"
+msgstr "Arvioija on vastaanottanut"
+
+msgid "plugins.generic.objectsForReview.copy.status.returnRequested"
+msgstr "Palautusta pyydetty"
+
+msgid "plugins.generic.objectsForReview.copy.status.returnSent"
+msgstr "Lähetetty takaisin"
+
+msgid "plugins.generic.objectsForReview.copy.status.returned"
+msgstr "Palautettu"
+
+msgid "plugins.generic.objectsForReview.copy.by.journal"
+msgstr "lehden toimesta"
+
+msgid "plugins.generic.objectsForReview.copy.by.publisher"
+msgstr "kustantajan toimesta"
+
+msgid "plugins.generic.objectsForReview.copy.to.journal"
+msgstr "lehdelle"
+
+msgid "plugins.generic.objectsForReview.copy.to.publisher"
+msgstr "kustantajalle"
+
+msgid "plugins.generic.objectsForReview.copy.type.physical"
+msgstr "painettu kappale"
+
+msgid "plugins.generic.objectsForReview.copy.type.electronic"
+msgstr "sähköinen kappale"
+
+msgid "plugins.generic.objectsForReview.copy.type.have"
+msgstr "kappaletta ei tarvita"
+
+msgid "plugins.generic.objectsForReview.copy.type.other"
+msgstr "katso huomautus"
+
+msgid "plugins.generic.objectsForReview.copy.source.journal"
+msgstr "lehden toimesta"
+
+msgid "plugins.generic.objectsForReview.copy.source.publisher"
+msgstr "kustantajan toimesta"
+
+msgid "plugins.generic.objectsForReview.copy.delivery.physical"
+msgstr "Lähetä painettu kappale osoitteeseen:"
+
+msgid "plugins.generic.objectsForReview.copy.delivery.electronic"
+msgstr "Lähetä sähköinen kappale osoitteeseen:"
+
+msgid "plugins.generic.objectsForReview.copy.step.requestCopy"
+msgstr "Pyydä kappale kustantajalta"
+
+msgid "plugins.generic.objectsForReview.copy.step.requestCopy.description"
+msgstr "Pyydä henkilöltä {$publisher} kappale arvioijalle {$reviewer}. Sähköposti sisältää toimitustiedot."
+
+msgid "plugins.generic.objectsForReview.copy.step.sendFromStock"
+msgstr "Lähetä kappale lehden varastosta"
+
+msgid "plugins.generic.objectsForReview.copy.step.sendFromStock.description"
+msgstr "Kirjaa, että lehti on lähettänyt kappaleensa arvioijalle {$reviewer}."
+
+msgid "plugins.generic.objectsForReview.copy.step.publisherSent"
+msgstr "Kustantaja on lähettänyt kappaleen"
+
+msgid "plugins.generic.objectsForReview.copy.step.publisherSent.description"
+msgstr "Kirjaa, että kustantaja on lähettänyt kappaleen arvioijalle {$reviewer}."
+
+msgid "plugins.generic.objectsForReview.copy.step.markReceived"
+msgstr "Merkitse vastaanotetuksi"
+
+msgid "plugins.generic.objectsForReview.copy.step.markReceived.description"
+msgstr "Kirjaa, että {$reviewer} on vastaanottanut kappaleen. Toimitusosoite ja puhelinnumero poistetaan."
+
+msgid "plugins.generic.objectsForReview.copy.step.withdrawRequest"
+msgstr "Peru kappalepyyntö"
+
+msgid "plugins.generic.objectsForReview.copy.step.withdrawRequest.description"
+msgstr "Kirjaa, ettei kappaletta enää tarvita. Ilmoita asiasta henkilölle {$publisher}."
+
+msgid "plugins.generic.objectsForReview.copy.step.requestReturn"
+msgstr "Pyydä palautus"
+
+msgid "plugins.generic.objectsForReview.copy.step.requestReturn.description"
+msgstr "Henkilöltä {$reviewer} ei tule arviota: pyydä painetun kappaleen palautusta. Voimassa oleva varaus perutaan."
+
+msgid "plugins.generic.objectsForReview.copy.step.returnSent"
+msgstr "Kappale on lähetetty takaisin"
+
+msgid "plugins.generic.objectsForReview.copy.step.returnSent.description"
+msgstr "Kirjaa, että {$reviewer} on lähettänyt kappaleen takaisin."
+
+msgid "plugins.generic.objectsForReview.copy.step.returned"
+msgstr "Kappale on palautunut"
+
+msgid "plugins.generic.objectsForReview.copy.step.returned.description"
+msgstr "Kirjaa, että kappale on palautettu. Lehdelle palautettu kappale on seuraavan arvioijan käytettävissä."
+
+msgid "plugins.generic.objectsForReview.copy.step.notifyPublisher"
+msgstr "Ilmoita kustantajalle"
+
+msgid "plugins.generic.objectsForReview.copy.step.notifyPublisher.description"
+msgstr "Ilmoita henkilölle {$publisher}, että arvioijan {$reviewer} arvio on julkaistu."
+
+msgid "plugins.generic.objectsForReview.copy.returnTarget"
+msgstr "Palautetaan"
+
+msgid "plugins.generic.objectsForReview.copy.returnTargetRequired"
+msgstr "Valitse, minne kappale palautetaan."
+
+msgid "plugins.generic.objectsForReview.copy.returnAddressHint"
+msgstr "{$returnAddress} korvataan lähetettäessä yllä valitulla osoitteella."
+
+msgid "plugins.generic.objectsForReview.copy.journalHoldsCopy"
+msgstr "Lehdellä on kappale"
+
+msgid "plugins.generic.objectsForReview.copy.noSource"
+msgstr "Ei kustantajan yhteyshenkilöä eikä lehden kappaletta: muokkaa tarjousta"
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.pending"
+msgstr "Toimitus järjestää sinulle kappaleen."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.requested"
+msgstr "Kappaletta on pyydetty kustantajalta."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.sent"
+msgstr "Sinulle on lähetetty kappale."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.returnRequested"
+msgstr "Palauta kappale."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.returnSent"
+msgstr "Kappale lähetetty takaisin."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.returned"
+msgstr "Kappale palautettu."
+
+msgid "plugins.generic.objectsForReview.copy.confirmReceipt"
+msgstr "Olen vastaanottanut kappaleen"
+
+msgid "plugins.generic.objectsForReview.desk.copies"
+msgstr "Arvostelukappaleet"
+
+msgid "plugins.generic.objectsForReview.desk.notifications"
+msgstr "Ilmoita kustantajille julkaistuista arvioista"
+
+msgid "plugins.generic.objectsForReview.column.copy"
+msgstr "Kappale"
+
+msgid "plugins.generic.objectsForReview.column.copySource"
+msgstr "Lähde"
+
+msgid "plugins.generic.objectsForReview.column.reviewer"
+msgstr "Arvioija"
+
+msgid "plugins.generic.objectsForReview.offer.copyTitle"
+msgstr "Arvostelukappale"
+
+msgid "plugins.generic.objectsForReview.offer.publisherContact"
+msgstr "Kustantajan yhteyshenkilö"
+
+msgid "plugins.generic.objectsForReview.offer.publisherContact.description"
+msgstr "Kustantajan henkilö, joka toimittaa arvostelukappaleita. Kustantajien yhteyshenkilöt ovat ryhmän ”Kustantajan yhteyshenkilö” käyttäjiä (Käyttäjät ja roolit); heidän ei tarvitse kirjautua."
+
+msgid "plugins.generic.objectsForReview.offer.noPublisherContact"
+msgstr "— ei ketään —"
+
+msgid "plugins.generic.objectsForReview.offer.noPublisherContacts"
+msgstr "Kustantajien yhteyshenkilöitä ei vielä ole. Lisää heidät kohdassa Käyttäjät ja roolit ryhmään ”Kustantajan yhteyshenkilö” postiosoitteineen."
+
+msgid "plugins.generic.objectsForReview.offer.journalHoldsCopy"
+msgstr "Lehdellä on tämän teoksen kappale"
+
+msgid "plugins.generic.objectsForReview.offer.returnRequired"
+msgstr "Painetut kappaleet on palautettava, jos arviota ei synny"
+
+msgid "plugins.generic.objectsForReview.offer.notifyPublisher"
+msgstr "Kustantaja haluaa ilmoituksen arvion julkaisusta"
+
+msgid "plugins.generic.objectsForReview.offer.publisherContactInvalid"
+msgstr "Valitse kustantajan yhteyshenkilö."
+
+msgid "plugins.generic.objectsForReview.offer.editorAddressRequired"
+msgstr "Lehden varastosta lähetetyt kappaleet palautetaan vastuulliselle kirja-arvioiden toimittajalle: valitse henkilö, jonka profiilissa on postiosoite."
+
+msgid "plugins.generic.objectsForReview.offer.publisherAddressRequired"
+msgstr "Kappaleet voidaan palauttaa kustantajan yhteyshenkilölle: hänen postiosoitteensa on oltava profiilissa."
+
+msgid "plugins.generic.objectsForReview.offer.notifyNeedsContact"
+msgstr "Valitse kustantajan yhteyshenkilö, jolle ilmoitetaan."
+
+msgid "plugins.generic.objectsForReview.history.email.copyRequest"
+msgstr "Kappaletta pyydetty kustantajalta"
+
+msgid "plugins.generic.objectsForReview.history.email.copySent"
+msgstr "Arvioijalle ilmoitettu lähetyksestä"
+
+msgid "plugins.generic.objectsForReview.history.email.returnRequest"
+msgstr "Kappaleen palautusta pyydetty"
+
+msgid "plugins.generic.objectsForReview.history.email.returnSent"
+msgstr "Kustantajalle ilmoitettu palautuksesta"
+
+msgid "plugins.generic.objectsForReview.history.email.publisherNotification"
+msgstr "Kustantajalle ilmoitettu julkaistusta arviosta"
+
+msgid "plugins.generic.objectsForReview.history.event.copyRequested"
+msgstr "Kappale henkilölle {$recipientName} pyydetty kustantajalta"
+
+msgid "plugins.generic.objectsForReview.history.event.copySentJournal"
+msgstr "Lehti lähetti kappaleen henkilölle {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.copySentPublisher"
+msgstr "Kustantaja lähetti kappaleen henkilölle {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.copyReceived"
+msgstr "{$recipientName} vastaanotti kappaleen"
+
+msgid "plugins.generic.objectsForReview.history.event.copyRequestWithdrawn"
+msgstr "Kappalepyyntö henkilölle {$recipientName} peruttu"
+
+msgid "plugins.generic.objectsForReview.history.event.returnRequestedJournal"
+msgstr "Henkilöltä {$recipientName} pyydetty kappaleen palautusta lehdelle"
+
+msgid "plugins.generic.objectsForReview.history.event.returnRequestedPublisher"
+msgstr "Henkilöltä {$recipientName} pyydetty kappaleen palautusta kustantajalle"
+
+msgid "plugins.generic.objectsForReview.history.event.returnSent"
+msgstr "{$recipientName} lähetti kappaleen takaisin"
+
+msgid "plugins.generic.objectsForReview.history.event.returnedJournal"
+msgstr "Kappale palautunut lehdelle (henkilöltä {$recipientName})"
+
+msgid "plugins.generic.objectsForReview.history.event.returnedPublisher"
+msgstr "Kappale palautunut kustantajalle (henkilöltä {$recipientName})"
+
+msgid "plugins.generic.objectsForReview.history.event.publisherNotified"
+msgstr "Kustantajalle ilmoitettu henkilön {$recipientName} arviosta"

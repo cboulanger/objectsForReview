@@ -29,8 +29,24 @@ class ObjectForReview extends \PKP\core\DataObject {
 	 * - biddingClosed: set when the editor selects a bidder; unset to reopen bidding
 	 * - responsibleEditorId: book review editor who receives the notifications
 	 * - offerClosed: the editor has withdrawn the offer
+	 * Review copy (see CopyWorkflow):
+	 * - publisherContactId: user in the "Publisher contact" group
+	 * - journalHoldsCopy: the journal has a copy in stock
+	 * - returnRequired: physical copies must be returned if no review materialises
+	 *   (stored as true/false; offers from before the review copy workflow: true)
+	 * - notifyPublisher: the publisher wants to be notified of the published review
+	 * - publisherNotified: date the publisher was notified
 	 */
-	const OFFER_FIELDS = ['assignmentMode', 'bidDeadline', 'biddingClosed', 'responsibleEditorId', 'offerClosed'];
+	const OFFER_FIELDS = ['assignmentMode', 'bidDeadline', 'biddingClosed', 'responsibleEditorId', 'offerClosed',
+		'publisherContactId', 'journalHoldsCopy', 'returnRequired', 'notifyPublisher', 'publisherNotified'];
+
+	function isReturnRequired(): bool {
+		return $this->getData('returnRequired') === null || (bool) $this->getData('returnRequired');
+	}
+
+	function getPublisherContactId(): ?int {
+		return $this->getData('publisherContactId') ? (int) $this->getData('publisherContactId') : null;
+	}
 
 	function getAssignmentMode(): string {
 		return $this->getData('assignmentMode') === self::MODE_BIDDING ? self::MODE_BIDDING : self::MODE_DIRECT;

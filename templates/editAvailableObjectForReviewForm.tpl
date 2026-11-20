@@ -68,6 +68,18 @@
 		{fbvFormSection label="plugins.generic.objectsForReview.offer.responsibleEditor" description="plugins.generic.objectsForReview.offer.responsibleEditor.description" for="responsibleEditorId"}
 			{fbvElement type="select" id="responsibleEditorId" from=$bookReviewEditors selected=$responsibleEditorId translate=false size=$fbvStyles.size.MEDIUM}
 		{/fbvFormSection}
+	{/fbvFormArea}
+
+	{fbvFormArea id="availableObjectsForReviewCopyArea" title="plugins.generic.objectsForReview.offer.copyTitle"}
+		{fbvFormSection label="plugins.generic.objectsForReview.offer.publisherContact" description="plugins.generic.objectsForReview.offer.publisherContact.description" for="publisherContactId"}
+			{fbvElement type="select" id="publisherContactId" from=$publisherContacts selected=$publisherContactId translate=false size=$fbvStyles.size.MEDIUM}
+			{if !$hasPublisherContacts}<p class="ofrHint">{translate key="plugins.generic.objectsForReview.offer.noPublisherContacts"}</p>{/if}
+		{/fbvFormSection}
+		{fbvFormSection list=true}
+			{fbvElement type="checkbox" id="journalHoldsCopy" value="1" checked=$journalHoldsCopy label="plugins.generic.objectsForReview.offer.journalHoldsCopy"}
+			{fbvElement type="checkbox" id="returnRequired" value="1" checked=$returnRequired label="plugins.generic.objectsForReview.offer.returnRequired"}
+			{fbvElement type="checkbox" id="notifyPublisher" value="1" checked=$notifyPublisher label="plugins.generic.objectsForReview.offer.notifyPublisher"}
+		{/fbvFormSection}
 		<script>
 			$(function() {ldelim}
 				var $mode = $('#availableObjectsForReviewForm [name="assignmentMode"]');

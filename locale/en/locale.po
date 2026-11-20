@@ -852,7 +852,7 @@ msgid "plugins.generic.objectsForReview.history.event.offerReopened"
 msgstr "Offer reopened"
 
 msgid "plugins.generic.objectsForReview.history.event.listDiscarded"
-msgstr "List of bidders discarded ({$number})"
+msgstr "List of bidders discarded ({$recipientCount})"
 
 msgid "plugins.generic.objectsForReview.history.event.completed"
 msgstr "Review by {$recipientName} published"
@@ -889,3 +889,252 @@ msgstr "Please enter the number of days to answer (1–90) and a reminder before
 
 msgid "plugins.generic.objectsForReview.desk.declineReason"
 msgstr "Reason"
+
+msgid "plugins.generic.objectsForReview.copy.status.notNeeded"
+msgstr "No copy needed"
+
+msgid "plugins.generic.objectsForReview.copy.status.pending"
+msgstr "Copy to arrange"
+
+msgid "plugins.generic.objectsForReview.copy.status.requested"
+msgstr "Requested from the publisher"
+
+msgid "plugins.generic.objectsForReview.copy.status.sent"
+msgstr "Sent"
+
+msgid "plugins.generic.objectsForReview.copy.status.received"
+msgstr "Received by the reviewer"
+
+msgid "plugins.generic.objectsForReview.copy.status.returnRequested"
+msgstr "Return requested"
+
+msgid "plugins.generic.objectsForReview.copy.status.returnSent"
+msgstr "Sent back"
+
+msgid "plugins.generic.objectsForReview.copy.status.returned"
+msgstr "Returned"
+
+msgid "plugins.generic.objectsForReview.copy.by.journal"
+msgstr "by the journal"
+
+msgid "plugins.generic.objectsForReview.copy.by.publisher"
+msgstr "by the publisher"
+
+msgid "plugins.generic.objectsForReview.copy.to.journal"
+msgstr "to the journal"
+
+msgid "plugins.generic.objectsForReview.copy.to.publisher"
+msgstr "to the publisher"
+
+msgid "plugins.generic.objectsForReview.copy.type.physical"
+msgstr "printed copy"
+
+msgid "plugins.generic.objectsForReview.copy.type.electronic"
+msgstr "electronic copy"
+
+msgid "plugins.generic.objectsForReview.copy.type.have"
+msgstr "no copy needed"
+
+msgid "plugins.generic.objectsForReview.copy.type.other"
+msgstr "see note"
+
+msgid "plugins.generic.objectsForReview.copy.source.journal"
+msgstr "by the journal"
+
+msgid "plugins.generic.objectsForReview.copy.source.publisher"
+msgstr "by the publisher"
+
+msgid "plugins.generic.objectsForReview.copy.delivery.physical"
+msgstr "Please send a printed copy to:"
+
+msgid "plugins.generic.objectsForReview.copy.delivery.electronic"
+msgstr "Please send an electronic copy to:"
+
+msgid "plugins.generic.objectsForReview.copy.step.requestCopy"
+msgstr "Request copy from publisher"
+
+msgid "plugins.generic.objectsForReview.copy.step.requestCopy.description"
+msgstr "Ask {$publisher} for a copy for {$reviewer}. The email contains the delivery details."
+
+msgid "plugins.generic.objectsForReview.copy.step.sendFromStock"
+msgstr "Send copy from journal stock"
+
+msgid "plugins.generic.objectsForReview.copy.step.sendFromStock.description"
+msgstr "Record that the journal has sent its copy to {$reviewer}."
+
+msgid "plugins.generic.objectsForReview.copy.step.publisherSent"
+msgstr "Publisher has sent the copy"
+
+msgid "plugins.generic.objectsForReview.copy.step.publisherSent.description"
+msgstr "Record that the publisher has sent the copy to {$reviewer}."
+
+msgid "plugins.generic.objectsForReview.copy.step.markReceived"
+msgstr "Mark as received"
+
+msgid "plugins.generic.objectsForReview.copy.step.markReceived.description"
+msgstr "Record that {$reviewer} has received the copy. The delivery address and phone number are deleted."
+
+msgid "plugins.generic.objectsForReview.copy.step.withdrawRequest"
+msgstr "Withdraw copy request"
+
+msgid "plugins.generic.objectsForReview.copy.step.withdrawRequest.description"
+msgstr "Record that the copy is no longer needed. Please let {$publisher} know."
+
+msgid "plugins.generic.objectsForReview.copy.step.requestReturn"
+msgstr "Request return"
+
+msgid "plugins.generic.objectsForReview.copy.step.requestReturn.description"
+msgstr "No review will come from {$reviewer}: ask for the printed copy to be returned. A current reservation is cancelled."
+
+msgid "plugins.generic.objectsForReview.copy.step.returnSent"
+msgstr "Copy has been sent back"
+
+msgid "plugins.generic.objectsForReview.copy.step.returnSent.description"
+msgstr "Record that {$reviewer} has sent the copy back."
+
+msgid "plugins.generic.objectsForReview.copy.step.returned"
+msgstr "Copy has arrived back"
+
+msgid "plugins.generic.objectsForReview.copy.step.returned.description"
+msgstr "Record that the copy has been returned. A copy returned to the journal is available for the next reviewer."
+
+msgid "plugins.generic.objectsForReview.copy.step.notifyPublisher"
+msgstr "Notify publisher"
+
+msgid "plugins.generic.objectsForReview.copy.step.notifyPublisher.description"
+msgstr "Tell {$publisher} that the review by {$reviewer} has been published."
+
+msgid "plugins.generic.objectsForReview.copy.returnTarget"
+msgstr "Return to"
+
+msgid "plugins.generic.objectsForReview.copy.returnTargetRequired"
+msgstr "Please choose where the copy goes back to."
+
+msgid "plugins.generic.objectsForReview.copy.returnAddressHint"
+msgstr "{$returnAddress} is replaced with the address chosen above when the email is sent."
+
+msgid "plugins.generic.objectsForReview.copy.journalHoldsCopy"
+msgstr "Journal holds a copy"
+
+msgid "plugins.generic.objectsForReview.copy.noSource"
+msgstr "No publisher contact or journal copy: edit the offer"
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.pending"
+msgstr "The editors will arrange a copy for you."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.requested"
+msgstr "A copy has been requested from the publisher."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.sent"
+msgstr "A copy has been sent to you."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.returnRequested"
+msgstr "Please return the copy."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.returnSent"
+msgstr "Copy sent back."
+
+msgid "plugins.generic.objectsForReview.copy.reviewerStatus.returned"
+msgstr "Copy returned."
+
+msgid "plugins.generic.objectsForReview.copy.confirmReceipt"
+msgstr "I have received the copy"
+
+msgid "plugins.generic.objectsForReview.desk.copies"
+msgstr "Review copies"
+
+msgid "plugins.generic.objectsForReview.desk.notifications"
+msgstr "Notify publishers of published reviews"
+
+msgid "plugins.generic.objectsForReview.column.copy"
+msgstr "Copy"
+
+msgid "plugins.generic.objectsForReview.column.copySource"
+msgstr "Source"
+
+msgid "plugins.generic.objectsForReview.column.reviewer"
+msgstr "Reviewer"
+
+msgid "plugins.generic.objectsForReview.offer.copyTitle"
+msgstr "Review copy"
+
+msgid "plugins.generic.objectsForReview.offer.publisherContact"
+msgstr "Publisher contact"
+
+msgid "plugins.generic.objectsForReview.offer.publisherContact.description"
+msgstr "The person at the publisher who provides review copies. Publisher contacts are users in the group \"Publisher contact\" (Users & Roles); they do not need to log in."
+
+msgid "plugins.generic.objectsForReview.offer.noPublisherContact"
+msgstr "— none —"
+
+msgid "plugins.generic.objectsForReview.offer.noPublisherContacts"
+msgstr "No publisher contacts yet. Add them under Users & Roles, in the group \"Publisher contact\", with their mailing address."
+
+msgid "plugins.generic.objectsForReview.offer.journalHoldsCopy"
+msgstr "The journal holds a copy of this work"
+
+msgid "plugins.generic.objectsForReview.offer.returnRequired"
+msgstr "Printed copies must be returned if no review materialises"
+
+msgid "plugins.generic.objectsForReview.offer.notifyPublisher"
+msgstr "The publisher wants to be notified when the review is published"
+
+msgid "plugins.generic.objectsForReview.offer.publisherContactInvalid"
+msgstr "Please choose a publisher contact."
+
+msgid "plugins.generic.objectsForReview.offer.editorAddressRequired"
+msgstr "Copies from the journal's stock are returned to the responsible book review editor: please choose one who has entered a mailing address in their profile."
+
+msgid "plugins.generic.objectsForReview.offer.publisherAddressRequired"
+msgstr "Copies may be returned to the publisher contact: their mailing address must be entered in their profile."
+
+msgid "plugins.generic.objectsForReview.offer.notifyNeedsContact"
+msgstr "Please choose the publisher contact who is to be notified."
+
+msgid "plugins.generic.objectsForReview.history.email.copyRequest"
+msgstr "Copy requested from the publisher"
+
+msgid "plugins.generic.objectsForReview.history.email.copySent"
+msgstr "Reviewer told that the copy was sent"
+
+msgid "plugins.generic.objectsForReview.history.email.returnRequest"
+msgstr "Return of the copy requested"
+
+msgid "plugins.generic.objectsForReview.history.email.returnSent"
+msgstr "Publisher told that the copy is on its way back"
+
+msgid "plugins.generic.objectsForReview.history.email.publisherNotification"
+msgstr "Publisher notified of the published review"
+
+msgid "plugins.generic.objectsForReview.history.event.copyRequested"
+msgstr "Copy for {$recipientName} requested from the publisher"
+
+msgid "plugins.generic.objectsForReview.history.event.copySentJournal"
+msgstr "Copy sent to {$recipientName} by the journal"
+
+msgid "plugins.generic.objectsForReview.history.event.copySentPublisher"
+msgstr "Copy sent to {$recipientName} by the publisher"
+
+msgid "plugins.generic.objectsForReview.history.event.copyReceived"
+msgstr "Copy received by {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.copyRequestWithdrawn"
+msgstr "Copy request for {$recipientName} withdrawn"
+
+msgid "plugins.generic.objectsForReview.history.event.returnRequestedJournal"
+msgstr "Return of the copy to the journal requested from {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.returnRequestedPublisher"
+msgstr "Return of the copy to the publisher requested from {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.returnSent"
+msgstr "Copy sent back by {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.returnedJournal"
+msgstr "Copy back at the journal (from {$recipientName})"
+
+msgid "plugins.generic.objectsForReview.history.event.returnedPublisher"
+msgstr "Copy back at the publisher (from {$recipientName})"
+
+msgid "plugins.generic.objectsForReview.history.event.publisherNotified"
+msgstr "Publisher notified of the review by {$recipientName}"

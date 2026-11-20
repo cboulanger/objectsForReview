@@ -153,3 +153,63 @@ msgstr "Rezensionsangebot nicht angenommen: {$objectDescription}"
 
 msgid "emails.ofrContractDeclined.body"
 msgstr "<p>Liebe:r {$recipientName},</p><p>{$reviewerName} hat das Angebot zur Rezension des folgenden Werks nicht angenommen:<br />{$objectDescription}</p><p>{$declineReason}</p><p>Bitte wählen Sie eine andere Person aus oder öffnen Sie die Bewerbung erneut: <a href=\"{$deskUrl}\">{$deskUrl}</a></p>"
+
+msgid "emails.ofrCopyRequest.name"
+msgstr "Anforderung eines Rezensionsexemplars (an den Verlag)"
+
+msgid "emails.ofrCopyRequest.description"
+msgstr "Von der Rezensionsredaktion an den Verlagskontakt, mit Lieferadresse (gedrucktes Exemplar) oder E-Mail-Adresse der Rezensentin/des Rezensenten (elektronisches Exemplar)."
+
+msgid "emails.ofrCopyRequest.subject"
+msgstr "Bitte um ein Rezensionsexemplar: {$objectDescription}"
+
+msgid "emails.ofrCopyRequest.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>{$reviewerName} wird das folgende Werk für {$contextName} rezensieren:<br />{$objectDescription}</p><p>Wir wären Ihnen dankbar, wenn Sie ein Rezensionsexemplar ({$copyType}) zur Verfügung stellen könnten.</p><p>{$deliveryDetails}</p><p>Vielen Dank und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrCopySent.name"
+msgstr "Rezensionsexemplar versandt (an Rezensent:in)"
+
+msgid "emails.ofrCopySent.description"
+msgstr "Teilt der Rezensentin/dem Rezensenten mit, dass das Exemplar von der Zeitschrift oder dem Verlag verschickt wurde."
+
+msgid "emails.ofrCopySent.subject"
+msgstr "Ihr Rezensionsexemplar ist unterwegs"
+
+msgid "emails.ofrCopySent.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>ein Rezensionsexemplar ({$copyType}) des folgenden Werks wurde {$copySource} an Sie geschickt:<br />{$objectDescription}</p><p>Bitte bestätigen Sie den Eingang auf der Seite der Rezensionsangebote: <a href=\"{$forReviewUrl}\">{$forReviewUrl}</a></p><p>Ihre Rezension ist am {$dueDate} fällig.</p><p>Mit freundlichen Grüßen<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrReturnRequest.name"
+msgstr "Rücksendung eines Rezensionsexemplars (an Rezensent:in)"
+
+msgid "emails.ofrReturnRequest.description"
+msgstr "Bittet die Rezensentin/den Rezensenten um Rücksendung eines gedruckten Exemplars, wenn keine Rezension geschrieben wird, mit Rücksendeadresse."
+
+msgid "emails.ofrReturnRequest.subject"
+msgstr "Bitte schicken Sie das Rezensionsexemplar zurück"
+
+msgid "emails.ofrReturnRequest.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>da die Rezension des folgenden Werks nicht geschrieben wird, bitten wir Sie, das Rezensionsexemplar zurückzuschicken:<br />{$objectDescription}</p><p>Bitte senden Sie es an:<br />{$returnAddress}</p><p>Vielen Dank und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrReturnSent.name"
+msgstr "Rezensionsexemplar zurück (an den Verlag)"
+
+msgid "emails.ofrReturnSent.description"
+msgstr "Teilt dem Verlagskontakt mit, dass ein Rezensionsexemplar zurückgeschickt wurde."
+
+msgid "emails.ofrReturnSent.subject"
+msgstr "Rezensionsexemplar auf dem Rückweg: {$objectDescription}"
+
+msgid "emails.ofrReturnSent.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>leider wird die Rezension des folgenden Werks nicht erscheinen:<br />{$objectDescription}</p><p>Das Rezensionsexemplar, das Sie freundlicherweise zur Verfügung gestellt haben, wurde an Sie zurückgeschickt.</p><p>Nochmals vielen Dank und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrPublisherNotification.name"
+msgstr "Rezension erschienen (an den Verlag)"
+
+msgid "emails.ofrPublisherNotification.description"
+msgstr "Teilt dem Verlagskontakt mit, dass die Rezension erschienen ist, wenn der Verlag darum gebeten hat."
+
+msgid "emails.ofrPublisherNotification.subject"
+msgstr "Rezension erschienen: {$objectDescription}"
+
+msgid "emails.ofrPublisherNotification.body"
+msgstr "<p>Liebe:r {$recipientName},</p><p>wir freuen uns, Ihnen mitteilen zu können, dass die Rezension des folgenden Werks von {$reviewerName} in {$contextName} erschienen ist:<br />{$objectDescription}</p><p><a href=\"{$reviewUrl}\">{$reviewUrl}</a></p><p>Vielen Dank für das Rezensionsexemplar und freundliche Grüße<br />{$senderName}<br />{$contextName}</p>"

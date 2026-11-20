@@ -55,6 +55,15 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 			fn ($date) => ($d = \DateTimeImmutable::createFromFormat('!Y-m-d', (string) $date)) && $d->format('Y-m-d') === $date));
 		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'responsibleEditorId', 'optional', 'plugins.generic.objectsForReview.offer.editorInvalid',
 			fn ($id) => isset(Roles::getMembers($this->plugin, (int) $this->contextId, Roles::EDITOR)[(int) $id])));
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'publisherContactId', 'optional', 'plugins.generic.objectsForReview.offer.publisherContactInvalid',
+			fn ($id) => isset(Roles::getMembers($this->plugin, (int) $this->contextId, Roles::PUBLISHER)[(int) $id])));
+		// Physical copies are returned to the responsible editor (journal stock) or the publisher contact: their addresses are needed
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'journalHoldsCopy', 'optional', 'plugins.generic.objectsForReview.offer.editorAddressRequired',
+			fn ($holds) => !$this->getData('returnRequired') || $this->hasMailingAddress((int) $this->getData('responsibleEditorId'))));
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'publisherContactId', 'optional', 'plugins.generic.objectsForReview.offer.publisherAddressRequired',
+			fn ($id) => !$this->getData('returnRequired') || $this->hasMailingAddress((int) $id)));
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'notifyPublisher', 'optional', 'plugins.generic.objectsForReview.offer.notifyNeedsContact',
+			fn ($notify) => (bool) $this->getData('publisherContactId')));
 		$this->addCheck(new \PKP\form\validation\FormValidatorPost($this));
 		$this->addCheck(new \PKP\form\validation\FormValidatorCSRF($this));
 
@@ -77,7 +86,12 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 			$this->setData('assignmentMode', $objectForReview->getAssignmentMode());
 			$this->setData('bidDeadline', $objectForReview->getData('bidDeadline'));
 			$this->setData('responsibleEditorId', $objectForReview->getResponsibleEditorId());
+			$this->setData('publisherContactId', $objectForReview->getPublisherContactId());
+			$this->setData('journalHoldsCopy', (bool) $objectForReview->getData('journalHoldsCopy'));
+			$this->setData('returnRequired', $objectForReview->isReturnRequired());
+			$this->setData('notifyPublisher', (bool) $objectForReview->getData('notifyPublisher'));
 		} else {
+			$this->setData('returnRequired', true);
 			// Defaults for new offers: settings, or the current user if they are a book review editor
 			$userId = Application::get()->getRequest()->getUser()?->getId();
 			$this->setData('assignmentMode', $this->plugin->getSetting($this->contextId, 'ofrDefaultMode') ?: ObjectForReview::MODE_DIRECT);
@@ -93,7 +107,8 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 	 * @copydoc Form::readInputData()
 	 */
 	function readInputData() {
-		$this->readUserVars(array('identifierType', 'resourceType', 'identifier', 'authors', 'title', 'year', 'publisher', 'assignmentMode', 'bidDeadline', 'responsibleEditorId'));
+		$this->readUserVars(array('identifierType', 'resourceType', 'identifier', 'authors', 'title', 'year', 'publisher', 'assignmentMode', 'bidDeadline', 'responsibleEditorId',
+			'publisherContactId', 'journalHoldsCopy', 'returnRequired', 'notifyPublisher'));
 	}
 
 	/**
@@ -113,6 +128,9 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 		]);
 		$templateMgr->assign('bookReviewEditors', ['' => __('plugins.generic.objectsForReview.offer.noEditor')]
 			+ Roles::getMembers($this->plugin, (int) $this->contextId, Roles::EDITOR));
+		$publisherContacts = Roles::getMembers($this->plugin, (int) $this->contextId, Roles::PUBLISHER);
+		$templateMgr->assign('hasPublisherContacts', (bool) $publisherContacts);
+		$templateMgr->assign('publisherContacts', ['' => __('plugins.generic.objectsForReview.offer.noPublisherContact')] + $publisherContacts);
 		return parent::fetch($request);
 	}
 
@@ -143,6 +161,10 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 		$objectForReview->setOfferSetting('assignmentMode', $this->getData('assignmentMode') === ObjectForReview::MODE_BIDDING ? ObjectForReview::MODE_BIDDING : null);
 		$objectForReview->setOfferSetting('bidDeadline', $this->getData('assignmentMode') === ObjectForReview::MODE_BIDDING ? $this->getData('bidDeadline') : null);
 		$objectForReview->setOfferSetting('responsibleEditorId', (int) $this->getData('responsibleEditorId') ?: null);
+		$objectForReview->setOfferSetting('publisherContactId', (int) $this->getData('publisherContactId') ?: null);
+		$objectForReview->setOfferSetting('journalHoldsCopy', (bool) $this->getData('journalHoldsCopy'));
+		$objectForReview->setData('returnRequired', (bool) $this->getData('returnRequired'));
+		$objectForReview->setOfferSetting('notifyPublisher', (bool) $this->getData('notifyPublisher'));
 
 		if ($objectId) {
 			$objectForReviewDao->updateObject($objectForReview);
@@ -150,6 +172,14 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 			$objectForReview = $objectForReviewDao->insertObject($objectForReview);
 		}
 
+	}
+
+	/**
+	 * Has the user entered a mailing address in their profile?
+	 */
+	protected function hasMailingAddress(int $userId): bool {
+		$user = $userId ? \APP\facades\Repo::user()->get($userId, true) : null;
+		return $user && trim((string) $user->getMailingAddress()) !== '';
 	}
 
 	/**

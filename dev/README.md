@@ -23,6 +23,7 @@ Open <http://localhost:8080/index.php/test>. Set `OJS_PORT` to use a different p
 | `author` | `ojsauthor` | Author |
 | `bre` | `ojsbre` | Book review editor (plugin role, base role Section editor) |
 | `reviewer2` | `ojsreviewer2` | Author (a second bidder) |
+| `publisher` | `ojspublisher` | Publisher contact at "Test Press" (plugin role; never needs to log in) |
 
 On first start, the container installs the plugin's database tables and enables the plugin in the test journal. Where to find it:
 

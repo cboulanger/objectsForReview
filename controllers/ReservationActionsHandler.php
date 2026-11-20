@@ -23,6 +23,8 @@ use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
 use APP\plugins\generic\objectsForReview\classes\ReservationLog;
 use APP\plugins\generic\objectsForReview\classes\ReservationMailer;
 use APP\plugins\generic\objectsForReview\classes\Roles;
+use APP\plugins\generic\objectsForReview\classes\CopyWorkflow;
+use APP\plugins\generic\objectsForReview\controllers\form\CopyStepForm;
 use APP\plugins\generic\objectsForReview\controllers\form\ReservationEmailForm;
 use APP\template\TemplateManager;
 use PKP\core\JSONMessage;
@@ -58,7 +60,7 @@ class ReservationActionsHandler extends Handler {
 		$this->plugin = $plugin;
 		$this->addRoleAssignment(
 			[Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN, Role::ROLE_ID_SUB_EDITOR],
-			array_merge(array_keys(self::FORM_OPS), self::OFFER_ACTIONS, ['history'])
+			array_merge(array_keys(self::FORM_OPS), self::OFFER_ACTIONS, ['history', 'copyStepForm', 'copyStep'])
 		);
 	}
 
@@ -88,6 +90,59 @@ class ReservationActionsHandler extends Handler {
 	public function switchToDirect($args, $request) { return $this->offerAction($request, 'switchToDirect'); }
 	public function closeOffer($args, $request) { return $this->offerAction($request, 'closeOffer'); }
 	public function reopenOffer($args, $request) { return $this->offerAction($request, 'reopenOffer'); }
+
+	/**
+	 * A review copy step (or the publisher notification), see CopyStepForm.
+	 */
+	public function copyStepForm($args, $request) {
+		[$object, $assignment, $step] = $this->getCopyStepTarget($request);
+		if (!$object) {
+			return new JSONMessage(false, __('plugins.generic.objectsForReview.desk.notPossible'));
+		}
+		ReservationMailer::ensureTemplates($this->plugin, $request->getContext()->getId());
+		$form = new CopyStepForm($this->plugin, $request->getContext(), $object, $assignment, $step);
+		$form->initData();
+		return new JSONMessage(true, $form->fetch($request));
+	}
+
+	public function copyStep($args, $request) {
+		[$object, $assignment, $step] = $this->getCopyStepTarget($request);
+		if (!$object || !$request->checkCSRF()) {
+			return new JSONMessage(false, __('plugins.generic.objectsForReview.desk.notPossible'));
+		}
+		$form = new CopyStepForm($this->plugin, $request->getContext(), $object, $assignment, $step);
+		$form->readInputData();
+		if (!$form->validate()) {
+			return new JSONMessage(true, $form->fetch($request));
+		}
+		$form->execute();
+		return DAO::getDataChangedEvent($object->getId());
+	}
+
+	/**
+	 * @return array [ObjectForReview|null, Assignment|null, step]
+	 */
+	protected function getCopyStepTarget($request): array {
+		$object = $this->getObject($request);
+		$step = (string) $request->getUserVar('step');
+		$assignmentId = (int) ($request->getUserVar('assignmentId') ?: ((array) $request->getUserVar('assignmentIds'))[0] ?? 0);
+		$assignment = $object ? AssignmentWorkflow::dao()->getById($assignmentId) : null;
+		if (!$assignment || $assignment->getObjectId() !== $object->getId()) {
+			return [null, null, $step];
+		}
+		$allowed = $step === CopyStepForm::NOTIFY_PUBLISHER
+			? self::canNotifyPublisher($object, $assignment)
+			: in_array($step, CopyWorkflow::getAllowedSteps($this->plugin, $object, $assignment), true);
+		return $allowed ? [$object, $assignment, $step] : [null, null, $step];
+	}
+
+	/**
+	 * The review was published and the publisher wants to know.
+	 */
+	public static function canNotifyPublisher($object, Assignment $assignment): bool {
+		return $assignment->getStatus() === Assignment::STATUS_COMPLETED
+			&& $object->getData('notifyPublisher') && $object->getPublisherContactId() && !$object->getData('publisherNotified');
+	}
 
 	/**
 	 * Audit trail of an object (all bidders and reviewers, past and current).

@@ -22,7 +22,7 @@
 			{load_url_in_div id="objectsForReviewSettingsContainer" url=$settingsUrl}
 
 		{elseif $view == 'desk'}
-			{if !$selection && !$offers && !$unsuccessful}
+			{if !$selection && !$offers && !$unsuccessful && !$copies && !$notifications}
 				<p class="ofrDeskEmpty">{translate key="plugins.generic.objectsForReview.desk.empty"}</p>
 			{/if}
 
@@ -142,6 +142,71 @@
 				</table>
 			{/if}
 
+			{if $copies}
+				<h2>{translate key="plugins.generic.objectsForReview.desk.copies"}</h2>
+				<table class="ofrTable ofrCopies">
+					<thead>
+						<tr>
+							<th>{translate key="plugins.generic.objectsForReview.column.object"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.person"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.copy"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.copySource"}</th>
+							<th><span class="pkp_screen_reader">{translate key="grid.columns.actions"}</span></th>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach from=$copies item=row}
+							<tr>
+								<td>{include file=$ofrObjectCell row=$row}</td>
+								<td>
+									{$row.reviewer|escape}
+									{if $row.assignmentStatus != 'accepted'}<div class="ofrDetail ofrWarning">{translate key="plugins.generic.objectsForReview.status.`$row.assignmentStatus`"}</div>{/if}
+								</td>
+								<td>
+									{$row.copyPreferenceLabel|escape}<br />
+									<strong>{$row.copyStatusLabel|escape}</strong>
+									<div class="ofrDetail">{$row.copyStatusDate|date_format:$dateFormatShort}</div>
+								</td>
+								<td>
+									{if $row.journalHoldsCopy}<div>{translate key="plugins.generic.objectsForReview.copy.journalHoldsCopy"}</div>{/if}
+									{if $row.publisherContact}<div>{$row.publisherContact|escape}</div>{elseif !$row.journalHoldsCopy}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.copy.noSource"}</div>{/if}
+								</td>
+								<td class="ofrActions">
+									{foreach from=$row.copyActions item=action}
+										{include file="linkAction/linkAction.tpl" action=$action contextId="ofrDesk"}
+									{/foreach}
+									{include file="linkAction/linkAction.tpl" action=$row.historyAction contextId="ofrDesk"}
+								</td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			{/if}
+
+			{if $notifications}
+				<h2>{translate key="plugins.generic.objectsForReview.desk.notifications"}</h2>
+				<table class="ofrTable">
+					<thead>
+						<tr>
+							<th>{translate key="plugins.generic.objectsForReview.column.object"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.column.reviewer"}</th>
+							<th>{translate key="plugins.generic.objectsForReview.offer.publisherContact"}</th>
+							<th><span class="pkp_screen_reader">{translate key="grid.columns.actions"}</span></th>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach from=$notifications item=row}
+							<tr>
+								<td>{include file=$ofrObjectCell row=$row}</td>
+								<td>{$row.reviewer|escape}</td>
+								<td>{$row.publisherContact|escape}</td>
+								<td class="ofrActions">{include file="linkAction/linkAction.tpl" action=$row.action contextId="ofrDesk"}</td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			{/if}
+
 			{if $closed}
 				<details class="ofrClosed">
 					<summary>{translate key="plugins.generic.objectsForReview.desk.closed"} ({$closed|@count})</summary>
@@ -212,11 +277,15 @@
 								</td>
 								<td>
 									{$row.copyPreferenceLabel|escape}
+									{if $row.copyStatusLabel}<div><strong>{$row.copyStatusLabel|escape}</strong></div>{/if}
 									{if $row.shippingAddress}<div class="ofrDetail">{$row.shippingAddress|escape|nl2br}</div>{/if}
 									{if $row.phone}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.reserve.phone"}: {$row.phone|escape}</div>{/if}
 									{if $row.copyNote}<div class="ofrDetail">{$row.copyNote|escape|nl2br}</div>{/if}
 								</td>
 								<td class="ofrActions">
+									{foreach from=$row.copyActions item=action}
+										{include file="linkAction/linkAction.tpl" action=$action contextId="ofrAssignments"}
+									{/foreach}
 									{foreach from=$row.actions item=action}
 										{include file="linkAction/linkAction.tpl" action=$action contextId="ofrAssignments"}
 									{/foreach}

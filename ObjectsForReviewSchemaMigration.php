@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Schema;
 class ObjectsForReviewSchemaMigration extends Migration
 {
     /** Increase when tables or data migrations are added */
-    const SCHEMA_VERSION = 2;
+    const SCHEMA_VERSION = 3;
 
     /** Reservation fields that were stored with the object before schema version 2 */
     const LEGACY_RESERVATION_FIELDS = ['dateReserved', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote', 'reminderSent'];
@@ -105,6 +105,29 @@ class ObjectsForReviewSchemaMigration extends Migration
         }
 
         $this->migrateReservations();
+        $this->initCopyStatus();
+    }
+
+    /**
+     * Schema version 3: current reviewers get a review copy status (see CopyWorkflow).
+     */
+    protected function initCopyStatus(): void
+    {
+        $assignments = DB::table('objects_for_review_assignments')->where('status', 'accepted')->pluck('assignment_id');
+        foreach ($assignments as $assignmentId) {
+            $settings = DB::table('objects_for_review_assignment_settings')->where('assignment_id', $assignmentId);
+            if ((clone $settings)->where('setting_name', 'copyStatus')->exists()) {
+                continue;
+            }
+            $preference = (clone $settings)->where('setting_name', 'copyPreference')->value('setting_value');
+            DB::table('objects_for_review_assignment_settings')->insert([
+                'assignment_id' => $assignmentId,
+                'locale' => '',
+                'setting_name' => 'copyStatus',
+                'setting_value' => in_array($preference, ['physical', 'electronic'], true) ? 'pending' : 'notNeeded',
+                'setting_type' => 'string',
+            ]);
+        }
     }
 
     /**

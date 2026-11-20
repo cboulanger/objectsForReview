@@ -42,8 +42,12 @@ class Assignment extends DataObject {
 	/** Assignments that ended without a review (after the contract was offered or accepted) */
 	const DROPOUT_STATUSES = [self::STATUS_DECLINED, self::STATUS_EXPIRED, self::STATUS_RETRACTED, self::STATUS_CANCELLED];
 
-	/** Bid and contract offer data stored as settings, in addition to Reservation::FIELDS */
-	const FIELDS = ['statement', 'dateOffered', 'contractDeadline', 'contractReminderSent', 'declineReason'];
+	/**
+	 * Data stored as settings, in addition to Reservation::FIELDS: bid and
+	 * contract offer, and the review copy (see CopyWorkflow).
+	 */
+	const FIELDS = ['statement', 'dateOffered', 'contractDeadline', 'contractReminderSent', 'declineReason',
+		'copyStatus', 'copyStatusDate', 'copySentBy', 'returnTarget'];
 
 	function getObjectId(): int {
 		return (int) $this->getData('objectId');

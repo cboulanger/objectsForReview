@@ -18,6 +18,8 @@ use APP\facades\Repo;
 use APP\handler\Handler;
 use APP\plugins\generic\objectsForReview\classes\Assignment;
 use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
+use APP\plugins\generic\objectsForReview\classes\CopyWorkflow;
+use APP\plugins\generic\objectsForReview\controllers\form\CopyStepForm;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
 use APP\plugins\generic\objectsForReview\classes\Roles;
 use PKP\linkAction\request\RemoteActionConfirmationModal;
@@ -90,7 +92,7 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$context = $request->getContext();
 		$contextId = $context->getId();
 		$assignmentsByObject = AssignmentWorkflow::dao()->getByContextId($contextId);
-		$selection = $offers = $unsuccessful = $closed = [];
+		$selection = $offers = $unsuccessful = $closed = $copies = $notifications = [];
 		$userCache = [];
 
 		foreach ($this->getObjects($request) as $object) {
@@ -139,6 +141,21 @@ class ObjectsForReviewManagementHandler extends Handler {
 				];
 			}
 
+			foreach ($assignments as $assignment) {
+				if (CopyWorkflow::isOpen($object, $assignment)) {
+					$copies[] = $row + $this->copyRow($request, $object, $assignment, $userCache);
+				}
+				if (ReservationActionsHandler::canNotifyPublisher($object, $assignment)) {
+					$notifications[] = $row + [
+						'reviewer' => $this->userName($assignment->getUserId(), $userCache),
+						'publisherContact' => CopyWorkflow::getPublisherContact($object)?->getFullName(),
+						'action' => $this->linkAction($request, 'copyStepForm',
+							['objectId' => $object->getId(), 'assignmentId' => $assignment->getId(), 'step' => CopyStepForm::NOTIFY_PUBLISHER],
+							'plugins.generic.objectsForReview.copy.step.notifyPublisher', 'modal_email', 'notify-' . $assignment->getId()),
+					];
+				}
+			}
+
 			$remaining = AssignmentWorkflow::filter($assignments, [Assignment::STATUS_BID]);
 			if ($remaining && in_array($state, [AssignmentWorkflow::STATE_ASSIGNED, AssignmentWorkflow::STATE_SUBMITTED], true)) {
 				$reviewer = AssignmentWorkflow::filter($assignments, Assignment::REVIEWER_STATUSES);
@@ -156,6 +173,8 @@ class ObjectsForReviewManagementHandler extends Handler {
 			'offers' => $offers,
 			'unsuccessful' => $unsuccessful,
 			'closed' => $closed,
+			'copies' => $copies,
+			'notifications' => $notifications,
 		]);
 	}
 
@@ -190,6 +209,8 @@ class ObjectsForReviewManagementHandler extends Handler {
 				}
 				$active = in_array($assignment->getStatus(), [Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED], true);
 				$rows[] = $this->objectRow($objects[$objectId]) + [
+					'copyStatusLabel' => CopyWorkflow::getStatusLabel($assignment),
+					'copyActions' => $this->copyActions($request, $objects[$objectId], $assignment),
 					'user' => $users[$userId],
 					'status' => $assignment->getStatus(),
 					'dateCreated' => $assignment->getDateCreated(),
@@ -292,6 +313,38 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$url = $request->getDispatcher()->url($request, Application::ROUTE_COMPONENT, null,
 			ReservationActionsHandler::COMPONENT, $op, null, $params);
 		return new LinkAction('ofr-' . $id, new AjaxModal($url, __($labelKey), $modalClass), __($labelKey));
+	}
+
+	/**
+	 * A review copy as shown on the To-do page.
+	 */
+	protected function copyRow($request, $object, Assignment $assignment, array &$userCache): array {
+		$contact = CopyWorkflow::getPublisherContact($object);
+		return [
+			'reviewer' => $this->userName($assignment->getUserId(), $userCache),
+			'assignmentStatus' => $assignment->getStatus(),
+			'copyPreferenceLabel' => __('plugins.generic.objectsForReview.reserve.copy.' . $assignment->getData('copyPreference')),
+			'copyStatusLabel' => CopyWorkflow::getStatusLabel($assignment),
+			'copyStatusDate' => $assignment->getData('copyStatusDate'),
+			'journalHoldsCopy' => (bool) $object->getData('journalHoldsCopy'),
+			'publisherContact' => $contact ? $contact->getFullName() . ($contact->getLocalizedData('affiliation') ? ', ' . $contact->getLocalizedData('affiliation') : '') : null,
+			'copyActions' => $this->copyActions($request, $object, $assignment),
+			'historyAction' => $this->assignmentActions($request, $object, null, ['history'])['history'],
+		];
+	}
+
+	/**
+	 * The review copy steps the editor can take now.
+	 * @return LinkAction[]
+	 */
+	protected function copyActions($request, $object, Assignment $assignment): array {
+		$actions = [];
+		foreach (CopyWorkflow::getAllowedSteps($this->plugin, $object, $assignment) as $step) {
+			$actions[$step] = $this->linkAction($request, 'copyStepForm',
+				['objectId' => $object->getId(), 'assignmentId' => $assignment->getId(), 'step' => $step],
+				'plugins.generic.objectsForReview.copy.step.' . $step, 'modal_edit', $step . '-' . $assignment->getId());
+		}
+		return $actions;
 	}
 
 	/**
