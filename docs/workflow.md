@@ -6,12 +6,13 @@ This manual describes how a work offered for review becomes a published review, 
 - [Flowcharts](#flowcharts)
 - [Step by step](#step-by-step)
   1. [Offering a work](#1-offering-a-work)
-  2. [Direct reservation](#2-direct-reservation)
-  3. [Bidding: choosing a reviewer](#3-bidding-choosing-a-reviewer)
-  4. [When a review does not materialise](#4-when-a-review-does-not-materialise)
-  5. [The review copy](#5-the-review-copy)
-  6. [While the review is being written](#6-while-the-review-is-being-written)
-  7. [Submission and publication](#7-submission-and-publication)
+  2. [Inviting reviewers](#2-inviting-reviewers)
+  3. [Direct reservation](#3-direct-reservation)
+  4. [Bidding: choosing a reviewer](#4-bidding-choosing-a-reviewer)
+  5. [When a review does not materialise](#5-when-a-review-does-not-materialise)
+  6. [The review copy](#6-the-review-copy)
+  7. [While the review is being written](#7-while-the-review-is-being-written)
+  8. [Submission and publication](#8-submission-and-publication)
 - [Keeping track](#keeping-track)
 - [Reference: statuses](#reference-statuses)
 
@@ -20,13 +21,13 @@ This manual describes how a work offered for review becomes a published review, 
 The people involved:
 
 - **You, the book review editor**, offer works, choose reviewers, arrange review copies and keep things moving. Each offer has one *responsible* book review editor, who receives its notifications. Journal managers can do everything you can.
-- **Reviewers** find works on the public page *For review*. They reserve a work directly or apply for it, accept the review agreement and later submit their review like any other article. They need an account in the journal.
+- **Reviewers** find works on the public page *For review*, or you invite them by email. They reserve a work directly or apply for it, accept the review agreement and later submit their review like any other article. They need an account in the journal.
 - **Publisher contacts** send review copies and, if needed, receive returned ones. They never log in. Every step they take is a one-click link in an email.
 
 You work from the backend menu section **Book Reviews**:
 
 - **To-do** lists everything that needs a decision or is waiting for someone. This is your starting point.
-- **Offered works** lists your offers. Here you create and edit them.
+- **Offered works** lists your offers. Here you create and edit them, hide them from the public page, and invite reviewers.
 - **Reviewers & bidders** lists every bidder and reviewer, with their status, due date and delivery details.
 - **Reviewed works** lists works attached to review submissions.
 
@@ -39,6 +40,9 @@ Most steps that concern someone else come with a prefilled email that you can ed
 ```mermaid
 flowchart TD
     A[Book review editor creates an offer] --> M{Assignment mode}
+    A -. optional .-> INV["Editor invites people<br/>(see Invitations)"]
+    INV -. invitee reserves .-> R
+    INV -. invitee applies .-> B
     M -- Direct reservation --> R[Reviewer reserves the work<br/>and accepts the agreement]
     M -- Bidding --> B[Reviewers apply]
     B --> S[Editor selects a bidder:<br/>contract offer by email]
@@ -202,13 +206,24 @@ The work now appears on the public page and in your list of offers.
 
 Unlike **Close offer**, hiding keeps the list of bidders. Hiding and showing are recorded in the history.
 
-**Inviting reviewers.** Instead of waiting for someone to reserve or apply on the public page, you can invite particular people. Click **Invite reviewers** in the row's actions. This opens the work's invitation page, where you build a list:
+### 2. Inviting reviewers
+
+Instead of waiting for someone to reserve or apply on the public page, you can invite particular people. Click **Invite reviewers** in the row's actions under **Offered works**. This opens the work's invitation page.
+
+You can send the invitations one by one, or let the plugin send them in a round: one after another for direct reservation, or all at once for bidding. The [flowchart](#invitations) shows how the modes work.
+
+To invite people without others reserving the work first, hide the offer from the public list. Invitation links keep working for hidden offers.
+
+#### Building the list
+
 
 - **Add from the address book**: search the users of this journal by name, email or affiliation. Each person's entry shows how many reviews they have written for the journal and how many works they currently have reserved.
 - **Add a new person**: enter their name, email and affiliation. This creates an account in the journal's Author group, so that they can submit the review later. No email is sent until you invite them. If someone already has an account with that email address, that account is used.
 - **Order**: change the order with the arrows, or by dragging the rows. **Remove** takes people off the list as long as they haven't been invited.
 
 ![The invitation page](images/invite-page.png)
+
+#### Sending invitations one by one
 
 **Send invitation** opens a prefilled email for that person, which you can edit. Which template it uses depends on the offer:
 
@@ -226,7 +241,9 @@ Reserving or applying through an invitation works exactly like doing it on the p
 
 If an invitee declines or doesn't answer by the deadline, you are notified, and the list shows the status. You can then invite the next person, or send the same person a new invitation with **Invite again**. If a reminder is set up in the settings, invitees who haven't answered get one before the deadline. When someone reserves the work, other pending invitations are withdrawn. Invitations also stop working when bidding has closed or the offer is closed. Every step is recorded in the history.
 
-**Sequential rounds** (direct reservation only). Instead of sending each invitation yourself, you can let the plugin work through the list. Click **Start sequential round** and edit the invitation email once. The name, the deadline and the link are filled in for each person. The box **Hide from the public list during the invitation round** is ticked by default, so that nobody else can reserve the work while an invitee is still deciding. The work stays hidden after the round until you show it again.
+#### Sequential rounds (direct reservation)
+
+The plugin can also work through the list for you. Click **Start sequential round** and edit the invitation email once. The name, the deadline and the link are filled in for each person. The box **Hide from the public list during the invitation round** is ticked by default, so that nobody else can reserve the work while an invitee is still deciding. The work stays hidden after the round until you show it again.
 
 ![Starting a sequential round](images/invite-round.png)
 
@@ -242,7 +259,9 @@ The round ends when:
 
 People can be added to the list while a round is running; they are invited after the others. People who declined or didn't answer are never invited again automatically, only with **Invite again** once the round is over.
 
-**All at once** (bidding only). For a bidding offer, the button reads **Invite everyone on the list**. You edit the email once, and everyone waiting on the list is invited to apply at the same time. The deadline is the offer's bid deadline, or the default number of days if it has none. Here the box for hiding the offer is not ticked by default, since others may apply too.
+#### All at once (bidding)
+
+For a bidding offer, the button reads **Invite everyone on the list**. You edit the email once, and everyone waiting on the list is invited to apply at the same time. The deadline is the offer's bid deadline, or the default number of days if it has none. Here the box for hiding the offer is not ticked by default, since others may apply too.
 
 - Applications appear on To-do under *Choose a reviewer*, as usual.
 - Declines are recorded in the history, without an email to you.
@@ -250,15 +269,15 @@ People can be added to the list while a round is running; they are invited after
 
 The round ends when everyone has answered, when you select a bidder (which closes bidding and withdraws invitations that are still open), or when you stop it.
 
-**On To-do**, the section **Invitations** lists every work with a round in progress or invitations waiting for an answer. It shows the mode, who is invited and until when, and in a sequential round who is next. Rounds that reached the end of the list are marked. From there you can go to the invitation page (**Invite more**) or stop a round.
+Changing an offer's assignment mode ends a round that no longer fits, and withdraws its pending invitations.
+
+#### Invitations on To-do
+
+The section **Invitations** on To-do lists every work with a round in progress or invitations waiting for an answer. It shows the mode, who is invited and until when, and in a sequential round who is next. Rounds that reached the end of the list are marked. From there you can go to the invitation page (**Invite more**) or stop a round.
 
 ![Invitations on the To-do page](images/todo-invitations.png)
 
-Changing an offer's assignment mode ends a round that no longer fits, and withdraws its pending invitations.
-
-To invite people without others reserving the work first, hide the offer from the public list. Invitation links keep working for hidden offers.
-
-### 2. Direct reservation
+### 3. Direct reservation
 
 On the public page, works with direct reservation show **Offer to review**, and bidding works show **Apply**. Visitors who are not logged in are asked to log in. No one sees how many people have applied.
 
@@ -273,9 +292,9 @@ The reviewer accepts the terms of reservation, chooses a due date (within the ma
 
 ![Reserving a work](images/reserve-dialog.png)
 
-The reservation takes effect immediately. You receive a notification, the reviewer receives a confirmation, and the work shows as reserved on the public page. If the reviewer asked for a copy, it appears on your To-do page under *Review copies* (see [The review copy](#5-the-review-copy)).
+The reservation takes effect immediately. You receive a notification, the reviewer receives a confirmation, and the work shows as reserved on the public page. If the reviewer asked for a copy, it appears on your To-do page under *Review copies* (see [The review copy](#6-the-review-copy)).
 
-### 3. Bidding: choosing a reviewer
+### 4. Bidding: choosing a reviewer
 
 Reviewers apply with an optional statement about their interest and expertise. You receive an email for each new application.
 
@@ -309,7 +328,7 @@ Other actions for a bidding offer, below the list of bidders:
 - **Reopen bidding**: accept new applications, for example when nobody on the list is suitable. Bidders already on the list stay on it.
 - **Close offer**: remove the work from the public page. The list of bidders is discarded, and their statements are deleted. You can **reopen** a closed offer later.
 
-### 4. When a review does not materialise
+### 5. When a review does not materialise
 
 A review can fall through at several points:
 
@@ -324,7 +343,7 @@ You are notified in each case, and the offer becomes available again:
 
 If the reviewer had received a **printed copy** and the offer requires returns, the copy row on To-do offers **Request return** (see below). Copies never go directly from one reviewer to the next. They go back to the journal or the publisher first, so that reviewers' addresses are never passed on.
 
-### 5. The review copy
+### 6. The review copy
 
 When a reviewer who wants a copy has accepted the agreement, the copy appears on To-do under **Review copies**. Each row shows the reviewer, the type of copy and its current state, where the copy comes from, and the steps that are possible now.
 
@@ -360,14 +379,14 @@ Only if the offer requires returns and the review won't come.
 2. **The reviewer has sent it back.** The reviewer confirms with the link, or you record it. If the copy goes to the publisher, the publisher contact is told it is on its way, with a link "The returned copy has arrived".
 3. **The copy has arrived back.** The publisher confirms with the link, or you record it with **Copy has arrived back**. A copy returned to the journal is marked as held in stock, ready for the next reviewer.
 
-### 6. While the review is being written
+### 7. While the review is being written
 
 - **Confirmation.** After accepting the agreement, the reviewer receives a confirmation with the work, the due date and an "I cannot write this review" link.
 - **Reminder.** Before the due date (14 days by default), the reviewer is reminded automatically. The reminder contains the same link.
 - **Overdue reviews.** Reviews past their due date are listed on To-do under *Overdue reviews*. From there you can email the reviewer, cancel the reservation or request the return of a printed copy.
 - **Messages.** From *Reviewers & bidders* you can email any bidder or reviewer, or cancel a reservation, with an editable email.
 
-### 7. Submission and publication
+### 8. Submission and publication
 
 The reviewer submits the review as an ordinary submission. In the submission wizard, under *For the Editors › Reviewed works*, they pick the work they reserved. The offer then shows "Review submitted", and the reviewer's delivery details are deleted. In the editorial workflow, the review is handled like any other submission. If you are a section editor of the book review section, you can be assigned to it there.
 
@@ -421,7 +440,12 @@ The labels are those shown in *Reviewers & bidders* (the flowchart above uses sh
 | Contract offer expired | Did not answer the contract offer in time |
 | Cancelled by the reviewer | Withdrew from the review |
 | Cancelled by the editors | You cancelled the contract offer or reservation |
-| List closed | Bid closed after publication or closure of the offer |
+| List closed | Bid or invitation closed after publication or closure of the offer |
+| On the invitation list | Added to the invitation list, not invited yet |
+| Invited | Invitation sent; waiting for an answer |
+| Invitation declined | Declined the invitation |
+| Invitation not answered | Did not answer the invitation by the deadline |
+| Invitation withdrawn | The invitation ended before an answer: someone else reserved the work, bidding closed, or you stopped the round |
 
 ### Review copy state
 
