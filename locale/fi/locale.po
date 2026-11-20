@@ -21,7 +21,7 @@ msgid "plugins.generic.objectsForReview.tabTitle"
 msgstr "Arvioitavaksi"
 
 msgid "plugins.generic.objectsForReview.managementLink"
-msgstr "Arvioitavaksi"
+msgstr "Kirja-arviot"
 
 msgid "plugins.generic.objectsForReview.management.gridTitle"
 msgstr "Arvioitavaksi"

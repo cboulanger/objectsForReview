@@ -27,7 +27,7 @@ Open <http://localhost:8080/index.php/test>. Set `OJS_PORT` to use a different p
 
 On first start, the container installs the plugin's database tables and enables the plugin in the test journal. Where to find it:
 
-- Manager and book review editor: left menu › Objects for Review (Rezensionsangebote)
+- Manager and book review editor: left menu › Book Reviews (Rezensionen)
 - Author: submission wizard, "For the Editors" step
 
 Emails are not sent; they are written to the container log (`dev/ojs-dev.sh logs`), including the one-click links. Emails sent by the scheduled task appear in its output:

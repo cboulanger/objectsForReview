@@ -18,7 +18,7 @@ Under *Website Settings › Plugins › Generic Plugins*, enable **Objects for R
 
 - creates two user groups in the journal: **Book review editor** and **Publisher contact**;
 - installs the email templates (templates added by later versions are installed when they are first needed);
-- adds the menu section *Objects for Review* to the backend, for journal managers and book review editors.
+- adds the menu section *Book Reviews* (German: *Rezensionen*) to the backend, for journal managers and book review editors.
 
 The backend menu section has these pages:
 
@@ -80,7 +80,7 @@ OJS requires a user name and password. Choose any, and don't send a welcome emai
 
 ## Plugin settings
 
-Open *Objects for Review › Settings*, or the plugin's *Settings* link in the plugin list.
+Open *Book Reviews › Settings*, or the plugin's *Settings* link in the plugin list.
 
 ![Plugin settings](images/settings.png)
 

@@ -23,7 +23,7 @@ The people involved:
 - **Reviewers** find works on the public page *For review*. They reserve a work directly or apply for it, accept the review agreement and later submit their review like any other article. They need an account in the journal.
 - **Publisher contacts** send review copies and, if needed, receive returned ones. They never log in. Every step they take is a one-click link in an email.
 
-You work from the backend menu section **Objects for Review**:
+You work from the backend menu section **Book Reviews**:
 
 - **To-do** lists everything that needs a decision or is waiting for someone. This is your starting point.
 - **Available objects** lists your offers. Here you create and edit them.

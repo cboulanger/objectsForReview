@@ -21,7 +21,7 @@ msgid "plugins.generic.objectsForReview.tabTitle"
 msgstr "Objects for review"
 
 msgid "plugins.generic.objectsForReview.managementLink"
-msgstr "Objects for Review"
+msgstr "Book Reviews"
 
 msgid "plugins.generic.objectsForReview.management.gridTitle"
 msgstr "Objects for Review"
