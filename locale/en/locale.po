@@ -18,34 +18,34 @@ msgid "plugins.generic.objectsForReview.description"
 msgstr "Record reviewed objects with submissions."
 
 msgid "plugins.generic.objectsForReview.tabTitle"
-msgstr "Objects for review"
+msgstr "Book Reviews"
 
 msgid "plugins.generic.objectsForReview.managementLink"
 msgstr "Book Reviews"
 
 msgid "plugins.generic.objectsForReview.management.gridTitle"
-msgstr "Objects for Review"
+msgstr "Offered works"
 
 msgid "plugins.generic.objectsForReview.addAvailableObjectForReview"
-msgstr "Add available object"
+msgstr "Add work"
 
 msgid "plugins.generic.objectsForReview.userName"
 msgstr "Reserved for user"
 
 msgid "plugins.generic.objectsForReview.settings.displayInToc.display"
-msgstr "Display reviewed objects in the table of contents."
+msgstr "Display reviewed works in the table of contents."
 
 msgid "plugins.generic.objectsForReview.settings.displayOptions"
 msgstr "Display options"
 
 msgid "plugins.generic.objectsForReview.settings.displayAsSubtitle"
-msgstr "Display reviewed objects in the article subtitle field"
+msgstr "Display reviewed works in the article subtitle field"
 
 msgid "plugins.generic.objectsForReview.settings.displayAsList"
-msgstr "Display a list of reviewed objects under the abstract"
+msgstr "Display a list of reviewed works under the abstract"
 
 msgid "plugins.generic.objectsForReview.settings.onlyReserved"
-msgstr "Only allow objects created by the manager"
+msgstr "Only allow works entered by the editors"
 
 msgid "plugins.generic.objectsForReview.settings.notifyEmail"
 msgstr "Email for notifying reservations and cancellations"
@@ -60,22 +60,22 @@ msgid "plugins.generic.objectsForReview.settings.instructions.description"
 msgstr "These instructions are visible in the public OFR page"
 
 msgid "plugins.generic.objectsForReview.navMenuItem.description"
-msgstr "Link to the public Objects for Review page"
+msgstr "Link to the public list of works offered for review"
 
 msgid "plugins.generic.objectsForReview.navMenuItem"
-msgstr "Objects for Review"
+msgstr "Works for review"
 
 msgid "plugins.generic.objectsForReview.objectsForReviewTitle"
-msgstr "Objects reviewed in this submission"
+msgstr "Works reviewed in this submission"
 
 msgid "plugins.generic.objectsForReview.addObjectForReview"
-msgstr "Add reviewed object"
+msgstr "Add reviewed work"
 
 msgid "plugins.generic.objectsForReview.noReservedObjects"
-msgstr "No objects reserved for you"
+msgstr "No works reserved for you"
 
 msgid "plugins.generic.objectsForReview.submissionWizard.name"
-msgstr "Objects for Review"
+msgstr "Reviewed works"
 
 msgid "plugins.generic.objectsForReview.itemIdentifierType"
 msgstr "Identifier type"
@@ -102,7 +102,7 @@ msgid "plugins.generic.objectsForReview.itemYear"
 msgstr "Publishing year"
 
 msgid "plugins.generic.objectsForReview.noneCreated"
-msgstr "No object for review in this submission."
+msgstr "No reviewed work in this submission."
 
 msgid "plugins.generic.objectsForReview.objectsForReviewData.addReservedObject"
 msgstr "Select this item"
@@ -198,7 +198,7 @@ msgid "plugins.generic.objectsForReview.itemYearShort"
 msgstr "Year"
 
 msgid "plugins.generic.objectsForReview.menu.available"
-msgstr "Available objects"
+msgstr "Offered works"
 
 msgid "plugins.generic.objectsForReview.menu.reservations"
 msgstr "Reservations"
@@ -213,7 +213,7 @@ msgid "plugins.generic.objectsForReview.menu.publicPage"
 msgstr "Public page"
 
 msgid "plugins.generic.objectsForReview.column.object"
-msgstr "Object"
+msgstr "Work"
 
 msgid "plugins.generic.objectsForReview.column.reservedBy"
 msgstr "Reserved by"
@@ -228,10 +228,10 @@ msgid "plugins.generic.objectsForReview.filter.apply"
 msgstr "Filter"
 
 msgid "plugins.generic.objectsForReview.reservations.none"
-msgstr "No objects are currently reserved."
+msgstr "No works are currently reserved."
 
 msgid "plugins.generic.objectsForReview.reviewedWorks.none"
-msgstr "No objects have been attached to submissions yet."
+msgstr "No works have been attached to submissions yet."
 
 msgid "plugins.generic.objectsForReview.reserve.title"
 msgstr "Reserve for review"
@@ -405,7 +405,7 @@ msgid "plugins.generic.objectsForReview.reservations.cancel.submit"
 msgstr "Cancel reservation"
 
 msgid "plugins.generic.objectsForReview.reservations.notReserved"
-msgstr "This object is not reserved (any more)."
+msgstr "This work is not reserved (any more)."
 
 msgid "plugins.generic.objectsForReview.reservations.subjectRequired"
 msgstr "Please enter a subject."
@@ -426,7 +426,7 @@ msgid "plugins.generic.objectsForReview.settings.reminderDays.invalid"
 msgstr "Please enter a whole number of days between 0 and 90."
 
 msgid "plugins.generic.objectsForReview.reminder.taskName"
-msgstr "Objects for review: reminders before the due date"
+msgstr "Book reviews: daily reminders"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
 msgstr "For {$context}: {$reminders} due date reminder(s), {$contractReminders} contract offer reminder(s), {$expired} expired contract offer(s), {$publisherReminders} publisher reminder(s), {$expiredInvitations} expired invitation(s), {$invitationReminders} invitation reminder(s)."
@@ -1591,3 +1591,9 @@ msgstr "Invite more"
 
 msgid "plugins.generic.objectsForReview.invitation.openPage"
 msgstr "Invitation page"
+
+msgid "plugins.generic.objectsForReview.management.noneCreated"
+msgstr "No works have been offered yet."
+
+msgid "plugins.generic.objectsForReview.workflow.tabLabel"
+msgstr "Reviewed works"

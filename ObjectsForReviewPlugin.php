@@ -561,7 +561,7 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 			'ObjectsForReviewWorkflowConfig',
 			'window.pkpObjectsForReview = ' . json_encode([
 				'gridUrl' => $gridUrl,
-				'label' => __('plugins.generic.objectsForReview.management.gridTitle'),
+				'label' => __('plugins.generic.objectsForReview.workflow.tabLabel'),
 			]) . ';',
 			[
 				'inline' => true,

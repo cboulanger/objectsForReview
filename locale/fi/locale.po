@@ -18,13 +18,13 @@ msgid "plugins.generic.objectsForReview.description"
 msgstr "Käyttäjät voivat varata esimerkiksi kirjoja arvioitavaksi ja liittää arvionnin kohde lähettämäänsä käsikirjoitukseen."
 
 msgid "plugins.generic.objectsForReview.tabTitle"
-msgstr "Arvioitavaksi"
+msgstr "Kirja-arviot"
 
 msgid "plugins.generic.objectsForReview.managementLink"
 msgstr "Kirja-arviot"
 
 msgid "plugins.generic.objectsForReview.management.gridTitle"
-msgstr "Arvioitavaksi"
+msgstr "Tarjolla olevat julkaisut"
 
 msgid "plugins.generic.objectsForReview.addAvailableObjectForReview"
 msgstr "Lisää tarjottava kohde"
@@ -60,7 +60,7 @@ msgid "plugins.generic.objectsForReview.settings.instructions.description"
 msgstr "Nämä ohjeet näkyvät OFR-sivulla lukijoille."
 
 msgid "plugins.generic.objectsForReview.navMenuItem.description"
-msgstr "Linkki Arvioitavaksi-lisäosan julkiselle listaussivulle."
+msgstr "Linkki arvioitavaksi tarjottujen julkaisujen julkiseen luetteloon."
 
 msgid "plugins.generic.objectsForReview.navMenuItem"
 msgstr "Arvioitavaksi"
@@ -72,7 +72,7 @@ msgid "plugins.generic.objectsForReview.noReservedObjects"
 msgstr "Sinulle ei ole varattuja arvioitavia julkaisuja"
 
 msgid "plugins.generic.objectsForReview.submissionWizard.name"
-msgstr "Arvioitavaksi"
+msgstr "Arvioidut julkaisut"
 
 msgid "plugins.generic.objectsForReview.addObjectForReview"
 msgstr "Lisää arvioitu julkaisu"
@@ -405,7 +405,7 @@ msgid "plugins.generic.objectsForReview.settings.reminderDays.invalid"
 msgstr "Anna päivien määrä kokonaislukuna väliltä 0–90."
 
 msgid "plugins.generic.objectsForReview.reminder.taskName"
-msgstr "Arvioitavat julkaisut: muistutukset ennen määräpäivää"
+msgstr "Kirja-arviot: päivittäiset muistutukset"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
 msgstr "{$context}: {$reminders} määräpäivämuistutus(ta), {$contractReminders} sopimustarjousmuistutus(ta), {$expired} vanhentunut(ta) sopimustarjous(ta), {$publisherReminders} kustantajamuistutus(ta), {$expiredInvitations} vanhentunut(ta) kutsu(a), {$invitationReminders} kutsumuistutus(ta)."
@@ -1570,3 +1570,9 @@ msgstr "Kutsu lisää"
 
 msgid "plugins.generic.objectsForReview.invitation.openPage"
 msgstr "Kutsusivu"
+
+msgid "plugins.generic.objectsForReview.management.noneCreated"
+msgstr "Julkaisuja ei ole vielä tarjottu."
+
+msgid "plugins.generic.objectsForReview.workflow.tabLabel"
+msgstr "Arvioidut julkaisut"

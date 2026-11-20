@@ -88,7 +88,7 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 
 		// Set the grid details.
 		$this->setTitle('plugins.generic.objectsForReview.management.gridTitle');
-		$this->setEmptyRowText('plugins.generic.objectsForReview.noneCreated');
+		$this->setEmptyRowText('plugins.generic.objectsForReview.management.noneCreated');
 
 		// Get the items and add the data to the grid
 		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');

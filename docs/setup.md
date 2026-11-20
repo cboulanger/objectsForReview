@@ -24,7 +24,7 @@ The backend menu section has these pages:
 
 | Page | Purpose | Who sees it |
 | --- | --- | --- |
-| Available objects | Create and edit offers | managers, book review editors |
+| Offered works | Create and edit offers | managers, book review editors |
 | To-do | Everything that needs a decision or is waiting for someone | managers, book review editors |
 | Reviewers & bidders | All bidders and reviewers, with filters | managers, book review editors |
 | Reviewed works | Works attached to review submissions | managers, book review editors |
@@ -133,7 +133,7 @@ Some values are only filled in when an email is sent: the one-click links (`{$co
 
 ## The public page
 
-The list of works offered for review is at `https://<your-journal>/for-review`. To add it to the journal's menu, go to *Website Settings › Navigation*, add a menu item of the type **Objects for Review**, and place it in the primary navigation menu.
+The list of works offered for review is at `https://<your-journal>/for-review`. To add it to the journal's menu, go to *Website Settings › Navigation*, add a menu item of the type **Works for review**, and place it in the primary navigation menu.
 
 ## One-click links
 

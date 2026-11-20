@@ -26,7 +26,7 @@ The people involved:
 You work from the backend menu section **Book Reviews**:
 
 - **To-do** lists everything that needs a decision or is waiting for someone. This is your starting point.
-- **Available objects** lists your offers. Here you create and edit them.
+- **Offered works** lists your offers. Here you create and edit them.
 - **Reviewers & bidders** lists every bidder and reviewer, with their status, due date and delivery details.
 - **Reviewed works** lists works attached to review submissions.
 
@@ -59,7 +59,7 @@ flowchart TD
 
 ### Offer states
 
-The state of an offer is shown on the To-do page and in the list of available objects.
+The state of an offer is shown on the To-do page and in the list of offered works.
 
 ```mermaid
 stateDiagram-v2
@@ -173,7 +173,7 @@ flowchart TD
 
 ### 1. Offering a work
 
-Under **Available objects › Add**, enter the work. With a DOI or ISBN, the lookup button fills in the authors, title, publisher and year.
+Under **Offered works › Add work**, enter the work. With a DOI or ISBN, the lookup button fills in the authors, title, publisher and year.
 
 ![The offer form](images/offer-form.png)
 
@@ -192,7 +192,7 @@ Then decide how the offer works:
 
 The work now appears on the public page and in your list of offers.
 
-![Available objects](images/available-objects.png)
+![Offered works](images/available-objects.png)
 
 **Hiding an offer.** To take a work off the public page without ending anything, use **Hide** in the row's actions (the arrow at the start of the row). The status column and To-do then mark the offer "Hidden", and the action changes to **Show**. While an offer is hidden:
 
@@ -369,7 +369,7 @@ Only if the offer requires returns and the review won't come.
 
 ### 7. Submission and publication
 
-The reviewer submits the review as an ordinary submission. In the submission wizard, under *For the Editors › Objects for Review*, they pick the work they reserved. The offer then shows "Review submitted", and the reviewer's delivery details are deleted. In the editorial workflow, the review is handled like any other submission. If you are a section editor of the book review section, you can be assigned to it there.
+The reviewer submits the review as an ordinary submission. In the submission wizard, under *For the Editors › Reviewed works*, they pick the work they reserved. The offer then shows "Review submitted", and the reviewer's delivery details are deleted. In the editorial workflow, the review is handled like any other submission. If you are a section editor of the book review section, you can be assigned to it there.
 
 When the review is **published**:
 

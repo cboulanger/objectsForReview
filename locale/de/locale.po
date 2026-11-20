@@ -18,34 +18,34 @@ msgid "plugins.generic.objectsForReview.description"
 msgstr "Erfasst rezensierte Objekte bei Einreichungen."
 
 msgid "plugins.generic.objectsForReview.tabTitle"
-msgstr "Rezensionsangebote"
+msgstr "Rezensionen"
 
 msgid "plugins.generic.objectsForReview.managementLink"
 msgstr "Rezensionen"
 
 msgid "plugins.generic.objectsForReview.management.gridTitle"
-msgstr "Rezensionsangebote"
+msgstr "Angebotene Werke"
 
 msgid "plugins.generic.objectsForReview.addAvailableObjectForReview"
-msgstr "Verfügbares Objekt hinzufügen"
+msgstr "Werk hinzufügen"
 
 msgid "plugins.generic.objectsForReview.userName"
 msgstr "Reserviert für Benutzer"
 
 msgid "plugins.generic.objectsForReview.settings.displayInToc.display"
-msgstr "Rezensierte Objekte im Inhaltsverzeichnis anzeigen"
+msgstr "Rezensierte Werke im Inhaltsverzeichnis anzeigen"
 
 msgid "plugins.generic.objectsForReview.settings.displayOptions"
 msgstr "Anzeigeoptionen"
 
 msgid "plugins.generic.objectsForReview.settings.displayAsSubtitle"
-msgstr "Rezensierte Objekte im Untertitelfeld des Artikels anzeigen"
+msgstr "Rezensierte Werke im Untertitelfeld des Artikels anzeigen"
 
 msgid "plugins.generic.objectsForReview.settings.displayAsList"
-msgstr "Eine Liste rezensierter Objekte unterhalb des Abstracts anzeigen"
+msgstr "Eine Liste rezensierter Werke unterhalb des Abstracts anzeigen"
 
 msgid "plugins.generic.objectsForReview.settings.onlyReserved"
-msgstr "Nur vom Verwaltenden erstellte Objekte zulassen"
+msgstr "Nur von der Redaktion angelegte Werke zulassen"
 
 msgid "plugins.generic.objectsForReview.settings.notifyEmail"
 msgstr "E-Mail für Benachrichtigungen über Reservierungen und Stornierungen"
@@ -66,16 +66,16 @@ msgid "plugins.generic.objectsForReview.navMenuItem"
 msgstr "Rezensionsangebote"
 
 msgid "plugins.generic.objectsForReview.objectsForReviewTitle"
-msgstr "Rezensierte Objekte in dieser Einreichung"
+msgstr "In dieser Einreichung rezensierte Werke"
 
 msgid "plugins.generic.objectsForReview.addObjectForReview"
-msgstr "Rezensiertes Objekt hinzufügen"
+msgstr "Rezensiertes Werk hinzufügen"
 
 msgid "plugins.generic.objectsForReview.noReservedObjects"
-msgstr "Keine für Sie reservierten Objekte"
+msgstr "Keine für Sie reservierten Werke"
 
 msgid "plugins.generic.objectsForReview.submissionWizard.name"
-msgstr "Rezensierte Objekte"
+msgstr "Rezensierte Werke"
 
 msgid "plugins.generic.objectsForReview.itemIdentifierType"
 msgstr "Verweis-Typ"
@@ -102,10 +102,10 @@ msgid "plugins.generic.objectsForReview.itemYear"
 msgstr "Erscheinungsjahr"
 
 msgid "plugins.generic.objectsForReview.noneCreated"
-msgstr "Diese Einreichung hat keine rezensierten Objekte."
+msgstr "Diese Einreichung hat keine rezensierten Werke."
 
 msgid "plugins.generic.objectsForReview.objectsForReviewData.addReservedObject"
-msgstr "Dieses Objekt auswählen"
+msgstr "Dieses Werk auswählen"
 
 msgid "plugins.generic.objectsForReview.notifyDefaultName"
 msgstr "OFR-Kontakt"
@@ -126,10 +126,10 @@ msgid "plugins.generic.objectsForReview.cancel"
 msgstr "Angebot zur Rezension zurückziehen"
 
 msgid "plugins.generic.objectsForReview.reserve.confirm"
-msgstr "Das ausgewählte Objekt wird für Sie reserviert. Sobald Sie bereit sind, können Sie Ihren Rezensionsartikel einreichen."
+msgstr "Das ausgewählte Werk wird für Sie reserviert. Sobald Sie bereit sind, können Sie Ihren Rezensionsartikel einreichen."
 
 msgid "plugins.generic.objectsForReview.cancel.confirm"
-msgstr "Möchten Sie Ihre Rezension für dieses Objekt wirklich abbrechen?"
+msgstr "Möchten Sie Ihre Rezension für dieses Werk wirklich abbrechen?"
 
 msgid "plugins.generic.objectsForReview.objectAvailable"
 msgstr "Zur Rezension verfügbar"
@@ -138,7 +138,7 @@ msgid "plugins.generic.objectsForReview.objectReserved"
 msgstr "Zur Rezension reserviert"
 
 msgid "plugins.generic.objectsForReview.logInToReserve"
-msgstr "Um ein Objekt zur Rezension zu reservieren, melden Sie sich bitte an."
+msgstr "Um ein Werk zur Rezension zu reservieren, melden Sie sich bitte an."
 
 msgid "plugins.generic.objectsForReview.COAR.book"
 msgstr "Buch"
@@ -212,7 +212,7 @@ msgid "plugins.generic.objectsForReview.menu.publicPage"
 msgstr "Öffentliche Seite"
 
 msgid "plugins.generic.objectsForReview.column.object"
-msgstr "Objekt"
+msgstr "Werk"
 
 msgid "plugins.generic.objectsForReview.column.reservedBy"
 msgstr "Reserviert von"
@@ -227,10 +227,10 @@ msgid "plugins.generic.objectsForReview.filter.apply"
 msgstr "Filtern"
 
 msgid "plugins.generic.objectsForReview.reservations.none"
-msgstr "Derzeit sind keine Objekte reserviert."
+msgstr "Derzeit sind keine Werke reserviert."
 
 msgid "plugins.generic.objectsForReview.reviewedWorks.none"
-msgstr "Bisher wurden keinen Einreichungen Objekte zugeordnet."
+msgstr "Bisher wurden keinen Einreichungen Werke zugeordnet."
 
 msgid "plugins.generic.objectsForReview.reserve.title"
 msgstr "Zur Rezension reservieren"
@@ -404,7 +404,7 @@ msgid "plugins.generic.objectsForReview.reservations.cancel.submit"
 msgstr "Reservierung aufheben"
 
 msgid "plugins.generic.objectsForReview.reservations.notReserved"
-msgstr "Dieses Objekt ist nicht (mehr) reserviert."
+msgstr "Dieses Werk ist nicht (mehr) reserviert."
 
 msgid "plugins.generic.objectsForReview.reservations.subjectRequired"
 msgstr "Bitte geben Sie einen Betreff ein."
@@ -425,7 +425,7 @@ msgid "plugins.generic.objectsForReview.settings.reminderDays.invalid"
 msgstr "Bitte geben Sie eine ganze Zahl von Tagen zwischen 0 und 90 ein."
 
 msgid "plugins.generic.objectsForReview.reminder.taskName"
-msgstr "Rezensionsangebote: Erinnerungen vor dem Abgabetermin"
+msgstr "Rezensionen: tägliche Erinnerungen"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
 msgstr "Für {$context}: {$reminders} Erinnerung(en) an Fälligkeiten, {$contractReminders} Erinnerung(en) an Vertragsangebote, {$expired} abgelaufene(s) Vertragsangebot(e), {$publisherReminders} Erinnerung(en) an Verlage, {$expiredInvitations} abgelaufene Einladung(en), {$invitationReminders} Erinnerung(en) an Einladungen."
@@ -1590,3 +1590,9 @@ msgstr "Weitere einladen"
 
 msgid "plugins.generic.objectsForReview.invitation.openPage"
 msgstr "Einladungsseite"
+
+msgid "plugins.generic.objectsForReview.management.noneCreated"
+msgstr "Bisher wurden keine Werke angeboten."
+
+msgid "plugins.generic.objectsForReview.workflow.tabLabel"
+msgstr "Rezensierte Werke"
