@@ -166,6 +166,32 @@ The work now appears on the public page and in your list of offers.
 
 Unlike **Close offer**, hiding keeps the list of bidders. Hiding and showing are recorded in the history.
 
+**Inviting reviewers.** Instead of waiting for someone to reserve or apply on the public page, you can invite particular people. Click **Invite reviewers** in the row's actions. This opens the work's invitation page, where you build a list:
+
+- **Add from the address book**: search the users of this journal by name, email or affiliation. Each person's entry shows how many reviews they have written for the journal and how many works they currently have reserved.
+- **Add a new person**: enter their name, email and affiliation. This creates an account in the journal's Author group, so that they can submit the review later. No email is sent until you invite them. If someone already has an account with that email address, that account is used.
+- **Order**: change the order with the arrows, or by dragging the rows. **Remove** takes people off the list as long as they haven't been invited.
+
+![The invitation page](images/invite-page.png)
+
+**Send invitation** opens a prefilled email for that person, which you can edit. Which template it uses depends on the offer:
+
+- for direct reservation, the invitation asks the person to review the work;
+- for bidding, it asks them to apply.
+
+The email contains a personal link and an answer deadline: by default 7 days, or the bid deadline for bidding offers with one. The link opens a page for this work, where the person can do one of two things without logging in:
+
+- **accept:** agree to the review agreement and reserve the work (direct reservation), or apply with an optional statement (bidding);
+- **decline:** say they can't review it, optionally with a reason.
+
+![The invitation page for the invitee](images/invitation-page.png)
+
+Reserving or applying through an invitation works exactly like doing it on the public page. From then on, the normal workflow applies: the confirmation, the review copy, or your choice on To-do.
+
+If an invitee declines or doesn't answer by the deadline, you are notified, and the list shows the status. You can then invite the next person, or send the same person a new invitation with **Invite again**. Invitations stop working when the work has been reserved, bidding has closed, or the offer is closed. Every step is recorded in the history.
+
+To invite people without others reserving the work first, hide the offer from the public list. Invitation links keep working for hidden offers.
+
 ### 2. Direct reservation
 
 On the public page, works with direct reservation show **Offer to review**, and bidding works show **Apply**. Visitors who are not logged in are asked to log in. No one sees how many people have applied.

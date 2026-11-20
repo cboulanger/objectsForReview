@@ -46,6 +46,8 @@ class ActionLink {
 	const ACTION_RETURN_RECEIVED = 'returnReceived';
 	/** Reviewer: "I can't write this review" */
 	const ACTION_RETRACT = 'retract';
+	/** Invitee: reserve, apply or decline (see InvitationWorkflow) */
+	const ACTION_INVITATION = 'invitation';
 
 	/** Days a link without its own deadline stays valid */
 	const DEFAULT_VALIDITY_DAYS = 365;

@@ -56,6 +56,16 @@ class ReservationLog {
 	const EVENT_PUBLISHER_NOTIFIED = 0x1F0F21D;
 	const EVENT_OFFER_HIDDEN = 0x1F0F21E;
 	const EVENT_OFFER_SHOWN = 0x1F0F21F;
+	const EVENT_INVITEE_ADDED = 0x1F0F220;
+	const EVENT_INVITEE_CREATED = 0x1F0F221;
+	const EVENT_INVITEE_REMOVED = 0x1F0F222;
+	const EVENT_INVITATION_LIST_REORDERED = 0x1F0F223;
+	const EVENT_INVITATION_SENT = 0x1F0F224;
+	const EVENT_INVITATION_DECLINED = 0x1F0F225;
+	const EVENT_INVITATION_EXPIRED = 0x1F0F226;
+	const EVENT_RESERVED_VIA_INVITATION = 0x1F0F227;
+	const EVENT_BID_VIA_INVITATION = 0x1F0F228;
+	const EVENT_INVITATIONS_ENDED = 0x1F0F229;
 
 	const EVENT_MESSAGES = [
 		self::EVENT_RESERVED => 'plugins.generic.objectsForReview.history.event.reserved',
@@ -76,6 +86,16 @@ class ReservationLog {
 		self::EVENT_OFFER_REOPENED => 'plugins.generic.objectsForReview.history.event.offerReopened',
 		self::EVENT_OFFER_HIDDEN => 'plugins.generic.objectsForReview.history.event.offerHidden',
 		self::EVENT_OFFER_SHOWN => 'plugins.generic.objectsForReview.history.event.offerShown',
+		self::EVENT_INVITEE_ADDED => 'plugins.generic.objectsForReview.history.event.inviteeAdded',
+		self::EVENT_INVITEE_CREATED => 'plugins.generic.objectsForReview.history.event.inviteeCreated',
+		self::EVENT_INVITEE_REMOVED => 'plugins.generic.objectsForReview.history.event.inviteeRemoved',
+		self::EVENT_INVITATION_LIST_REORDERED => 'plugins.generic.objectsForReview.history.event.invitationListReordered',
+		self::EVENT_INVITATION_SENT => 'plugins.generic.objectsForReview.history.event.invitationSent',
+		self::EVENT_INVITATION_DECLINED => 'plugins.generic.objectsForReview.history.event.invitationDeclined',
+		self::EVENT_INVITATION_EXPIRED => 'plugins.generic.objectsForReview.history.event.invitationExpired',
+		self::EVENT_RESERVED_VIA_INVITATION => 'plugins.generic.objectsForReview.history.event.reservedViaInvitation',
+		self::EVENT_BID_VIA_INVITATION => 'plugins.generic.objectsForReview.history.event.bidViaInvitation',
+		self::EVENT_INVITATIONS_ENDED => 'plugins.generic.objectsForReview.history.event.invitationsEnded',
 		self::EVENT_LIST_DISCARDED => 'plugins.generic.objectsForReview.history.event.listDiscarded',
 		self::EVENT_COMPLETED => 'plugins.generic.objectsForReview.history.event.completed',
 		self::EVENT_COPY_REQUESTED => 'plugins.generic.objectsForReview.history.event.copyRequested',

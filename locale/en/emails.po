@@ -240,3 +240,39 @@ msgstr "Your review for {$contextName}: confirmation"
 
 msgid "emails.ofrConfirmation.body"
 msgstr "<p>Dear {$recipientName},</p><p>thank you for agreeing to review the following work:<br />{$objectDescription}</p><p>{$reservationDetails}</p><p>If you find that you cannot write the review after all, please let us know as early as possible:<br /><a href=\"{$retractUrl}\">{$retractUrl}</a></p><p>Kind regards,<br />{$contextName}</p>"
+
+msgid "emails.ofrInvitationReserve.name"
+msgstr "Invitation to review (direct reservation)"
+
+msgid "emails.ofrInvitationReserve.description"
+msgstr "Sent by the book review editor to a person on the invitation list of a work with direct reservation, with a link to reserve the work or decline."
+
+msgid "emails.ofrInvitationReserve.subject"
+msgstr "Invitation to review: {$objectDescription}"
+
+msgid "emails.ofrInvitationReserve.body"
+msgstr "<p>Dear {$recipientName},</p><p>we would like to invite you to review the following work for {$contextName}:<br />{$objectDescription}</p><p>If you would like to write the review, please accept the review agreement by <strong>{$invitationDeadline}</strong>. If you cannot write it, please let us know with the same link:<br /><a href=\"{$invitationUrl}\">{$invitationUrl}</a></p><p>Kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrInvitationBid.name"
+msgstr "Invitation to apply for a review (bidding)"
+
+msgid "emails.ofrInvitationBid.description"
+msgstr "Sent by the book review editor to a person on the invitation list of a work offered for bidding, with a link to apply or decline."
+
+msgid "emails.ofrInvitationBid.subject"
+msgstr "Invitation to apply for a review: {$objectDescription}"
+
+msgid "emails.ofrInvitationBid.body"
+msgstr "<p>Dear {$recipientName},</p><p>we would like to invite you to apply for the review of the following work for {$contextName}:<br />{$objectDescription}</p><p>The book review editor will choose among the applicants. If you are interested, please apply by <strong>{$invitationDeadline}</strong>. If you are not, please let us know with the same link:<br /><a href=\"{$invitationUrl}\">{$invitationUrl}</a></p><p>Kind regards,<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrInvitationDeclined.name"
+msgstr "Invitation declined or not answered (to the book review editor)"
+
+msgid "emails.ofrInvitationDeclined.description"
+msgstr "Sent automatically to the responsible book review editor when an invitee declines the invitation or does not answer in time."
+
+msgid "emails.ofrInvitationDeclined.subject"
+msgstr "Invitation not accepted: {$objectDescription}"
+
+msgid "emails.ofrInvitationDeclined.body"
+msgstr "<p>Dear {$recipientName},</p><p>{$inviteeName} will not review the following work:<br />{$objectDescription}</p><p>{$declineReason}</p><p>You can invite someone else on the invitation page: <a href=\"{$invitationListUrl}\">{$invitationListUrl}</a></p>"

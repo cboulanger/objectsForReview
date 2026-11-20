@@ -5,7 +5,7 @@
  *
  * Backend pages of the "Objects for Review" menu section.
  *
- * $view: available | desk | assignments | reviewedWorks | settings
+ * $view: available | desk | assignments | reviewedWorks | settings | invite
  *}
 {extends file="layouts/backend.tpl"}
 
@@ -365,6 +365,9 @@
 			{else}
 				<p>{translate key="plugins.generic.objectsForReview.reviewedWorks.none"}</p>
 			{/if}
+
+		{elseif $view == 'invite'}
+			{include file=$ofrInviteTemplate}
 		{/if}
 	</div>
 {/block}

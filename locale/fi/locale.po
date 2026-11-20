@@ -408,7 +408,7 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Arvioitavat julkaisut: muistutukset ennen määräpäivää"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "{$context}: {$reminders} määräpäivämuistutus(ta), {$contractReminders} sopimustarjousmuistutus(ta), {$expired} vanhentunut(ta) sopimustarjous(ta), {$publisherReminders} kustantajamuistutus(ta)."
+msgstr "{$context}: {$reminders} määräpäivämuistutus(ta), {$contractReminders} sopimustarjousmuistutus(ta), {$expired} vanhentunut(ta) sopimustarjous(ta), {$publisherReminders} kustantajamuistutus(ta), {$expiredInvitations} vanhentunut(ta) kutsu(a)."
 
 msgid "plugins.generic.objectsForReview.identifierTypeRequired"
 msgstr "Valitse tunnisteen tyyppi."
@@ -1234,3 +1234,216 @@ msgstr "Piilotettu julkisesta luettelosta"
 
 msgid "plugins.generic.objectsForReview.history.event.offerShown"
 msgstr "Näytetään taas julkisessa luettelossa"
+
+msgid "plugins.generic.objectsForReview.status.listed"
+msgstr "Kutsulistalla"
+
+msgid "plugins.generic.objectsForReview.status.invited"
+msgstr "Kutsuttu"
+
+msgid "plugins.generic.objectsForReview.status.invitationDeclined"
+msgstr "Kutsusta kieltäydytty"
+
+msgid "plugins.generic.objectsForReview.status.invitationExpired"
+msgstr "Kutsuun ei vastattu"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationReserve"
+msgstr "Kutsu arvioijaksi"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationBid"
+msgstr "Kutsu hakemaan"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationDeclined"
+msgstr "Toimittajalle ilmoitettu: kutsusta kieltäydytty tai siihen ei vastattu"
+
+msgid "plugins.generic.objectsForReview.history.event.inviteeAdded"
+msgstr "{$recipientName} lisätty kutsulistalle"
+
+msgid "plugins.generic.objectsForReview.history.event.inviteeCreated"
+msgstr "Tili luotu käyttäjälle {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.inviteeRemoved"
+msgstr "{$recipientName} poistettu kutsulistalta"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationListReordered"
+msgstr "Kutsulistan järjestystä muutettu"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationSent"
+msgstr "Kutsu lähetetty: {$recipientName} (vastaus viimeistään {$reviewDueDate})"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationDeclined"
+msgstr "{$recipientName} kieltäytyi kutsusta"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationExpired"
+msgstr "{$recipientName} ei vastannut kutsuun ajoissa"
+
+msgid "plugins.generic.objectsForReview.history.event.reservedViaInvitation"
+msgstr "Varannut {$recipientName} (kutsu), määräpäivä {$reviewDueDate}"
+
+msgid "plugins.generic.objectsForReview.history.event.bidViaInvitation"
+msgstr "Hakemus: {$recipientName} (kutsu)"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationsEnded"
+msgstr "{$recipientCount} avointa kutsua päätetty"
+
+msgid "plugins.generic.objectsForReview.invitation.expired"
+msgstr "Kutsuun ei vastattu määräaikaan mennessä."
+
+msgid "plugins.generic.objectsForReview.invitation.linkRequired"
+msgstr "Sähköpostissa on oltava paikkamerkki {$invitationUrl} kutsulinkkiä varten."
+
+msgid "plugins.generic.objectsForReview.invitation.linkHint"
+msgstr "{$invitationUrl} korvataan lähetettäessä henkilökohtaisella kutsulinkillä."
+
+msgid "plugins.generic.objectsForReview.invitation.send"
+msgstr "Lähetä kutsu"
+
+msgid "plugins.generic.objectsForReview.invitation.sendAgain"
+msgstr "Kutsu uudelleen"
+
+msgid "plugins.generic.objectsForReview.invitation.send.description.reserve"
+msgstr "Kutsu {$name} arvioimaan tämä teos. Varaus tai kieltäytyminen on mahdollista {$deadline} asti."
+
+msgid "plugins.generic.objectsForReview.invitation.send.description.bid"
+msgstr "Kutsu {$name} hakemaan tämän teoksen arvioijaksi. Hakeminen tai kieltäytyminen on mahdollista {$deadline} asti."
+
+msgid "plugins.generic.objectsForReview.invitation.title"
+msgstr "Kutsu arvioijia"
+
+msgid "plugins.generic.objectsForReview.invitation.inviteReviewers"
+msgstr "Kutsu arvioijia"
+
+msgid "plugins.generic.objectsForReview.invitation.kind.reserve"
+msgstr "Kutsutut voivat varata teoksen (nopein voittaa)"
+
+msgid "plugins.generic.objectsForReview.invitation.kind.bid"
+msgstr "Kutsutut voivat hakea; valitset hakijoista Tehtävät-sivulla"
+
+msgid "plugins.generic.objectsForReview.invitation.manualNote"
+msgstr "Lähetä jokainen kutsu erikseen painikkeella \"Lähetä kutsu\". Tänään lähetettyihin kutsuihin voi vastata {$deadline} asti."
+
+msgid "plugins.generic.objectsForReview.invitation.notPossible"
+msgstr "Kutsuja ei voi lähettää tarjouksen nykyisessä tilassa: sen on oltava avoinna varauksille tai hakemuksille."
+
+msgid "plugins.generic.objectsForReview.invitation.list"
+msgstr "Kutsulista"
+
+msgid "plugins.generic.objectsForReview.invitation.person"
+msgstr "Henkilö"
+
+msgid "plugins.generic.objectsForReview.invitation.drag"
+msgstr "Vedä järjestääksesi"
+
+msgid "plugins.generic.objectsForReview.invitation.reservationCount"
+msgstr "Nykyiset varaukset: {$number}"
+
+msgid "plugins.generic.objectsForReview.invitation.sentOn"
+msgstr "Kutsuttu {$date}"
+
+msgid "plugins.generic.objectsForReview.invitation.up"
+msgstr "Siirrä ylös"
+
+msgid "plugins.generic.objectsForReview.invitation.down"
+msgstr "Siirrä alas"
+
+msgid "plugins.generic.objectsForReview.invitation.remove"
+msgstr "Poista"
+
+msgid "plugins.generic.objectsForReview.invitation.empty"
+msgstr "Listalla ei ole vielä ketään. Lisää henkilöitä osoitekirjasta tai uusina käyttäjinä alla."
+
+msgid "plugins.generic.objectsForReview.invitation.addressBook"
+msgstr "Lisää osoitekirjasta"
+
+msgid "plugins.generic.objectsForReview.invitation.search"
+msgstr "Nimi, sähköposti tai organisaatio"
+
+msgid "plugins.generic.objectsForReview.invitation.add"
+msgstr "Lisää listalle"
+
+msgid "plugins.generic.objectsForReview.invitation.cannotAdd"
+msgstr "Jo listalla tai on hakenut tai varannut"
+
+msgid "plugins.generic.objectsForReview.invitation.noResults"
+msgstr "Tämän julkaisun käyttäjiä ei löytynyt."
+
+msgid "plugins.generic.objectsForReview.invitation.new"
+msgstr "Lisää uusi henkilö"
+
+msgid "plugins.generic.objectsForReview.invitation.new.description"
+msgstr "Luo käyttäjätilin tämän julkaisun Kirjoittaja-ryhmään, jotta henkilö voi lähettää arvion. Sähköpostia ei lähetetä; henkilö saa vain kutsun. Jos tällä sähköpostiosoitteella on jo tili, sitä käytetään."
+
+msgid "plugins.generic.objectsForReview.invitation.new.givenName"
+msgstr "Etunimi"
+
+msgid "plugins.generic.objectsForReview.invitation.new.familyName"
+msgstr "Sukunimi"
+
+msgid "plugins.generic.objectsForReview.invitation.new.email"
+msgstr "Sähköposti"
+
+msgid "plugins.generic.objectsForReview.invitation.new.affiliation"
+msgstr "Organisaatio"
+
+msgid "plugins.generic.objectsForReview.invitation.new.submit"
+msgstr "Luo ja lisää listalle"
+
+msgid "plugins.generic.objectsForReview.invitation.new.givenNameRequired"
+msgstr "Anna etunimi."
+
+msgid "plugins.generic.objectsForReview.invitation.new.familyNameRequired"
+msgstr "Anna sukunimi."
+
+msgid "plugins.generic.objectsForReview.invitation.new.emailInvalid"
+msgstr "Anna kelvollinen sähköpostiosoite."
+
+msgid "plugins.generic.objectsForReview.invitation.new.alreadyOnList"
+msgstr "Tämä henkilö on jo listalla tai on hakenut tai varannut tämän teoksen."
+
+msgid "plugins.generic.objectsForReview.invitation.page.title.reserve"
+msgstr "Kutsu arvioijaksi"
+
+msgid "plugins.generic.objectsForReview.invitation.page.title.bid"
+msgstr "Kutsu hakemaan arvioijaksi"
+
+msgid "plugins.generic.objectsForReview.invitation.page.intro.reserve"
+msgstr "Hyvä {$name}, sinut on kutsuttu arvioimaan tämä teos. Hyväksy alla olevat ehdot viimeistään {$deadline} tai ilmoita, ettet voi kirjoittaa arviota."
+
+msgid "plugins.generic.objectsForReview.invitation.page.intro.bid"
+msgstr "Hyvä {$name}, sinut on kutsuttu hakemaan tämän teoksen arvioijaksi. Hae viimeistään {$deadline} tai ilmoita, ettet ole kiinnostunut."
+
+msgid "plugins.generic.objectsForReview.invitation.page.editor"
+msgstr "Kutsun lähettäjä: {$name}"
+
+msgid "plugins.generic.objectsForReview.invitation.page.decline"
+msgstr "En voi arvioida tätä teosta"
+
+msgid "plugins.generic.objectsForReview.invitation.page.decline.submit"
+msgstr "Kieltäydy kutsusta"
+
+msgid "plugins.generic.objectsForReview.response.applied.title"
+msgstr "Hakemus vastaanotettu"
+
+msgid "plugins.generic.objectsForReview.response.applied"
+msgstr "Kiitos! Kirja-arvioiden toimittaja valitsee arvioijan hakijoista. Jos sinut valitaan, saat sähköpostin, jossa on linkki arviointisopimukseen."
+
+msgid "plugins.generic.objectsForReview.response.invitationDeclined.title"
+msgstr "Kutsusta kieltäydytty"
+
+msgid "plugins.generic.objectsForReview.response.invitationDeclined"
+msgstr "Kiitos ilmoituksesta. Toimittajille on ilmoitettu."
+
+msgid "plugins.generic.objectsForReview.response.invitationClosed.title"
+msgstr "Kutsu ei ole enää avoinna"
+
+msgid "plugins.generic.objectsForReview.response.invitationClosed"
+msgstr "Tämä teos ei ole enää arvioitavana tai kutsu on päättynyt. Ota yhteyttä toimittajiin, jos sinulla on kysyttävää."
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays"
+msgstr "Kutsut"
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays.description"
+msgstr "Päivät, joiden kuluessa kutsuttujen on vastattava. Hakukutsuissa käytetään tarjouksen hakuaikaa, jos sellainen on."
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays.invalid"
+msgstr "Anna päivien määrä väliltä 1–90."

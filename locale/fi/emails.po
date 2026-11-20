@@ -240,3 +240,39 @@ msgstr "Arviosi lehteen {$contextName}: vahvistus"
 
 msgid "emails.ofrConfirmation.body"
 msgstr "<p>Hyvä {$recipientName},</p><p>kiitos, että lupauduit arvioimaan seuraavan teoksen:<br />{$objectDescription}</p><p>{$reservationDetails}</p><p>Jos huomaat, ettet sittenkään voi kirjoittaa arviota, ilmoita siitä mahdollisimman pian:<br /><a href=\"{$retractUrl}\">{$retractUrl}</a></p><p>Ystävällisin terveisin<br />{$contextName}</p>"
+
+msgid "emails.ofrInvitationReserve.name"
+msgstr "Kutsu arvioijaksi (suora varaus)"
+
+msgid "emails.ofrInvitationReserve.description"
+msgstr "Kirja-arvioiden toimittaja lähettää tämän suoraan varattavan teoksen kutsulistalla olevalle henkilölle. Viestissä on linkki teoksen varaamiseen tai kieltäytymiseen."
+
+msgid "emails.ofrInvitationReserve.subject"
+msgstr "Kutsu arvioijaksi: {$objectDescription}"
+
+msgid "emails.ofrInvitationReserve.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>kutsumme sinut arvioimaan seuraavan teoksen julkaisuun {$contextName}:<br />{$objectDescription}</p><p>Jos haluat kirjoittaa arvion, hyväksy arviointisopimus viimeistään <strong>{$invitationDeadline}</strong>. Jos et voi kirjoittaa arviota, ilmoita siitä samalla linkillä:<br /><a href=\"{$invitationUrl}\">{$invitationUrl}</a></p><p>Ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrInvitationBid.name"
+msgstr "Kutsu hakemaan arvioijaksi (hakumenettely)"
+
+msgid "emails.ofrInvitationBid.description"
+msgstr "Kirja-arvioiden toimittaja lähettää tämän haettavana olevan teoksen kutsulistalla olevalle henkilölle. Viestissä on linkki hakemiseen tai kieltäytymiseen."
+
+msgid "emails.ofrInvitationBid.subject"
+msgstr "Kutsu hakemaan arvioijaksi: {$objectDescription}"
+
+msgid "emails.ofrInvitationBid.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>kutsumme sinut hakemaan seuraavan teoksen arvioijaksi julkaisuun {$contextName}:<br />{$objectDescription}</p><p>Kirja-arvioiden toimittaja valitsee arvioijan hakijoiden joukosta. Jos olet kiinnostunut, hae viimeistään <strong>{$invitationDeadline}</strong>. Jos et ole, ilmoita siitä samalla linkillä:<br /><a href=\"{$invitationUrl}\">{$invitationUrl}</a></p><p>Ystävällisin terveisin<br />{$senderName}<br />{$contextName}</p>"
+
+msgid "emails.ofrInvitationDeclined.name"
+msgstr "Kutsusta kieltäydytty tai siihen ei vastattu (kirja-arvioiden toimittajalle)"
+
+msgid "emails.ofrInvitationDeclined.description"
+msgstr "Lähetetään automaattisesti vastuulliselle kirja-arvioiden toimittajalle, kun kutsuttu kieltäytyy tai ei vastaa määräaikaan mennessä."
+
+msgid "emails.ofrInvitationDeclined.subject"
+msgstr "Kutsua ei hyväksytty: {$objectDescription}"
+
+msgid "emails.ofrInvitationDeclined.body"
+msgstr "<p>Hyvä {$recipientName},</p><p>{$inviteeName} ei arvioi seuraavaa teosta:<br />{$objectDescription}</p><p>{$declineReason}</p><p>Voit kutsua jonkun muun kutsusivulla: <a href=\"{$invitationListUrl}\">{$invitationListUrl}</a></p>"

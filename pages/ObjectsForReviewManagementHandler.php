@@ -19,6 +19,7 @@ use APP\handler\Handler;
 use APP\plugins\generic\objectsForReview\classes\Assignment;
 use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
 use APP\plugins\generic\objectsForReview\classes\CopyWorkflow;
+use APP\plugins\generic\objectsForReview\classes\InvitationWorkflow;
 use APP\plugins\generic\objectsForReview\controllers\form\CopyStepForm;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
 use APP\plugins\generic\objectsForReview\classes\Roles;
@@ -47,11 +48,11 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$this->plugin = $plugin;
 		$this->addRoleAssignment(
 			[Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN],
-			['index', 'desk', 'assignments', 'reservations', 'reviewedWorks', 'settings']
+			['index', 'desk', 'assignments', 'reservations', 'reviewedWorks', 'settings', 'invite', 'inviteAction']
 		);
 		$this->addRoleAssignment(
 			[Role::ROLE_ID_SUB_EDITOR],
-			['index', 'desk', 'assignments', 'reservations', 'reviewedWorks']
+			['index', 'desk', 'assignments', 'reservations', 'reviewedWorks', 'invite', 'inviteAction']
 		);
 	}
 
@@ -247,8 +248,162 @@ class ObjectsForReviewManagementHandler extends Handler {
 				Assignment::STATUS_BID, Assignment::STATUS_UNSUCCESSFUL, Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED,
 				Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED, Assignment::STATUS_WITHDRAWN, Assignment::STATUS_DECLINED,
 				Assignment::STATUS_EXPIRED, Assignment::STATUS_RETRACTED, Assignment::STATUS_CANCELLED, Assignment::STATUS_DISCARDED,
+				Assignment::STATUS_LISTED, Assignment::STATUS_INVITED, Assignment::STATUS_INVITATION_DECLINED, Assignment::STATUS_INVITATION_EXPIRED,
 			]),
 		]);
+	}
+
+	/** Fields of the "add a new person" form */
+	const NEW_INVITEE_FIELDS = ['givenName', 'familyName', 'email', 'affiliation'];
+
+	/**
+	 * Invitation page of an object: the invitation list, the address book
+	 * search and the form for new people (see InvitationWorkflow).
+	 */
+	public function invite($args, $request, array $formState = []) {
+		$object = $this->getObject($request, (int) ($args[0] ?? $request->getUserVar('objectId')));
+		if (!$object) {
+			$request->redirect(null, self::PAGE);
+		}
+		$context = $request->getContext();
+		$contextId = $context->getId();
+		$assignments = AssignmentWorkflow::dao()->getByObjectId($object->getId());
+		$canInvite = InvitationWorkflow::canInvite($object, $assignments);
+		$userCache = [];
+
+		// Current reservations per user (to avoid overloading people)
+		$reservations = [];
+		foreach (AssignmentWorkflow::dao()->getByContextId($contextId, [Assignment::STATUS_ACCEPTED]) as $objectAssignments) {
+			foreach ($objectAssignments as $assignment) {
+				$reservations[$assignment->getUserId()] = ($reservations[$assignment->getUserId()] ?? 0) + 1;
+			}
+		}
+		$personData = function (int $userId) use ($contextId, $reservations) {
+			$user = Repo::user()->get($userId, true);
+			return [
+				'userId' => $userId,
+				'name' => $user ? $user->getFullName() : '#' . $userId,
+				'email' => $user?->getEmail(),
+				'affiliation' => $user?->getLocalizedData('affiliation'),
+				'reviewCount' => AssignmentWorkflow::dao()->countReviewsByUser($userId, $contextId),
+				'reservationCount' => $reservations[$userId] ?? 0,
+			];
+		};
+
+		$list = InvitationWorkflow::getList($object);
+		$rows = [];
+		foreach ($list as $index => $assignment) {
+			$status = $assignment->getStatus();
+			$sendable = $canInvite && in_array($status, InvitationWorkflow::SENDABLE_STATUSES, true);
+			$rows[] = $personData($assignment->getUserId()) + [
+				'assignmentId' => $assignment->getId(),
+				'status' => $status,
+				'dateInvited' => $assignment->getData('dateInvited'),
+				'invitationDeadline' => $assignment->getData('invitationDeadline'),
+				'declineReason' => $assignment->getData('invitationDeclineReason'),
+				'canRemove' => $status === Assignment::STATUS_LISTED,
+				'canMoveUp' => $index > 0,
+				'canMoveDown' => $index < count($list) - 1,
+				'sendAction' => $sendable ? $this->linkAction($request, 'invitationForm',
+					['objectId' => $object->getId(), 'assignmentId' => $assignment->getId()],
+					$status === Assignment::STATUS_LISTED ? 'plugins.generic.objectsForReview.invitation.send' : 'plugins.generic.objectsForReview.invitation.sendAgain',
+					'modal_email', 'invite-' . $assignment->getId()) : null,
+			];
+		}
+
+		// Address book search (users of this journal)
+		$query = trim((string) $request->getUserVar('q'));
+		$results = [];
+		if ($query !== '') {
+			$users = Repo::user()->getCollector()
+				->filterByContextIds([$contextId])
+				->searchPhrase($query)
+				->limit(20)
+				->getMany();
+			foreach ($users as $user) {
+				$results[] = $personData($user->getId()) + ['canAdd' => InvitationWorkflow::canAdd($object, $user->getId())];
+			}
+		}
+
+		$state = AssignmentWorkflow::getState($object, $assignments);
+		return $this->display($request, 'invite', 'plugins.generic.objectsForReview.invitation.title', [
+			'object' => $this->objectRow($object),
+			'objectId' => $object->getId(),
+			'kind' => InvitationWorkflow::getKind($object),
+			'offerState' => __('plugins.generic.objectsForReview.offerState.' . $state),
+			'canInvite' => $canInvite,
+			'canEdit' => !$object->getData('offerClosed') && !$object->getSubmissionId(),
+			'deadline' => InvitationWorkflow::getDeadline($this->plugin, $object),
+			'rows' => $rows,
+			'query' => $query,
+			'results' => $results,
+			'newInvitee' => $formState['input'] ?? array_fill_keys(self::NEW_INVITEE_FIELDS, ''),
+			'newInviteeErrors' => $formState['errors'] ?? [],
+			'historyAction' => $this->assignmentActions($request, $object, null, ['history'])['history'],
+			'availableUrl' => $request->getRouter()->url($request, null, self::PAGE),
+			'ofrInviteTemplate' => $this->plugin->getTemplateResource('invite.tpl'),
+			'ofrInviteButton' => $this->plugin->getTemplateResource('inviteButton.tpl'),
+		]);
+	}
+
+	/**
+	 * Changes to the invitation list (POST): add, create, remove, up, down, reorder.
+	 */
+	public function inviteAction($args, $request) {
+		$object = $this->getObject($request, (int) $request->getUserVar('objectId'));
+		if (!$object || !$request->isPost() || !$request->checkCSRF()) {
+			$request->redirect(null, self::PAGE);
+		}
+		$editor = $request->getUser();
+		$assignmentId = (int) $request->getUserVar('assignmentId');
+		$params = [];
+		switch ((string) $request->getUserVar('do')) {
+			case 'add':
+				$user = Repo::user()->get((int) $request->getUserVar('userId'));
+				// Only users of this journal
+				if ($user && Repo::user()->getCollector()->filterByContextIds([$request->getContext()->getId()])
+						->filterByUserIds([$user->getId()])->getCount()) {
+					InvitationWorkflow::add($object, $user, $editor);
+				}
+				$params['q'] = (string) $request->getUserVar('q');
+				break;
+			case 'create':
+				$input = [];
+				foreach (self::NEW_INVITEE_FIELDS as $field) {
+					$input[$field] = trim((string) $request->getUserVar($field));
+				}
+				$errors = [];
+				if ($input['givenName'] === '') {
+					$errors['givenName'] = __('plugins.generic.objectsForReview.invitation.new.givenNameRequired');
+				}
+				if ($input['familyName'] === '') {
+					$errors['familyName'] = __('plugins.generic.objectsForReview.invitation.new.familyNameRequired');
+				}
+				if (!filter_var($input['email'], FILTER_VALIDATE_EMAIL)) {
+					$errors['email'] = __('plugins.generic.objectsForReview.invitation.new.emailInvalid');
+				} elseif (($existing = Repo::user()->getByEmail($input['email'], true)) && !InvitationWorkflow::canAdd($object, $existing->getId())) {
+					$errors['email'] = __('plugins.generic.objectsForReview.invitation.new.alreadyOnList');
+				}
+				if ($errors) {
+					return $this->invite([$object->getId()], $request, ['input' => $input, 'errors' => $errors]);
+				}
+				InvitationWorkflow::createAndAdd($request->getContext(), $object, $input, $editor);
+				break;
+			case 'remove':
+				$assignment = AssignmentWorkflow::dao()->getById($assignmentId);
+				if ($assignment && $assignment->getObjectId() === $object->getId()) {
+					InvitationWorkflow::remove($object, $assignment, $editor);
+				}
+				break;
+			case 'up':
+			case 'down':
+				InvitationWorkflow::move($object, $assignmentId, $request->getUserVar('do') === 'up' ? -1 : 1, $editor);
+				break;
+			case 'reorder':
+				InvitationWorkflow::reorder($object, array_filter(explode(',', (string) $request->getUserVar('order'))), $editor);
+				break;
+		}
+		$request->redirect(null, self::PAGE, 'invite', [$object->getId()], array_filter($params));
 	}
 
 	/**
@@ -390,6 +545,14 @@ class ObjectsForReviewManagementHandler extends Handler {
 			$cache[$userId] = $user ? $user->getFullName() . ' (' . $user->getEmail() . ')' : '#' . $userId;
 		}
 		return $cache[$userId];
+	}
+
+	/**
+	 * An object of the current journal.
+	 */
+	protected function getObject($request, int $objectId) {
+		$object = $objectId ? DAORegistry::getDAO('ObjectForReviewDAO')->getById($objectId) : null;
+		return $object && $object->getContextId() == $request->getContext()->getId() ? $object : null;
 	}
 
 	/**

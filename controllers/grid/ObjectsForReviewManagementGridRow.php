@@ -19,6 +19,7 @@ use PKP\controllers\grid\GridRow;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxAction;
 use PKP\linkAction\request\AjaxModal;
+use PKP\linkAction\request\RedirectAction;
 use PKP\linkAction\request\RemoteActionConfirmationModal;
 
 class ObjectsForReviewManagementGridRow extends GridRow {
@@ -57,7 +58,18 @@ class ObjectsForReviewManagementGridRow extends GridRow {
 				)
 			);
 
-			// Hide from the public list, or show again
+			// Invitation page (InvitationWorkflow)
+			$this->addAction(
+				new LinkAction(
+					'invite',
+					new RedirectAction($request->getDispatcher()->url($request, \APP\core\Application::ROUTE_PAGE, null,
+						\APP\plugins\generic\objectsForReview\pages\ObjectsForReviewManagementHandler::PAGE, 'invite', [$objectId])),
+					__('plugins.generic.objectsForReview.invitation.inviteReviewers'),
+					'invite'
+				)
+			);
+
+						// Hide from the public list, or show again
 			$hidden = !empty($this->getData()['hidden']);
 			$label = __($hidden ? 'plugins.generic.objectsForReview.show' : 'plugins.generic.objectsForReview.hide');
 			$this->addAction(

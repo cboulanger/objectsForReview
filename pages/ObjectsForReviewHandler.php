@@ -21,6 +21,7 @@ use APP\plugins\generic\objectsForReview\classes\ActionLink;
 use APP\plugins\generic\objectsForReview\classes\Assignment;
 use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
 use APP\plugins\generic\objectsForReview\classes\CopyWorkflow;
+use APP\plugins\generic\objectsForReview\classes\InvitationWorkflow;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
 use APP\plugins\generic\objectsForReview\classes\ReservationEmailEventType;
 use APP\template\TemplateManager;
@@ -219,6 +220,9 @@ class ObjectsForReviewHandler extends Handler {
 		if (!$link) {
 			return $this->showResponsePage($request, 'invalid');
 		}
+		if ($link->action === ActionLink::ACTION_INVITATION) {
+			return $this->showInvitationPage($request, $object, $assignment, (string) $args[0]);
+		}
 		$view = match ($link->action) {
 			ActionLink::ACTION_CONTRACT => 'contract',
 			ActionLink::ACTION_LEAVE => 'leave',
@@ -256,6 +260,9 @@ class ObjectsForReviewHandler extends Handler {
 		$extra = $key !== '' ? ['key' => $key] : [];
 		$decision = (string) $request->getUserVar('decision');
 
+		if ($link?->action === ActionLink::ACTION_INVITATION) {
+			return $this->respondToInvitation($request, $link, $object, $assignment, $key, $decision);
+		}
 		if ($link && in_array($link->action, array_keys(self::COPY_LINK_STEPS), true) || $link?->action === ActionLink::ACTION_RETRACT) {
 			return $this->confirmLink($request, $link, $object, $assignment);
 		}
@@ -278,6 +285,51 @@ class ObjectsForReviewHandler extends Handler {
 			return $this->showResponsePage($request, 'contract', $object, $assignment, $extra, ['errors' => $errors, 'input' => $input]);
 		}
 		AssignmentWorkflow::acceptContract($this->plugin(), $context, $object, $assignment, $data);
+		return $this->showResponsePage($request, 'accepted', $object, $assignment);
+	}
+
+	/**
+	 * The invitation page: reserve (direct reservation) or apply (bidding), or decline.
+	 */
+	protected function showInvitationPage($request, $object, Assignment $assignment, string $key, array $formState = []) {
+		if (!InvitationWorkflow::isAnswerable($object, $assignment)) {
+			return $this->showResponsePage($request, 'invitationClosed', $object, $assignment);
+		}
+		$editor = $assignment->getData('invitedBy') ? Repo::user()->get((int) $assignment->getData('invitedBy'), true) : null;
+		return $this->showResponsePage($request, 'invitation', $object, $assignment, [
+			'key' => $key,
+			'kind' => InvitationWorkflow::getKind($object),
+			'invitationDeadline' => $assignment->getData('invitationDeadline'),
+			'editorName' => $editor?->getFullName(),
+			'statement' => $formState['statement'] ?? '',
+		], $formState);
+	}
+
+	/**
+	 * Answer to an invitation (POST from the invitation page).
+	 */
+	protected function respondToInvitation($request, object $link, $object, Assignment $assignment, string $key, string $decision) {
+		$plugin = $this->plugin();
+		$context = $request->getContext();
+		if (!InvitationWorkflow::isAnswerable($object, $assignment)) {
+			return $this->showResponsePage($request, 'invitationClosed', $object, $assignment);
+		}
+		if ($decision === 'decline') {
+			$reason = mb_substr(trim((string) $request->getUserVar('declineReason')), 0, self::MAX_STATEMENT_LENGTH);
+			InvitationWorkflow::decline($plugin, $context, $object, $assignment, $reason);
+			return $this->showResponsePage($request, 'invitationDeclined', $object, $assignment);
+		}
+		if ($object->isBidding()) {
+			$statement = mb_substr(trim((string) $request->getUserVar('statement')), 0, self::MAX_STATEMENT_LENGTH);
+			InvitationWorkflow::bid($plugin, $context, $object, $assignment, $statement);
+			return $this->showResponsePage($request, 'applied', $object, $assignment);
+		}
+		$input = $this->contractInput($request);
+		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($plugin, $context->getId()));
+		if ($errors) {
+			return $this->showInvitationPage($request, $object, $assignment, $key, ['errors' => $errors, 'input' => $input]);
+		}
+		InvitationWorkflow::reserve($plugin, $context, $object, $assignment, $data);
 		return $this->showResponsePage($request, 'accepted', $object, $assignment);
 	}
 
@@ -334,6 +386,8 @@ class ObjectsForReviewHandler extends Handler {
 			ActionLink::ACTION_CONTRACT => $assignment->getStatus() === Assignment::STATUS_OFFERED,
 			ActionLink::ACTION_LEAVE => $assignment->isBidder(),
 			ActionLink::ACTION_RETRACT => $assignment->getStatus() === Assignment::STATUS_ACCEPTED,
+			// Whether it can still be answered is shown on the page (showInvitationPage)
+			ActionLink::ACTION_INVITATION => $assignment->getStatus() === Assignment::STATUS_INVITED,
 			ActionLink::ACTION_COPY_SENT => $copyStatus === CopyWorkflow::REQUESTED && $object->getPublisherContactId(),
 			ActionLink::ACTION_RECEIVED => $copyStatus === CopyWorkflow::SENT,
 			ActionLink::ACTION_RETURN_SENT => $copyStatus === CopyWorkflow::RETURN_REQUESTED,

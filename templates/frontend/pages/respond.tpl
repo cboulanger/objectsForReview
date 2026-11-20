@@ -48,6 +48,48 @@
 			</form>
 		</details>
 
+	{elseif $view == 'invitation'}
+		<h1>{translate key="plugins.generic.objectsForReview.invitation.page.title.$kind"}</h1>
+		<p class="ofrReserveObject">{$objectDescription|strip_unsafe_html}</p>
+		<p>{translate key="plugins.generic.objectsForReview.invitation.page.intro.$kind" name=$reviewerName|escape deadline=$invitationDeadline|date_format:$dateFormatShort}</p>
+		{if $editorName}<p class="ofrDetail">{translate key="plugins.generic.objectsForReview.invitation.page.editor" name=$editorName|escape}</p>{/if}
+
+		<form class="ofrContractForm ofrInvitationForm" method="post" action="{url op="respond"}">
+			{csrf}
+			<input type="hidden" name="decision" value="accept" />
+			<input type="hidden" name="key" value="{$key|escape}" />
+			{if $kind == 'bid'}
+				<div class="ofrField">
+					<label for="ofrStatement">{translate key="plugins.generic.objectsForReview.bid.statement"}</label>
+					<textarea id="ofrStatement" name="statement" rows="5" maxlength="{$maxStatementLength|escape}">{$statement|escape}</textarea>
+					<p class="ofrDetail">{translate key="plugins.generic.objectsForReview.bid.statement.hint"}</p>
+				</div>
+				<p>{translate key="plugins.generic.objectsForReview.bid.description"}</p>
+				<div class="ofrButtons">
+					<button type="submit" class="pkp_button">{translate key="plugins.generic.objectsForReview.bid.submit"}</button>
+				</div>
+			{else}
+				{include file=$contractFieldsTemplate}
+				<div class="ofrButtons">
+					<button type="submit" class="pkp_button">{translate key="plugins.generic.objectsForReview.contract.accept"}</button>
+				</div>
+			{/if}
+		</form>
+
+		<details class="ofrDecline">
+			<summary>{translate key="plugins.generic.objectsForReview.invitation.page.decline"}</summary>
+			<form class="ofrDeclineForm" method="post" action="{url op="respond"}">
+				{csrf}
+				<input type="hidden" name="decision" value="decline" />
+				<input type="hidden" name="key" value="{$key|escape}" />
+				<div class="ofrField">
+					<label for="ofrDeclineReason">{translate key="plugins.generic.objectsForReview.contract.declineReason"}</label>
+					<textarea id="ofrDeclineReason" name="declineReason" rows="3" maxlength="{$maxStatementLength|escape}"></textarea>
+				</div>
+				<button type="submit" class="pkp_button">{translate key="plugins.generic.objectsForReview.invitation.page.decline.submit"}</button>
+			</form>
+		</details>
+
 	{elseif $view == 'leave'}
 		<h1>{translate key="plugins.generic.objectsForReview.leave.title"}</h1>
 		<p class="ofrReserveObject">{$objectDescription|strip_unsafe_html}</p>

@@ -428,7 +428,7 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Rezensionsangebote: Erinnerungen vor dem Abgabetermin"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "Für {$context}: {$reminders} Erinnerung(en) an Fälligkeiten, {$contractReminders} Erinnerung(en) an Vertragsangebote, {$expired} abgelaufene(s) Vertragsangebot(e), {$publisherReminders} Erinnerung(en) an Verlage."
+msgstr "Für {$context}: {$reminders} Erinnerung(en) an Fälligkeiten, {$contractReminders} Erinnerung(en) an Vertragsangebote, {$expired} abgelaufene(s) Vertragsangebot(e), {$publisherReminders} Erinnerung(en) an Verlage, {$expiredInvitations} abgelaufene Einladung(en)."
 
 msgid "plugins.generic.objectsForReview.identifierTypeRequired"
 msgstr "Bitte wählen Sie einen Identifikatortyp."
@@ -1254,3 +1254,216 @@ msgstr "Aus der öffentlichen Liste genommen"
 
 msgid "plugins.generic.objectsForReview.history.event.offerShown"
 msgstr "Wieder in der öffentlichen Liste angezeigt"
+
+msgid "plugins.generic.objectsForReview.status.listed"
+msgstr "Auf der Einladungsliste"
+
+msgid "plugins.generic.objectsForReview.status.invited"
+msgstr "Eingeladen"
+
+msgid "plugins.generic.objectsForReview.status.invitationDeclined"
+msgstr "Einladung abgelehnt"
+
+msgid "plugins.generic.objectsForReview.status.invitationExpired"
+msgstr "Einladung unbeantwortet"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationReserve"
+msgstr "Einladung zur Rezension"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationBid"
+msgstr "Einladung zur Bewerbung"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationDeclined"
+msgstr "Redaktion benachrichtigt: Einladung abgelehnt oder unbeantwortet"
+
+msgid "plugins.generic.objectsForReview.history.event.inviteeAdded"
+msgstr "{$recipientName} zur Einladungsliste hinzugefügt"
+
+msgid "plugins.generic.objectsForReview.history.event.inviteeCreated"
+msgstr "Konto für {$recipientName} angelegt"
+
+msgid "plugins.generic.objectsForReview.history.event.inviteeRemoved"
+msgstr "{$recipientName} von der Einladungsliste entfernt"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationListReordered"
+msgstr "Reihenfolge der Einladungsliste geändert"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationSent"
+msgstr "Einladung an {$recipientName} gesendet (Antwort bis {$reviewDueDate})"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationDeclined"
+msgstr "{$recipientName} hat die Einladung abgelehnt"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationExpired"
+msgstr "{$recipientName} hat nicht rechtzeitig auf die Einladung geantwortet"
+
+msgid "plugins.generic.objectsForReview.history.event.reservedViaInvitation"
+msgstr "Reserviert von {$recipientName} (Einladung), fällig am {$reviewDueDate}"
+
+msgid "plugins.generic.objectsForReview.history.event.bidViaInvitation"
+msgstr "Bewerbung von {$recipientName} (Einladung)"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationsEnded"
+msgstr "{$recipientCount} offene Einladung(en) beendet"
+
+msgid "plugins.generic.objectsForReview.invitation.expired"
+msgstr "Die Einladung wurde nicht bis zur Frist beantwortet."
+
+msgid "plugins.generic.objectsForReview.invitation.linkRequired"
+msgstr "Die E-Mail muss den Platzhalter {$invitationUrl} für den Einladungslink enthalten."
+
+msgid "plugins.generic.objectsForReview.invitation.linkHint"
+msgstr "{$invitationUrl} wird beim Versand durch den persönlichen Einladungslink ersetzt."
+
+msgid "plugins.generic.objectsForReview.invitation.send"
+msgstr "Einladung senden"
+
+msgid "plugins.generic.objectsForReview.invitation.sendAgain"
+msgstr "Erneut einladen"
+
+msgid "plugins.generic.objectsForReview.invitation.send.description.reserve"
+msgstr "{$name} zur Rezension dieses Werks einladen. Reservierung oder Absage ist bis zum {$deadline} möglich."
+
+msgid "plugins.generic.objectsForReview.invitation.send.description.bid"
+msgstr "{$name} einladen, sich um diese Rezension zu bewerben. Bewerbung oder Absage ist bis zum {$deadline} möglich."
+
+msgid "plugins.generic.objectsForReview.invitation.title"
+msgstr "Rezensent*innen einladen"
+
+msgid "plugins.generic.objectsForReview.invitation.inviteReviewers"
+msgstr "Rezensent*innen einladen"
+
+msgid "plugins.generic.objectsForReview.invitation.kind.reserve"
+msgstr "Eingeladene können das Werk reservieren (wer zuerst kommt)"
+
+msgid "plugins.generic.objectsForReview.invitation.kind.bid"
+msgstr "Eingeladene können sich bewerben; Sie wählen unter Aufgaben aus"
+
+msgid "plugins.generic.objectsForReview.invitation.manualNote"
+msgstr "Senden Sie jede Einladung einzeln mit „Einladung senden“. Heute gesendete Einladungen können bis zum {$deadline} beantwortet werden."
+
+msgid "plugins.generic.objectsForReview.invitation.notPossible"
+msgstr "Im aktuellen Zustand des Angebots können keine Einladungen gesendet werden: Es muss für Reservierungen oder Bewerbungen offen sein."
+
+msgid "plugins.generic.objectsForReview.invitation.list"
+msgstr "Einladungsliste"
+
+msgid "plugins.generic.objectsForReview.invitation.person"
+msgstr "Person"
+
+msgid "plugins.generic.objectsForReview.invitation.drag"
+msgstr "Zum Umsortieren ziehen"
+
+msgid "plugins.generic.objectsForReview.invitation.reservationCount"
+msgstr "Aktuelle Reservierungen: {$number}"
+
+msgid "plugins.generic.objectsForReview.invitation.sentOn"
+msgstr "Eingeladen am {$date}"
+
+msgid "plugins.generic.objectsForReview.invitation.up"
+msgstr "Nach oben"
+
+msgid "plugins.generic.objectsForReview.invitation.down"
+msgstr "Nach unten"
+
+msgid "plugins.generic.objectsForReview.invitation.remove"
+msgstr "Entfernen"
+
+msgid "plugins.generic.objectsForReview.invitation.empty"
+msgstr "Noch niemand auf der Liste. Fügen Sie unten Personen aus dem Adressbuch oder als neue Nutzer*innen hinzu."
+
+msgid "plugins.generic.objectsForReview.invitation.addressBook"
+msgstr "Aus dem Adressbuch hinzufügen"
+
+msgid "plugins.generic.objectsForReview.invitation.search"
+msgstr "Name, E-Mail oder Institution"
+
+msgid "plugins.generic.objectsForReview.invitation.add"
+msgstr "Zur Liste hinzufügen"
+
+msgid "plugins.generic.objectsForReview.invitation.cannotAdd"
+msgstr "Bereits auf der Liste oder mit Bewerbung bzw. Reservierung"
+
+msgid "plugins.generic.objectsForReview.invitation.noResults"
+msgstr "Keine Nutzer*innen dieser Zeitschrift gefunden."
+
+msgid "plugins.generic.objectsForReview.invitation.new"
+msgstr "Neue Person hinzufügen"
+
+msgid "plugins.generic.objectsForReview.invitation.new.description"
+msgstr "Legt ein Nutzerkonto in der Gruppe Autor*in dieser Zeitschrift an, damit die Person die Rezension einreichen kann. Es wird keine E-Mail gesendet; die Person erhält nur die Einladung. Gibt es bereits ein Konto mit dieser E-Mail-Adresse, wird dieses verwendet."
+
+msgid "plugins.generic.objectsForReview.invitation.new.givenName"
+msgstr "Vorname"
+
+msgid "plugins.generic.objectsForReview.invitation.new.familyName"
+msgstr "Nachname"
+
+msgid "plugins.generic.objectsForReview.invitation.new.email"
+msgstr "E-Mail"
+
+msgid "plugins.generic.objectsForReview.invitation.new.affiliation"
+msgstr "Institution"
+
+msgid "plugins.generic.objectsForReview.invitation.new.submit"
+msgstr "Anlegen und zur Liste hinzufügen"
+
+msgid "plugins.generic.objectsForReview.invitation.new.givenNameRequired"
+msgstr "Bitte geben Sie den Vornamen ein."
+
+msgid "plugins.generic.objectsForReview.invitation.new.familyNameRequired"
+msgstr "Bitte geben Sie den Nachnamen ein."
+
+msgid "plugins.generic.objectsForReview.invitation.new.emailInvalid"
+msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+
+msgid "plugins.generic.objectsForReview.invitation.new.alreadyOnList"
+msgstr "Diese Person ist bereits auf der Liste oder hat sich für dieses Werk beworben bzw. es reserviert."
+
+msgid "plugins.generic.objectsForReview.invitation.page.title.reserve"
+msgstr "Einladung zur Rezension"
+
+msgid "plugins.generic.objectsForReview.invitation.page.title.bid"
+msgstr "Einladung zur Bewerbung um eine Rezension"
+
+msgid "plugins.generic.objectsForReview.invitation.page.intro.reserve"
+msgstr "Liebe/r {$name}, Sie wurden eingeladen, dieses Werk zu rezensieren. Um anzunehmen, stimmen Sie bitte bis zum {$deadline} den Bedingungen unten zu, oder teilen Sie uns mit, dass Sie die Rezension nicht schreiben können."
+
+msgid "plugins.generic.objectsForReview.invitation.page.intro.bid"
+msgstr "Liebe/r {$name}, Sie wurden eingeladen, sich um die Rezension dieses Werks zu bewerben. Bitte bewerben Sie sich bis zum {$deadline}, oder teilen Sie uns mit, dass Sie kein Interesse haben."
+
+msgid "plugins.generic.objectsForReview.invitation.page.editor"
+msgstr "Einladung von {$name}"
+
+msgid "plugins.generic.objectsForReview.invitation.page.decline"
+msgstr "Ich kann dieses Werk nicht rezensieren"
+
+msgid "plugins.generic.objectsForReview.invitation.page.decline.submit"
+msgstr "Einladung ablehnen"
+
+msgid "plugins.generic.objectsForReview.response.applied.title"
+msgstr "Bewerbung eingegangen"
+
+msgid "plugins.generic.objectsForReview.response.applied"
+msgstr "Vielen Dank! Die Rezensionsredaktion wählt unter den Bewerbungen aus. Wenn Sie ausgewählt werden, erhalten Sie eine E-Mail mit einem Link zur Rezensionsvereinbarung."
+
+msgid "plugins.generic.objectsForReview.response.invitationDeclined.title"
+msgstr "Einladung abgelehnt"
+
+msgid "plugins.generic.objectsForReview.response.invitationDeclined"
+msgstr "Vielen Dank für Ihre Rückmeldung. Die Redaktion wurde informiert."
+
+msgid "plugins.generic.objectsForReview.response.invitationClosed.title"
+msgstr "Einladung nicht mehr offen"
+
+msgid "plugins.generic.objectsForReview.response.invitationClosed"
+msgstr "Dieses Werk ist nicht mehr zur Rezension verfügbar, oder die Einladung ist beendet. Bei Fragen wenden Sie sich bitte an die Redaktion."
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays"
+msgstr "Einladungen"
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays.description"
+msgstr "Tage, die Eingeladene für ihre Antwort haben. Einladungen zur Bewerbung für ein Angebot mit Bewerbungsfrist verwenden diese Frist."
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays.invalid"
+msgstr "Bitte geben Sie eine Anzahl von Tagen zwischen 1 und 90 ein."

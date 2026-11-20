@@ -272,6 +272,10 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 		$page = ObjectsForReviewManagementHandler::PAGE;
 		$onPage = $request->getRequestedPage() === $page;
 		$requestedOp = $request->getRequestedOp() ?: 'index';
+		// The invitation page belongs to "Available objects"
+		if ($requestedOp === 'invite') {
+			$requestedOp = 'index';
+		}
 		$submenu = [];
 		foreach ($ops as $op => $key) {
 			$submenu[$key] = [
@@ -608,6 +612,16 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 				. ' .objectsForReviewManagement .ofrClosed { margin-top: 2rem; }'
 				. ' .objectsForReviewManagement .ofrClosed summary { cursor: pointer; font-weight: bold; }'
 				. ' .objectsForReviewManagement .ofrWarning { color: #b00; }'
+				. ' .objectsForReviewManagement .ofrInlineActions { display: flex; gap: 0.75rem; align-items: center; margin-top: 0.25rem; }'
+				. ' .objectsForReviewManagement .ofrInlineForm { display: inline; margin: 0; }'
+				. ' .objectsForReviewManagement .ofrLinkButton { background: none; border: none; padding: 0; color: #006798; cursor: pointer; font: inherit; text-decoration: underline; }'
+				. ' .objectsForReviewManagement .ofrDragHandle { cursor: move; color: #888; letter-spacing: -0.2em; margin-right: 0.25rem; }'
+				. ' .objectsForReviewManagement tr.ofrDragging { opacity: 0.4; }'
+				. ' .objectsForReviewManagement .ofrInviteHistory { margin-left: 1rem; }'
+				. ' .objectsForReviewManagement .ofrNewInvitee .ofrField { margin-bottom: 0.75rem; }'
+				. ' .objectsForReviewManagement .ofrNewInvitee label { display: block; font-weight: bold; }'
+				. ' .objectsForReviewManagement .ofrNewInvitee input { width: 100%; max-width: 30rem; }'
+				. ' .objectsForReviewManagement input[type=text], .objectsForReviewManagement input[type=email], .objectsForReviewManagement input[type=search] { border: 1px solid #bbb; border-radius: 3px; padding: 0.4rem 0.5rem; font: inherit; }'
 				. ' .ofrBadge { display: inline-block; margin-left: 0.25rem; padding: 0 0.4rem; border: 1px solid #888; border-radius: 3px; font-size: 0.75rem; line-height: 1.4; color: #555; vertical-align: middle; }'
 				. ' .ofrReturnTarget { display: block; margin: 0.5rem 0; } .ofrReturnTarget .ofrDetail { display: block; margin-left: 1.5rem; font-size: 0.875rem; }',
 			[

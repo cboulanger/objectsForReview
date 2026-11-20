@@ -27,5 +27,8 @@
   <email key="OFR_RETURN_SENT" subject="emails.ofrReturnSent.subject" name="emails.ofrReturnSent.name" body="emails.ofrReturnSent.body"/>
   <email key="OFR_PUBLISHER_NOTIFICATION" subject="emails.ofrPublisherNotification.subject" name="emails.ofrPublisherNotification.name" body="emails.ofrPublisherNotification.body"/>
   <email key="OFR_COPY_REQUEST_REMINDER" subject="emails.ofrCopyRequestReminder.subject" name="emails.ofrCopyRequestReminder.name" body="emails.ofrCopyRequestReminder.body"/>
+  <email key="OFR_INVITATION_RESERVE" subject="emails.ofrInvitationReserve.subject" name="emails.ofrInvitationReserve.name" body="emails.ofrInvitationReserve.body"/>
+  <email key="OFR_INVITATION_BID" subject="emails.ofrInvitationBid.subject" name="emails.ofrInvitationBid.name" body="emails.ofrInvitationBid.body"/>
+  <email key="OFR_INVITATION_DECLINED" subject="emails.ofrInvitationDeclined.subject" name="emails.ofrInvitationDeclined.name" body="emails.ofrInvitationDeclined.body"/>
   <email key="OFR_CONFIRMATION" subject="emails.ofrConfirmation.subject" name="emails.ofrConfirmation.name" body="emails.ofrConfirmation.body"/>
 </emails>

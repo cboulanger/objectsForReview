@@ -124,6 +124,12 @@ class AssignmentDAO extends DAO {
 	/**
 	 * Delete all assignments (and their links) of an object, when the object is deleted.
 	 */
+	public function deleteById(int $assignmentId): void {
+		DB::table(self::SETTINGS_TABLE)->where('assignment_id', $assignmentId)->delete();
+		DB::table(ActionLink::TABLE)->where('assignment_id', $assignmentId)->delete();
+		DB::table(self::TABLE)->where('assignment_id', $assignmentId)->delete();
+	}
+
 	public function deleteByObjectId(int $objectId): void {
 		$ids = DB::table(self::TABLE)->where('object_id', $objectId)->pluck('assignment_id')->all();
 		if ($ids) {

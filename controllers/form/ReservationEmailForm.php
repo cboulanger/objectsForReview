@@ -16,6 +16,7 @@
  *  - contractOffer: select a bidder and send the contract link
  *  - unsuccessful: tell the remaining bidders that someone else writes the review
  *    (they stay on the list), optionally by email
+ *  - invitation: invite someone on the invitation list (InvitationWorkflow)
  */
 
 namespace APP\plugins\generic\objectsForReview\controllers\form;
@@ -25,6 +26,7 @@ use APP\facades\Repo;
 use APP\plugins\generic\objectsForReview\classes\ActionLink;
 use APP\plugins\generic\objectsForReview\classes\Assignment;
 use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
+use APP\plugins\generic\objectsForReview\classes\InvitationWorkflow;
 use APP\plugins\generic\objectsForReview\classes\ReservationEmailEventType;
 use APP\plugins\generic\objectsForReview\classes\ReservationMailer;
 use APP\plugins\generic\objectsForReview\controllers\ReservationActionsHandler;
@@ -39,6 +41,7 @@ class ReservationEmailForm extends \PKP\form\Form {
 	const MODE_CANCEL = 'cancel';
 	const MODE_CONTRACT_OFFER = 'contractOffer';
 	const MODE_UNSUCCESSFUL = 'unsuccessful';
+	const MODE_INVITATION = 'invitation';
 
 	/** Modes in which sending the email is optional */
 	const OPTIONAL_EMAIL_MODES = [self::MODE_CANCEL, self::MODE_UNSUCCESSFUL];
@@ -49,6 +52,7 @@ class ReservationEmailForm extends \PKP\form\Form {
 		self::MODE_CANCEL => 'cancel',
 		self::MODE_CONTRACT_OFFER => 'offerContract',
 		self::MODE_UNSUCCESSFUL => 'notifyUnsuccessful',
+		self::MODE_INVITATION => 'sendInvitation',
 	];
 
 	protected $plugin;
@@ -85,6 +89,10 @@ class ReservationEmailForm extends \PKP\form\Form {
 			$this->addCheck(new FormValidatorCustom($this, 'body', 'required', 'plugins.generic.objectsForReview.contractOffer.linkRequired',
 				fn ($body) => str_contains((string) $body, '{$contractUrl}')));
 		}
+		if ($mode === self::MODE_INVITATION) {
+			$this->addCheck(new FormValidatorCustom($this, 'body', 'required', 'plugins.generic.objectsForReview.invitation.linkRequired',
+				fn ($body) => str_contains((string) $body, '{$invitationUrl}')));
+		}
 		$this->addCheck(new FormValidatorPost($this));
 		$this->addCheck(new FormValidatorCSRF($this));
 	}
@@ -96,6 +104,7 @@ class ReservationEmailForm extends \PKP\form\Form {
 				? ReservationEmailEventType::CONTRACT_OFFER_AGAIN
 				: ReservationEmailEventType::CONTRACT_OFFER,
 			self::MODE_UNSUCCESSFUL => ReservationEmailEventType::BID_UNSUCCESSFUL,
+			self::MODE_INVITATION => InvitationWorkflow::getEmailType($this->object),
 			default => ReservationEmailEventType::MESSAGE,
 		};
 	}
@@ -110,6 +119,9 @@ class ReservationEmailForm extends \PKP\form\Form {
 			[$days] = AssignmentWorkflow::getContractDays($this->plugin, $this->context->getId());
 			$deadline = (new \DateTimeImmutable('today'))->modify("+{$days} days")->format('Y-m-d');
 			$extra['contractDeadline'] = date(\PKP\core\PKPString::convertStrftimeFormat($this->context->getLocalizedDateFormatShort()), strtotime($deadline));
+		}
+		if ($this->mode === self::MODE_INVITATION) {
+			$extra['invitationDeadline'] = $this->formatDate(InvitationWorkflow::getDeadline($this->plugin, $this->object));
 		}
 		// In batches, {$recipientName} is filled in per recipient when sending
 		$recipient = $assignment ? ($this->recipients[$assignment->getId()] ?? null) : null;
@@ -139,10 +151,22 @@ class ReservationEmailForm extends \PKP\form\Form {
 			'reviewerName' => $first['name'],
 			'optionalEmail' => in_array($this->mode, self::OPTIONAL_EMAIL_MODES, true),
 			'cancelOffer' => $this->mode === self::MODE_CANCEL && reset($this->assignments)?->getStatus() === Assignment::STATUS_OFFERED,
+		] + ($this->mode === self::MODE_INVITATION ? [
+			'stepDescription' => __('plugins.generic.objectsForReview.invitation.send.description.' . InvitationWorkflow::getKind($this->object), [
+				'name' => $first['name'],
+				'deadline' => $this->formatDate(InvitationWorkflow::getDeadline($this->plugin, $this->object)),
+			]),
+			'bodyHint' => __('plugins.generic.objectsForReview.invitation.linkHint'),
+			'submitKey' => 'plugins.generic.objectsForReview.invitation.send',
+		] : []) + [
 			'actionUrl' => $request->getDispatcher()->url($request, Application::ROUTE_COMPONENT, null,
 				ReservationActionsHandler::COMPONENT, self::SAVE_OPS[$this->mode]),
 		]);
 		return parent::fetch($request, $template, $display);
+	}
+
+	protected function formatDate(string $date): string {
+		return date(\PKP\core\PKPString::convertStrftimeFormat($this->context->getLocalizedDateFormatShort()), strtotime($date));
 	}
 
 	public function execute(...$functionArgs) {
@@ -168,6 +192,10 @@ class ReservationEmailForm extends \PKP\form\Form {
 					$key = ActionLink::create($assignment->getId(), ActionLink::ACTION_LEAVE,
 						(new \DateTimeImmutable('today'))->modify('+' . ActionLink::DEFAULT_VALIDITY_DAYS . ' days')->format('Y-m-d 23:59:59'));
 					$late['removeUrl'] = ActionLink::url($this->context, $key);
+					break;
+				case self::MODE_INVITATION:
+					$key = InvitationWorkflow::invite($this->object, $assignment, $sender, InvitationWorkflow::getDeadline($this->plugin, $this->object));
+					$late['invitationUrl'] = ActionLink::url($this->context, $key);
 					break;
 			}
 			if ($sendEmail && $recipient) {

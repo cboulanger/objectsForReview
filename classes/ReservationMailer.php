@@ -54,11 +54,14 @@ class ReservationMailer {
 		ReservationEmailEventType::PUBLISHER_NOTIFICATION->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewPublisherNotification::class,
 		ReservationEmailEventType::COPY_REQUEST_REMINDER->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewCopyRequestReminder::class,
 		ReservationEmailEventType::CONFIRMATION->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewConfirmation::class,
+		ReservationEmailEventType::INVITATION_RESERVE->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewInvitationReserve::class,
+		ReservationEmailEventType::INVITATION_BID->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewInvitationBid::class,
+		ReservationEmailEventType::INVITATION_DECLINED->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewInvitationDeclined::class,
 	];
 
 	/** Placeholders filled in by send(), per recipient */
 	const LATE_VARIABLES = ['contractUrl', 'removeUrl', 'recipientName', 'returnAddress',
-		'copySentUrl', 'receivedUrl', 'returnSentUrl', 'returnReceivedUrl', 'retractUrl'];
+		'copySentUrl', 'receivedUrl', 'returnSentUrl', 'returnReceivedUrl', 'retractUrl', 'invitationUrl'];
 
 	/**
 	 * One-click links created by send() for an email type: [link action, variable, label key].

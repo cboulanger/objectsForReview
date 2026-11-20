@@ -68,6 +68,10 @@
 			{fbvElement type="text" id="ofrPublisherReminderDays" value=$ofrPublisherReminderDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
 		{/fbvFormSection}
 
+		{fbvFormSection label="plugins.generic.objectsForReview.settings.invitationDays" description="plugins.generic.objectsForReview.settings.invitationDays.description"}
+			{fbvElement type="text" id="ofrInvitationDays" value=$ofrInvitationDays maxlength="2" inline=true size=$fbvStyles.size.SMALL required=true}
+		{/fbvFormSection}
+
 		{if $standalone}
 			{fbvFormButtons hideCancel=true submitText="common.save"}
 		{else}

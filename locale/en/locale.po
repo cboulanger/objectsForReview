@@ -429,7 +429,7 @@ msgid "plugins.generic.objectsForReview.reminder.taskName"
 msgstr "Objects for review: reminders before the due date"
 
 msgid "plugins.generic.objectsForReview.reminder.sent"
-msgstr "For {$context}: {$reminders} due date reminder(s), {$contractReminders} contract offer reminder(s), {$expired} expired contract offer(s), {$publisherReminders} publisher reminder(s)."
+msgstr "For {$context}: {$reminders} due date reminder(s), {$contractReminders} contract offer reminder(s), {$expired} expired contract offer(s), {$publisherReminders} publisher reminder(s), {$expiredInvitations} expired invitation(s)."
 
 msgid "plugins.generic.objectsForReview.identifierTypeRequired"
 msgstr "Please select an identifier type."
@@ -1255,3 +1255,216 @@ msgstr "Hidden from the public list"
 
 msgid "plugins.generic.objectsForReview.history.event.offerShown"
 msgstr "Shown on the public list again"
+
+msgid "plugins.generic.objectsForReview.status.listed"
+msgstr "On the invitation list"
+
+msgid "plugins.generic.objectsForReview.status.invited"
+msgstr "Invited"
+
+msgid "plugins.generic.objectsForReview.status.invitationDeclined"
+msgstr "Invitation declined"
+
+msgid "plugins.generic.objectsForReview.status.invitationExpired"
+msgstr "Invitation not answered"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationReserve"
+msgstr "Invitation to review"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationBid"
+msgstr "Invitation to apply"
+
+msgid "plugins.generic.objectsForReview.history.email.invitationDeclined"
+msgstr "Editor notified: invitation declined or not answered"
+
+msgid "plugins.generic.objectsForReview.history.event.inviteeAdded"
+msgstr "{$recipientName} added to the invitation list"
+
+msgid "plugins.generic.objectsForReview.history.event.inviteeCreated"
+msgstr "Account created for {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.inviteeRemoved"
+msgstr "{$recipientName} removed from the invitation list"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationListReordered"
+msgstr "Invitation list reordered"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationSent"
+msgstr "Invitation sent to {$recipientName} (answer by {$reviewDueDate})"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationDeclined"
+msgstr "{$recipientName} declined the invitation"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationExpired"
+msgstr "{$recipientName} did not answer the invitation in time"
+
+msgid "plugins.generic.objectsForReview.history.event.reservedViaInvitation"
+msgstr "Reserved by {$recipientName} (invitation), due {$reviewDueDate}"
+
+msgid "plugins.generic.objectsForReview.history.event.bidViaInvitation"
+msgstr "Application by {$recipientName} (invitation)"
+
+msgid "plugins.generic.objectsForReview.history.event.invitationsEnded"
+msgstr "{$recipientCount} open invitation(s) ended"
+
+msgid "plugins.generic.objectsForReview.invitation.expired"
+msgstr "The invitation was not answered by the deadline."
+
+msgid "plugins.generic.objectsForReview.invitation.linkRequired"
+msgstr "The email must contain the placeholder {$invitationUrl} for the invitation link."
+
+msgid "plugins.generic.objectsForReview.invitation.linkHint"
+msgstr "{$invitationUrl} is replaced by the personal invitation link when the email is sent."
+
+msgid "plugins.generic.objectsForReview.invitation.send"
+msgstr "Send invitation"
+
+msgid "plugins.generic.objectsForReview.invitation.sendAgain"
+msgstr "Invite again"
+
+msgid "plugins.generic.objectsForReview.invitation.send.description.reserve"
+msgstr "Invite {$name} to review this work. They can reserve it, or decline, until {$deadline}."
+
+msgid "plugins.generic.objectsForReview.invitation.send.description.bid"
+msgstr "Invite {$name} to apply for this review. They can apply, or decline, until {$deadline}."
+
+msgid "plugins.generic.objectsForReview.invitation.title"
+msgstr "Invite reviewers"
+
+msgid "plugins.generic.objectsForReview.invitation.inviteReviewers"
+msgstr "Invite reviewers"
+
+msgid "plugins.generic.objectsForReview.invitation.kind.reserve"
+msgstr "Invitees can reserve the work (first come, first served)"
+
+msgid "plugins.generic.objectsForReview.invitation.kind.bid"
+msgstr "Invitees can apply; you choose among the applicants on To-do"
+
+msgid "plugins.generic.objectsForReview.invitation.manualNote"
+msgstr "Send each invitation individually with \"Send invitation\". Invitations sent today can be answered until {$deadline}."
+
+msgid "plugins.generic.objectsForReview.invitation.notPossible"
+msgstr "Invitations can't be sent in the current state of the offer: it must be open for reservation or applications."
+
+msgid "plugins.generic.objectsForReview.invitation.list"
+msgstr "Invitation list"
+
+msgid "plugins.generic.objectsForReview.invitation.person"
+msgstr "Person"
+
+msgid "plugins.generic.objectsForReview.invitation.drag"
+msgstr "Drag to reorder"
+
+msgid "plugins.generic.objectsForReview.invitation.reservationCount"
+msgstr "Current reservations: {$number}"
+
+msgid "plugins.generic.objectsForReview.invitation.sentOn"
+msgstr "Invited on {$date}"
+
+msgid "plugins.generic.objectsForReview.invitation.up"
+msgstr "Move up"
+
+msgid "plugins.generic.objectsForReview.invitation.down"
+msgstr "Move down"
+
+msgid "plugins.generic.objectsForReview.invitation.remove"
+msgstr "Remove"
+
+msgid "plugins.generic.objectsForReview.invitation.empty"
+msgstr "Nobody on the list yet. Add people from the address book or as new users below."
+
+msgid "plugins.generic.objectsForReview.invitation.addressBook"
+msgstr "Add from the address book"
+
+msgid "plugins.generic.objectsForReview.invitation.search"
+msgstr "Name, email or affiliation"
+
+msgid "plugins.generic.objectsForReview.invitation.add"
+msgstr "Add to list"
+
+msgid "plugins.generic.objectsForReview.invitation.cannotAdd"
+msgstr "Already on the list, or has a bid or reservation"
+
+msgid "plugins.generic.objectsForReview.invitation.noResults"
+msgstr "No users of this journal found."
+
+msgid "plugins.generic.objectsForReview.invitation.new"
+msgstr "Add a new person"
+
+msgid "plugins.generic.objectsForReview.invitation.new.description"
+msgstr "Creates a user account in the Author group of this journal, so that they can submit the review. No email is sent; they receive only the invitation. If an account with this email address already exists, that account is used."
+
+msgid "plugins.generic.objectsForReview.invitation.new.givenName"
+msgstr "Given name"
+
+msgid "plugins.generic.objectsForReview.invitation.new.familyName"
+msgstr "Family name"
+
+msgid "plugins.generic.objectsForReview.invitation.new.email"
+msgstr "Email"
+
+msgid "plugins.generic.objectsForReview.invitation.new.affiliation"
+msgstr "Affiliation"
+
+msgid "plugins.generic.objectsForReview.invitation.new.submit"
+msgstr "Create and add to list"
+
+msgid "plugins.generic.objectsForReview.invitation.new.givenNameRequired"
+msgstr "Please enter the given name."
+
+msgid "plugins.generic.objectsForReview.invitation.new.familyNameRequired"
+msgstr "Please enter the family name."
+
+msgid "plugins.generic.objectsForReview.invitation.new.emailInvalid"
+msgstr "Please enter a valid email address."
+
+msgid "plugins.generic.objectsForReview.invitation.new.alreadyOnList"
+msgstr "This person is already on the list, or has a bid or reservation for this work."
+
+msgid "plugins.generic.objectsForReview.invitation.page.title.reserve"
+msgstr "Invitation to review"
+
+msgid "plugins.generic.objectsForReview.invitation.page.title.bid"
+msgstr "Invitation to apply for a review"
+
+msgid "plugins.generic.objectsForReview.invitation.page.intro.reserve"
+msgstr "Dear {$name}, you have been invited to review this work. To accept, please agree to the terms below by {$deadline}, or let us know that you cannot write the review."
+
+msgid "plugins.generic.objectsForReview.invitation.page.intro.bid"
+msgstr "Dear {$name}, you have been invited to apply for the review of this work. Please apply by {$deadline}, or let us know that you are not interested."
+
+msgid "plugins.generic.objectsForReview.invitation.page.editor"
+msgstr "Invitation from {$name}"
+
+msgid "plugins.generic.objectsForReview.invitation.page.decline"
+msgstr "I cannot review this work"
+
+msgid "plugins.generic.objectsForReview.invitation.page.decline.submit"
+msgstr "Decline the invitation"
+
+msgid "plugins.generic.objectsForReview.response.applied.title"
+msgstr "Application received"
+
+msgid "plugins.generic.objectsForReview.response.applied"
+msgstr "Thank you! The book review editor will choose among the applicants. If you are selected, you will receive an email with a link to the review agreement."
+
+msgid "plugins.generic.objectsForReview.response.invitationDeclined.title"
+msgstr "Invitation declined"
+
+msgid "plugins.generic.objectsForReview.response.invitationDeclined"
+msgstr "Thank you for letting us know. The editors have been informed."
+
+msgid "plugins.generic.objectsForReview.response.invitationClosed.title"
+msgstr "Invitation no longer open"
+
+msgid "plugins.generic.objectsForReview.response.invitationClosed"
+msgstr "This work is no longer available for review, or the invitation has ended. Please contact the editors if you have any questions."
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays"
+msgstr "Invitations"
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays.description"
+msgstr "Days invitees have to answer an invitation. Invitations to apply for an offer with a bid deadline use that deadline."
+
+msgid "plugins.generic.objectsForReview.settings.invitationDays.invalid"
+msgstr "Please enter a number of days between 1 and 90."

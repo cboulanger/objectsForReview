@@ -30,6 +30,9 @@ enum ReservationEmailEventType: int implements EmailLogEventType
 	case PUBLISHER_NOTIFICATION = 0x1F0F10E;
 	case COPY_REQUEST_REMINDER = 0x1F0F10F;
 	case CONFIRMATION = 0x1F0F110;
+	case INVITATION_RESERVE = 0x1F0F111;
+	case INVITATION_BID = 0x1F0F112;
+	case INVITATION_DECLINED = 0x1F0F113;
 
 	public function labelKey(): string
 	{
@@ -50,6 +53,9 @@ enum ReservationEmailEventType: int implements EmailLogEventType
 			self::PUBLISHER_NOTIFICATION => 'plugins.generic.objectsForReview.history.email.publisherNotification',
 			self::COPY_REQUEST_REMINDER => 'plugins.generic.objectsForReview.history.email.copyRequestReminder',
 			self::CONFIRMATION => 'plugins.generic.objectsForReview.history.email.confirmation',
+			self::INVITATION_RESERVE => 'plugins.generic.objectsForReview.history.email.invitationReserve',
+			self::INVITATION_BID => 'plugins.generic.objectsForReview.history.email.invitationBid',
+			self::INVITATION_DECLINED => 'plugins.generic.objectsForReview.history.email.invitationDeclined',
 		};
 	}
 }

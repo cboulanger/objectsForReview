@@ -129,29 +129,43 @@ class AssignmentWorkflow {
 	//
 
 	/**
-	 * Direct reservation: the reviewer accepts the contract on the public page.
+	 * Direct reservation: the reviewer accepts the contract on the public page,
+	 * or through an invitation link.
+	 * @param ?Assignment $invitation The user's invitation, which becomes the reservation
 	 */
-	public static function reserve($plugin, $context, ObjectForReview $object, User $user, array $data): Assignment {
-		$assignment = self::dao()->newDataObject();
+	public static function reserve($plugin, $context, ObjectForReview $object, User $user, array $data, ?Assignment $invitation = null): Assignment {
+		$invitation ??= self::dao()->getByObjectAndUser($object->getId(), $user->getId(), Assignment::INVITATION_STATUSES);
+		$assignment = $invitation ?? self::dao()->newDataObject();
 		$assignment->setObjectId($object->getId());
 		$assignment->setContextId($context->getId());
 		$assignment->setUserId($user->getId());
 		$assignment->setStatus(Assignment::STATUS_ACCEPTED);
 		Reservation::apply($assignment, $data);
 		CopyWorkflow::init($assignment);
-		self::dao()->insertObject($assignment);
+		if ($invitation) {
+			// The reservation or bid dates from now; the invitation date stays in dateInvited
+			$assignment->setDateCreated(Core::getCurrentDate());
+			$assignment->setDateStatus(Core::getCurrentDate());
+			self::dao()->updateObject($assignment);
+			ActionLink::invalidate($assignment->getId(), ActionLink::ACTION_INVITATION);
+		} else {
+			self::dao()->insertObject($assignment);
+		}
 		self::syncReviewer($object);
-		ReservationLog::logEvent($object, ReservationLog::EVENT_RESERVED, $user, $user, ['reviewDueDate' => $data['dueDate']]);
+		ReservationLog::logEvent($object, $invitation ? ReservationLog::EVENT_RESERVED_VIA_INVITATION : ReservationLog::EVENT_RESERVED,
+			$user, $user, ['reviewDueDate' => $data['dueDate']]);
 		$plugin->notifyEditor($user, $object, 'OFR_NEW_RESERVATION', Reservation::getEmailDetails($assignment, $context));
 		self::sendConfirmation($plugin, $context, $object, $assignment, $user);
 		return $assignment;
 	}
 
 	/**
-	 * A reviewer bids for an object (bidding mode).
+	 * A reviewer bids for an object (bidding mode), on the public page or through an invitation link.
+	 * @param ?Assignment $invitation The user's invitation, which becomes the bid
 	 */
-	public static function bid($plugin, $context, ObjectForReview $object, User $user, string $statement): Assignment {
-		$assignment = self::dao()->newDataObject();
+	public static function bid($plugin, $context, ObjectForReview $object, User $user, string $statement, ?Assignment $invitation = null): Assignment {
+		$invitation ??= self::dao()->getByObjectAndUser($object->getId(), $user->getId(), Assignment::INVITATION_STATUSES);
+		$assignment = $invitation ?? self::dao()->newDataObject();
 		$assignment->setObjectId($object->getId());
 		$assignment->setContextId($context->getId());
 		$assignment->setUserId($user->getId());
@@ -159,8 +173,16 @@ class AssignmentWorkflow {
 		if ($statement !== '') {
 			$assignment->setData('statement', $statement);
 		}
-		self::dao()->insertObject($assignment);
-		ReservationLog::logEvent($object, ReservationLog::EVENT_BID, $user, $user);
+		if ($invitation) {
+			// The reservation or bid dates from now; the invitation date stays in dateInvited
+			$assignment->setDateCreated(Core::getCurrentDate());
+			$assignment->setDateStatus(Core::getCurrentDate());
+			self::dao()->updateObject($assignment);
+			ActionLink::invalidate($assignment->getId(), ActionLink::ACTION_INVITATION);
+		} else {
+			self::dao()->insertObject($assignment);
+		}
+		ReservationLog::logEvent($object, $invitation ? ReservationLog::EVENT_BID_VIA_INVITATION : ReservationLog::EVENT_BID, $user, $user);
 		ReservationMailer::notifyEditor($plugin, $context, ReservationEmailEventType::BID_NEW, $object, $assignment, [
 			'bidderName' => htmlspecialchars($user->getFullName()),
 			'bidStatement' => $statement !== '' ? nl2br(htmlspecialchars($statement)) : '–',
@@ -337,6 +359,7 @@ class AssignmentWorkflow {
 			ReservationLog::logEvent($object, ReservationLog::EVENT_COMPLETED, null, Repo::user()->get($assignment->getUserId(), true));
 		}
 		self::discardList($object, $assignments);
+		InvitationWorkflow::endAll($object);
 	}
 
 	/**
@@ -380,6 +403,7 @@ class AssignmentWorkflow {
 		(new ObjectForReviewDAO())->updateObject($object);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_OFFER_CLOSED, $editor, null);
 		self::discardList($object, null, $editor);
+		InvitationWorkflow::endAll($object, $editor);
 	}
 
 	/**

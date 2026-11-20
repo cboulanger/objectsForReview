@@ -50,6 +50,7 @@ class ReservationReminder extends ScheduledTask {
 			$counts = [
 				'reminders' => $this->sendDueDateReminders($plugin, $context),
 				'publisherReminders' => $this->sendPublisherReminders($plugin, $context),
+				'expiredInvitations' => $this->expireInvitations($plugin, $context),
 			] + $this->processContractOffers($plugin, $context);
 			if (array_sum($counts)) {
 				$this->addExecutionLogEntry(__('plugins.generic.objectsForReview.reminder.sent', $counts + ['context' => $context->getLocalizedName()]));
@@ -150,6 +151,23 @@ class ReservationReminder extends ScheduledTask {
 			$counts['contractReminders']++;
 		}
 		return $counts;
+	}
+
+	/**
+	 * Invitations not answered by their deadline (InvitationWorkflow).
+	 * @return int Number of expired invitations
+	 */
+	protected function expireInvitations($plugin, $context): int {
+		$today = date('Y-m-d');
+		$count = 0;
+		foreach ($this->assignments($context, [Assignment::STATUS_INVITED]) as [$object, $assignment]) {
+			$deadline = $assignment->getData('invitationDeadline');
+			if ($deadline && $deadline < $today) {
+				InvitationWorkflow::expire($plugin, $context, $object, $assignment);
+				$count++;
+			}
+		}
+		return $count;
 	}
 
 	/**

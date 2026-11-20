@@ -94,6 +94,7 @@ Open *Objects for Review › Settings*, or the plugin's *Settings* link in the p
 | Default responsible book review editor | Preselected for new offers. If none is set, the book review editor who creates an offer becomes responsible for it. |
 | Contract offers: Days to answer / Reminder after | How long a selected bidder has to accept the agreement (default 14 days), and when they are reminded (default after 7 days; 0: no reminder). |
 | Reminders to publishers | Days after which an unanswered copy request is repeated to the publisher contact, and the interval between reminders (default 14; 0: no reminders). |
+| Invitations | Days invitees have to answer an invitation (default 7). Invitations to apply for an offer with a bid deadline use that deadline. |
 
 ## Email templates
 
@@ -119,8 +120,11 @@ All emails are editable under *Settings › Emails*. They are in English, German
 | `OFR_RETURN_REQUEST` | reviewer | Please return the printed copy, with the return address and a "sent back" link |
 | `OFR_RETURN_SENT` | publisher contact | The copy is on its way back, with a "returned copy arrived" link |
 | `OFR_PUBLISHER_NOTIFICATION` | publisher contact | The review has been published |
+| `OFR_INVITATION_RESERVE` | invitee | Invitation to review a work with direct reservation (with the invitation link) |
+| `OFR_INVITATION_BID` | invitee | Invitation to apply for the review of a work offered for bidding (with the invitation link) |
+| `OFR_INVITATION_DECLINED` | book review editor | An invitee declined, or did not answer by the deadline |
 
-Some values are only filled in when an email is sent: the one-click links (`{$contractUrl}`, `{$copySentUrl}`, `{$receivedUrl}`, `{$returnSentUrl}`, `{$returnReceivedUrl}`, `{$retractUrl}`, `{$removeUrl}`), the recipient's name (`{$recipientName}`) and the return address (`{$returnAddress}`). Keep these placeholders when editing a template. If a template has no placeholder for its link, the link is added at the end of the email.
+Some values are only filled in when an email is sent: the one-click links (`{$contractUrl}`, `{$copySentUrl}`, `{$receivedUrl}`, `{$returnSentUrl}`, `{$returnReceivedUrl}`, `{$retractUrl}`, `{$removeUrl}`, `{$invitationUrl}`), the recipient's name (`{$recipientName}`) and the return address (`{$returnAddress}`). Keep these placeholders when editing a template. Contract offers and invitations can't be sent without their link placeholder; in the other emails, a missing link is added at the end.
 
 ## The public page
 

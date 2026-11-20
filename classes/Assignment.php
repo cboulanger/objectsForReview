@@ -32,6 +32,17 @@ class Assignment extends DataObject {
 	const STATUS_RETRACTED = 'retracted';
 	const STATUS_CANCELLED = 'cancelled';
 	const STATUS_DISCARDED = 'discarded';
+	/** Invitations (see InvitationWorkflow) */
+	const STATUS_LISTED = 'listed';
+	const STATUS_INVITED = 'invited';
+	const STATUS_INVITATION_DECLINED = 'invitationDeclined';
+	const STATUS_INVITATION_EXPIRED = 'invitationExpired';
+
+	/** People on an invitation list */
+	const INVITATION_STATUSES = [self::STATUS_LISTED, self::STATUS_INVITED, self::STATUS_INVITATION_DECLINED, self::STATUS_INVITATION_EXPIRED];
+
+	/** Invitations that are not finished yet */
+	const OPEN_INVITATION_STATUSES = [self::STATUS_LISTED, self::STATUS_INVITED];
 
 	/** Bidders still on the list */
 	const BIDDER_STATUSES = [self::STATUS_BID, self::STATUS_UNSUCCESSFUL];
@@ -44,10 +55,12 @@ class Assignment extends DataObject {
 
 	/**
 	 * Data stored as settings, in addition to Reservation::FIELDS: bid and
-	 * contract offer, and the review copy (see CopyWorkflow).
+	 * contract offer, the review copy (see CopyWorkflow) and the invitation
+	 * (see InvitationWorkflow).
 	 */
 	const FIELDS = ['statement', 'dateOffered', 'contractDeadline', 'contractReminderSent', 'declineReason',
-		'copyStatus', 'copyStatusDate', 'copySentBy', 'returnTarget', 'copyReminderSent', 'copyReminderCount'];
+		'copyStatus', 'copyStatusDate', 'copySentBy', 'returnTarget', 'copyReminderSent', 'copyReminderCount',
+		'position', 'invitedBy', 'dateInvited', 'invitationDeadline', 'invitationDeclineReason', 'invitationReminderSent'];
 
 	function getObjectId(): int {
 		return (int) $this->getData('objectId');
@@ -99,6 +112,10 @@ class Assignment extends DataObject {
 
 	function isBidder(): bool {
 		return in_array($this->getStatus(), self::BIDDER_STATUSES, true);
+	}
+
+	function isInvitee(): bool {
+		return in_array($this->getStatus(), self::INVITATION_STATUSES, true);
 	}
 
 	function isReviewer(): bool {
