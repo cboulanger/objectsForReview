@@ -36,11 +36,7 @@ const v = async n => form.locator(`[name=${n}]`).inputValue();
 console.log({
 	identifier: await v('identifier'), resourceType: await v('resourceType'),
 	authors: await v('authors'), publisher: await v('publisher'), year: await v('year'),
-	title: await page.evaluate(() => {
-		const ta = document.querySelector('#objectsForReviewForm [name=title]');
-		const ed = window.tinymce && tinymce.get(ta.id);
-		return ed ? ed.getContent() : ta.value;
-	}),
+	title: await v('title'),
 });
 await page.screenshot({ path: OUT + 'author-filled.png' });
 

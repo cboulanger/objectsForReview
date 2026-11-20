@@ -31,7 +31,7 @@ await bre.waitForTimeout(1500);
 await form.locator('[name=identifierType]').selectOption('ISBN');
 await form.locator('input[name=identifier]').fill('9781509982622');
 await form.locator('input[name=authors]').fill('Doe, Jane');
-await bre.evaluate(() => { const ta = document.querySelector('#availableObjectsForReviewForm [name=title]'); const ed = tinymce.get(ta.id); ed.setContent('A bidding test book'); ed.fire('change'); });
+await bre.locator('#availableObjectsForReviewForm [name=title]').fill('A bidding test book');
 await form.locator('input[name=publisher]').fill('Test Press');
 await form.locator('input[name=year]').fill('2024');
 console.log('deadline visible (direct):', await form.locator('input[name=bidDeadline]').isVisible());

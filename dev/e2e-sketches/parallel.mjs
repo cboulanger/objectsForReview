@@ -19,7 +19,7 @@ async function newOffer(title, mode, deadline) {
 	await f.locator('[name=identifierType]').selectOption('ISBN');
 	await f.locator('input[name=identifier]').fill('97800000000' + Math.floor(Math.random() * 90 + 10));
 	await f.locator('input[name=authors]').fill('Doe, Jo');
-	await bre.evaluate(t => { const ed = tinymce.get(document.querySelector('#availableObjectsForReviewForm [name=title]').id); ed.setContent(t); ed.fire('change'); }, title);
+	await bre.locator('#availableObjectsForReviewForm [name=title]').fill(title);
 	await f.locator('input[name=publisher]').fill('Test Press');
 	await f.locator('[name=assignmentMode]').selectOption(mode);
 	if (deadline) await f.locator('input[name=bidDeadline]').fill(deadline);

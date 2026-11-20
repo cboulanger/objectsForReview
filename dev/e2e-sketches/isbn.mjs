@@ -29,7 +29,7 @@ await box.locator('.orIdLookupStatus').filter({ hasText: /übernommen|fehlgeschl
 console.log('status:', await box.locator('.orIdLookupStatus').innerText());
 const v = async n => form.locator(`[name=${n}]`).inputValue();
 console.log({ identifier: await v('identifier'), resourceType: await v('resourceType'), authors: await v('authors'), publisher: await v('publisher'), year: await v('year'),
-	title: await page.evaluate(() => tinymce.get(document.querySelector('#availableObjectsForReviewForm [name=title]').id).getContent()) });
+	title: await v('title') });
 await form.locator('button.submitFormButton').click();
 await form.waitFor({ state: 'detached', timeout: 15000 });
 

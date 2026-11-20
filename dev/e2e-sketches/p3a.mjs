@@ -15,7 +15,7 @@ await form.waitFor({ timeout: 15000 });
 await bre.waitForTimeout(1500);
 await form.locator('[name=identifierType]').selectOption('ISBN');
 await form.locator('input[name=identifier]').fill('9780000000019');
-await bre.evaluate(t => { const ed = tinymce.get(document.querySelector('#availableObjectsForReviewForm [name=title]').id); ed.setContent(t); ed.fire('change'); }, TITLE);
+await bre.locator('#availableObjectsForReviewForm [name=title]').fill(TITLE);
 await form.locator('[name=assignmentMode]').selectOption('direct');
 await form.locator('[name=publisherContactId]').selectOption({ label: 'Paula Publisher (publisher@example.org)' });
 await form.locator('button.submitFormButton').click();

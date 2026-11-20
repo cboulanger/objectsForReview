@@ -36,11 +36,7 @@ console.log({
 	authors: await v('authors'),
 	publisher: await v('publisher'),
 	year: await v('year'),
-	titleEditor: await page.evaluate(() => {
-		const ta = document.querySelector('#availableObjectsForReviewForm [name=title]');
-		const ed = window.tinymce && tinymce.get(ta.id);
-		return ed ? ed.getContent() : '(no tinymce) ' + ta.value;
-	}),
+	title: await v('title'),
 });
 await page.screenshot({ path: OUT + 'manager-filled.png' });
 

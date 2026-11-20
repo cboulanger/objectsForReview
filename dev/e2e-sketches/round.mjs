@@ -19,7 +19,7 @@ await bre.waitForTimeout(1500);
 await f.locator('[name=identifierType]').selectOption('ISBN');
 await f.locator('input[name=identifier]').fill('9780000000026');
 await f.locator('input[name=authors]').fill('Lee, Min');
-await bre.evaluate(t => { const ed = tinymce.get(document.querySelector('#availableObjectsForReviewForm [name=title]').id); ed.setContent(t); ed.fire('change'); }, TITLE);
+await bre.locator('#availableObjectsForReviewForm [name=title]').fill(TITLE);
 await f.locator('input[name=publisher]').fill('Test Press');
 await f.locator('[name=assignmentMode]').selectOption('direct');
 await f.locator('button.submitFormButton').click();

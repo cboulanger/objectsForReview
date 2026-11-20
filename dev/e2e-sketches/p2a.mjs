@@ -16,7 +16,7 @@ await bre.waitForTimeout(1500);
 await form.locator('[name=identifierType]').selectOption('ISBN');
 await form.locator('input[name=identifier]').fill('9780000000002');
 await form.locator('input[name=authors]').fill('Roe, Richard');
-await bre.evaluate(t => { const ed = tinymce.get(document.querySelector('#availableObjectsForReviewForm [name=title]').id); ed.setContent(t); ed.fire('change'); }, TITLE);
+await bre.locator('#availableObjectsForReviewForm [name=title]').fill(TITLE);
 await form.locator('input[name=publisher]').fill('Test Press');
 await form.locator('[name=assignmentMode]').selectOption('direct');
 console.log('publisher contacts:', await form.locator('[name=publisherContactId] option').allInnerTexts(), '| return required by default:', await form.locator('input[name=returnRequired]').isChecked());
