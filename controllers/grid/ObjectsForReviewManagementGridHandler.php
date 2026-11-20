@@ -247,12 +247,16 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 	 * @return string Serialized JSON object
 	 */
 	function deleteAvailableObjectForReview($args, $request) {
-		$objectId = $request->getUserVar('objectId');
-
+		if (!$request->isPost() || !$request->checkCSRF()) {
+			return new JSONMessage(false);
+		}
 		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
-		$objectsForReview = $objectForReviewDao->getById($objectId);
-
-		$objectForReviewDao->deleteObject($objectsForReview);
+		$objectForReview = $objectForReviewDao->getById((int) $request->getUserVar('objectId'));
+		// Only objects of the current journal
+		if (!$objectForReview || $objectForReview->getContextId() != $request->getContext()->getId()) {
+			return new JSONMessage(false);
+		}
+		$objectForReviewDao->deleteObject($objectForReview);
 		return DAO::getDataChangedEvent();
 	}
 
