@@ -1,41 +1,102 @@
-# Objects for Review Plugin for OJS 3.5
+# Objects for Review plugin for OJS 3.5
 
+An OJS plugin for journals that publish book reviews. It manages the whole path from a work offered for review to the published review: the public list of offers, choosing a reviewer, the review agreement, the review copy and its return, and the link between the reviewed work and the review article.
 
-## About
-This plugins builds on the idea of the OFR and BFR plugins for OJS 2.x to provide support for reviews of books and other material being published on OJS and OMP.
+> **This is a fork.** It started from [ajnyga/objectsForReview](https://github.com/ajnyga/objectsForReview) by Antti-Jussi Nygård, which lets authors attach the metadata of reviewed works to their submissions and lets readers reserve works from a public list. This fork is an almost complete rewrite. The original data and the author-side features are kept, but the behaviour has changed substantially and most of the functionality is new. Existing installations are upgraded automatically. The concept and its discussion are in [issue #1](https://github.com/cboulanger/objectsForReview/issues/1).
 
-User stories to be covered as basic functionality:
+## What the plugin does
 
-- As an author, submit metadata of the reviewed object together with the review's manuscript.
-- A a reader, see metadata of the reviewed object on the article landing page in dedicated areas and have a link to access the digital version of the reviewed object (if available).
+Carried over from the original plugin:
 
-## Review workflow
+- Authors enter the metadata of the reviewed work (title, authors, publisher, year, identifier) in the submission wizard, or pick a work they reserved.
+- Readers see the reviewed work on the article page.
+- A public page lists the works offered for review.
 
-Editors offer works for review; the public page "Books for review" lists them.
+Changed or new in this fork:
 
-- **Book review editor**: a user group (base role Section editor) created by the plugin. Members, and journal managers, use the plugin's backend pages; only managers change its settings. Each offer has a responsible book review editor who receives its notifications.
-- **Publisher contact**: a user group (base role Reader) for the people at publishers who handle review copies, with the publisher as affiliation and their mailing address. They never need to log in.
-- **Assignment modes**, chosen per offer:
-  - *Direct reservation*: the first person to accept the review agreement gets the review.
-  - *Bidding*: reviewers apply (with an optional statement, until an optional deadline). The book review editor selects one in *To-do*, which closes bidding and sends a contract offer with a one-click link to the agreement. The other bidders are told they were not selected and stay on the list; if the reviewer declines, retracts or is cancelled, the editor selects again (with a separate "offer available again" email) or reopens bidding.
-- **Review copies**: each offer can name a publisher contact, record that the journal holds a copy, require printed copies to be returned if no review materialises, and ask for the publisher to be notified of the published review. When a reviewer wants a printed or electronic copy, it appears under *To-do › Review copies*, where the book review editor records each step, with a prefilled, editable email where one is needed:
-  - request the copy from the publisher (with the delivery address or the reviewer's email), or send it from the journal's stock;
-  - the publisher has sent it; the reviewer has received it (the reviewer can also confirm receipt on the public page). The delivery address and phone number are deleted at this point;
-  - if no review will come: request the return of a printed copy, to the journal (the responsible book review editor's address) or to the publisher contact. A copy returned to the journal is available for the next reviewer. Copies never go from one reviewer to the next.
-  - after publication: notify the publisher, if they asked for it.
-  The offer form checks that the addresses needed for returns are entered in the users' profiles.
-  Publishers and reviewers can also take their steps with one click from the emails: the publisher confirms "copy sent" and "returned copy arrived", the reviewer "received" and "sent back"; each confirmation sends the next person their email and link. Unanswered copy requests are repeated to the publisher every 14 days (configurable).
-- **Reviewers** get a confirmation with the agreement details after accepting it, with an "I can't write this review" link (also in the due date reminder). Overdue reviews are listed on the To-do page.
-- **One-click links** in emails (accept or decline the contract, leave the list, the review copy steps, withdraw from a review) need no login. Opening a link never changes anything; the page asks for confirmation. Links expire and can be used once.
-- A daily task reminds reviewers before their review is due, reminds selected bidders who have not answered the contract offer, expires unanswered offers, and reminds publishers of unanswered copy requests.
-- Every step is recorded in the offer's history (audit trail), and all emails are editable templates under Settings › Emails.
+- **OJS 3.5 support.** The backend has its own menu section with an overview of the work to be done.
+- **DOI and ISBN lookup.** Editors fill in the metadata from Crossref or from the ISBN. DOIs and ISBNs are linked on the public page and on the article page.
+- **Book review editor role.** A user group created by the plugin. Each offer has a responsible book review editor who receives its notifications and manages it.
+- **Two ways to assign a review, chosen per offer:**
+  - *direct reservation*: first come, first served;
+  - *bidding*: reviewers apply with an optional statement and deadline, and the editor chooses. Bidders who are not chosen are told so and stay on a waiting list.
+- **Review agreement.** Reviewers accept the journal's terms, set a due date and say how they will get the work. Selected bidders get a contract offer with a deadline, a reminder and a one-click link.
+- **Review copies.** The plugin tracks each copy from the request to the publisher (or from the journal's stock) to receipt. If no review comes, it tracks the return to the journal or the publisher. After publication, the publisher can be notified.
+- **Publisher contacts.** People at publishers are stored as users who never log in. They confirm their steps ("copy sent", "returned copy arrived") with one-click links in the emails.
+- **Reservation management.** Editors can email reviewers, cancel reservations and see overdue reviews. A daily task sends reminders to reviewers, selected bidders and publishers.
+- **Audit trail.** Every step and every email is recorded in the offer's history.
+- **Privacy.** Delivery addresses and phone numbers are deleted once the copy has arrived, and bid statements once the review is published. Copies are never forwarded from one reviewer to the next.
+- **Editable emails.** All emails are templates under Settings › Emails, in English, German and Finnish.
 
-See issue #1 for the full concept and its discussion.
+## Documentation
 
-The frontend object listing uses https://github.com/tristen/tablesort for table sorting.
+- [Setting up the plugin](docs/setup.md): for journal managers and site administrators.
+- [The review workflow](docs/workflow.md): manual for book review editors, with flowcharts and screenshots.
+
+## Installation
+
+Requirements: OJS 3.5 and PHP 8.2 or later.
+
+1. Get the plugin, either by:
+   - cloning it into the OJS plugin folder:
+
+     ```sh
+     cd /path/to/ojs/plugins/generic
+     git clone -b stable-3_5_0 https://github.com/cboulanger/objectsForReview.git objectsForReview
+     ```
+
+     The folder must be called `objectsForReview`;
+   - or building an archive and uploading it under *Website Settings › Plugins › Upload a new plugin*:
+
+     ```sh
+     git archive --prefix=objectsForReview/ -o objectsForReview.tar.gz stable-3_5_0
+     ```
+
+2. If you cloned the plugin, register it from the OJS folder:
+
+   ```sh
+   php lib/pkp/tools/installPluginVersion.php plugins/generic/objectsForReview/version.xml
+   ```
+
+3. Enable *Objects for Review* in each journal under *Website Settings › Plugins › Generic Plugins*. This creates the user groups "Book review editor" and "Publisher contact" and installs the email templates.
+4. Make sure OJS runs its scheduled tasks, because the reminders depend on them. See [Setting up the plugin](docs/setup.md#scheduled-tasks).
+
+To **update**, pull the new version (or upload the new archive). The plugin upgrades its database tables when it loads.
+
+**Upgrading from the original plugin:** existing works, reservations and settings are kept. Reservations become assignments of the reviewer, and works attached to a submission become submitted reviews.
+
+## For developers
+
+The [`dev/`](dev/) folder has a Podman (or Docker) setup that runs OJS 3.5 with a test journal in a single container. The plugin folder is mounted into the container, so changes to PHP, templates and locale files take effect without a rebuild.
+
+```sh
+dev/ojs-dev.sh up      # builds the image on first use, then starts OJS on http://localhost:8080/index.php/test
+dev/ojs-dev.sh logs    # Apache/PHP log; sent emails appear here, including the one-click links
+dev/ojs-dev.sh shell   # shell in the OJS folder
+dev/ojs-dev.sh reset   # start again from a fresh install
+dev/ojs-dev.sh build   # rebuild the image after changing files in dev/
+```
+
+The test journal has accounts for each role: admin, an author, a book review editor, a second reviewer and a publisher contact. Each password is `ojs` followed by the user name, for example `ojsbre`. [dev/README.md](dev/README.md) lists the accounts and explains how to run the daily task by hand and how to share a folder outside `/Users` with the Podman VM on macOS.
+
+How the code is organised:
+
+| Path | Contents |
+| --- | --- |
+| `classes/AssignmentWorkflow.php` | Offer states and the bidder/reviewer transitions |
+| `classes/CopyWorkflow.php` | Review copy states and steps |
+| `classes/ActionLink.php` | One-click links (hashed, expiring, single use) |
+| `classes/ReservationMailer.php`, `mailables/` | Emails and their templates |
+| `classes/ReservationLog.php` | Audit trail (OJS event log) |
+| `classes/ReservationReminder.php` | Daily task |
+| `pages/` | Public page, one-click link pages, backend pages (To-do, Reviewers & bidders, ...) |
+| `controllers/` | Grids and modal forms |
+| `ObjectsForReviewSchemaMigration.php` | Tables. Idempotent; raise `SCHEMA_VERSION` when changing it |
+
+Strings live in `locale/{en,de,fi}/locale.po`, and email templates in `emailTemplates.xml` and `locale/*/emails.po`.
 
 ## License
 
 This plugin is licensed under the GNU General Public License v3. See the file LICENSE for the complete terms of this license.
 
-The license for https://github.com/tristen/tablesort included in the repository is MIT. See https://github.com/tristen/tablesort/blob/gh-pages/LICENCE
+The public list uses [tablesort](https://github.com/tristen/tablesort) for sorting, included under the MIT license ([licence](https://github.com/tristen/tablesort/blob/gh-pages/LICENCE)).
