@@ -180,6 +180,40 @@ export class ObjectsForReviewClient {
   }
 
   //
+  // Review essays (one review of several works)
+  //
+
+  /**
+   * Combine works into a review essay. The result is the container (isReviewEssay: true)
+   * with its works in members. A reviewer who already has an agreement for one of the works
+   * becomes the reviewer of the essay. Fields: title, description, objectIds (in their order
+   * in the essay), copyPreferences ({ workId: have|physical|electronic|other } for the other
+   * works, if a reviewer is taken over), assignmentMode, bidDeadline, responsibleEditorId |
+   * responsibleEditorEmail, hidden (the offer settings default to those of the first work).
+   * Errors: 409 cannot_combine with reason (a locale key).
+   * To import the reviewer of an essay, call addAssignment() on the container with
+   * copies: [{ objectId, copyPreference, copyStatus?, copyStatusDate? }] for its works.
+   */
+  createBundle(data) {
+    return this.request('POST', '/bundles', { body: data });
+  }
+
+  /**
+   * Add a work to a review essay that is not submitted yet; copyPreference is the reviewer's
+   * for that work, if the essay has a reviewer (default have). Errors: 409 review_essay_rule.
+   */
+  addBundleMember(bundleId, objectId, copyPreference) {
+    const body = { objectId: Number(objectId) };
+    if (copyPreference) body.copyPreference = copyPreference;
+    return this.request('POST', `/bundles/${Number(bundleId)}/members`, { body });
+  }
+
+  /** Take a work out of a review essay; it is offered on its own again (hidden). Errors: 409 review_essay_rule. */
+  removeBundleMember(bundleId, objectId) {
+    return this.request('DELETE', `/bundles/${Number(bundleId)}/members/${Number(objectId)}`);
+  }
+
+  //
   // Review processes
   //
 
@@ -194,6 +228,10 @@ export class ObjectsForReviewClient {
    * statement (bids), contractDeadline, dateOffered (offered), dueDate (required for accepted),
    * copyPreference (have|physical|electronic|other), copyNote, shippingAddress, phone,
    * copyStatus, copyStatusDate, copySentBy, returnTarget, submissionId (submitted/completed).
+   * For a review essay (the container), copies: [{ objectId, copyPreference, copyStatus?,
+   * copyStatusDate? }] gives the copy of each of its works (default have) instead of
+   * copyPreference and copyStatus; the works get the reviewer's status from the essay.
+   * A work in a review essay is refused (409 member_of_review_essay).
    */
   addAssignment(objectId, data) {
     return this.request('POST', `/objects/${Number(objectId)}/assignments`, { body: data });
@@ -246,6 +284,8 @@ export class ObjectsForReviewClient {
    * Users come first, so works can refer to publisher contacts and editors by email.
    * Each record is imported on its own: failures are reported and the rest continues.
    * Assignments of a work that was there already are skipped unless importAssignmentsOfExisting is set.
+   * Review essays are not part of the document: create them afterwards from the imported
+   * works with createBundle(), then import their reviewer with addAssignment() on the essay.
    *
    * @param {object} doc
    * @param {object} [options]

@@ -24,6 +24,9 @@ const routes = [
   ['GET', /^\/lookup$/, (_, query) => [200, { identifier: query.get('doi') ?? query.get('isbn'), title: 'Looked up' }]],
   ['POST', /^\/users$/, (body) => [200, { id: 3, ...body, _created: true, _rolesAdded: body.roles }]],
   ['POST', /^\/objects\/7\/assignments$/, (body) => [200, { id: 9, ...body }]],
+  ['POST', /^\/bundles$/, (body) => [201, { id: 20, isReviewEssay: true, ...body }]],
+  ['POST', /^\/bundles\/20\/members$/, (body) => [200, { id: 20, added: body }]],
+  ['DELETE', /^\/bundles\/20\/members\/14$/, () => [200, { id: 20, members: [] }]],
 ];
 
 before(async () => {
@@ -164,4 +167,35 @@ test('import --dry-run only reads', async () => {
   assert.equal(result.code, 0);
   assert.ok(requests.slice(before).every((r) => r.method === 'GET'));
   assert.equal(result.json.objects[0].action, 'create');
+});
+
+test('bundle create, add and remove', async () => {
+  const created = await ofr(['bundle', 'create', '--title', 'Essay', '--works', '12, 13', '--hidden', '--description', 'About both']);
+  assert.equal(created.code, 0, created.stderr);
+  assert.equal(created.json.id, 20);
+  assert.equal(last().method, 'POST');
+  assert.equal(last().path, '/bundles');
+  assert.deepEqual(last().body, { title: 'Essay', objectIds: [12, 13], hidden: true, description: 'About both' });
+
+  const added = await ofr(['bundle', 'add', '20', '14', '--copy', 'physical']);
+  assert.equal(added.code, 0, added.stderr);
+  assert.deepEqual(last().body, { objectId: 14, copyPreference: 'physical' });
+  await ofr(['bundle', 'add', '20', '14']);
+  assert.deepEqual(last().body, { objectId: 14 });
+
+  const removed = await ofr(['bundle', 'remove', '20', '14']);
+  assert.equal(removed.code, 0, removed.stderr);
+  assert.equal(last().method, 'DELETE');
+  assert.equal(last().path, '/bundles/20/members/14');
+});
+
+test('bundle: usage errors exit with 2', async () => {
+  assert.equal((await ofr(['bundle', 'create', '--works', '12,13'])).code, 2, 'no title');
+  assert.equal((await ofr(['bundle', 'create', '--title', 'T'])).code, 2, 'no works');
+  assert.equal((await ofr(['bundle', 'create', '--title', 'T', '--works', '12,x'])).code, 2, 'not an id');
+  assert.equal((await ofr(['bundle', 'add', '20'])).code, 2, 'no work id');
+  assert.equal((await ofr(['bundle', 'remove'])).code, 2, 'no ids');
+  assert.equal((await ofr(['bundle'])).code, 2, 'no subcommand');
+  assert.equal((await ofr(['bundle', 'frobnicate'])).code, 2);
+  assert.match((await ofr(['help'])).stdout, /bundle create/);
 });

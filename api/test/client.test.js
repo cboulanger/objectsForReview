@@ -51,6 +51,40 @@ test('errors carry status and code', async () => {
   });
 });
 
+test('review essays: create, add and remove works', async () => {
+  const { fetch, calls } = mockFetch([
+    ['POST', '/bundles', 201, ({ body }) => ({ id: 20, isReviewEssay: true, members: body.objectIds.map((id) => ({ id })) })],
+    ['POST', '/bundles/20/members', 200, { id: 20, members: [{ id: 12 }, { id: 13 }, { id: 14 }] }],
+    ['DELETE', '/bundles/20/members/14', 200, { id: 20, members: [{ id: 12 }, { id: 13 }] }],
+  ]);
+  const ofr = client(fetch);
+  const bundle = await ofr.createBundle({ title: 'Essay', objectIds: [12, 13], hidden: true });
+  assert.equal(bundle.id, 20);
+  assert.deepEqual(calls[0].body, { title: 'Essay', objectIds: [12, 13], hidden: true });
+
+  await ofr.addBundleMember('20', '14', 'physical');
+  assert.equal(calls[1].path, '/bundles/20/members');
+  assert.deepEqual(calls[1].body, { objectId: 14, copyPreference: 'physical' });
+  await ofr.addBundleMember(20, 14);
+  assert.deepEqual(calls[2].body, { objectId: 14 });
+
+  const removed = await ofr.removeBundleMember(20, 14);
+  assert.equal(calls[3].method, 'DELETE');
+  assert.equal(calls[3].body, undefined);
+  assert.equal(removed.members.length, 2);
+});
+
+test('review essays: rule violations carry code and reason', async () => {
+  const { fetch } = mockFetch([['POST', '/bundles', 409, { error: 'cannot_combine', errorMessage: 'Only one reviewer.',
+    reason: 'plugins.generic.objectsForReview.reviewEssay.error.twoReviewers' }]]);
+  await assert.rejects(client(fetch).createBundle({ title: 'E', objectIds: [1, 2] }), (error) => {
+    assert.equal(error.status, 409);
+    assert.equal(error.code, 'cannot_combine');
+    assert.match(error.body.reason, /twoReviewers$/);
+    return true;
+  });
+});
+
 test('importData: users first, then works with their assignments; failures do not stop the import', async () => {
   let nextId = 1;
   const { fetch, calls } = mockFetch([

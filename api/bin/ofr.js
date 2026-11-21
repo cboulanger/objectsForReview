@@ -44,6 +44,15 @@ Review processes under way:
   add-assignment <objectId> --data <json|@file>   Import a bidder or reviewer (no emails are sent)
   assignments <objectId>                          List the assignments of a work
 
+Review essays (one review of several works):
+  bundle create --title <title> --works <id,id,...> [--description <text>] [--hidden]
+                [--mode direct|bidding] [--editor <email>]
+                                                  Combine works into a review essay
+  bundle add <essayId> <objectId> [--copy have|physical|electronic|other]
+                                                  Add a work (--copy: the reviewer's copy, if there is one)
+  bundle remove <essayId> <objectId>              Take a work out of a review essay
+  To import the reviewer of an essay: add-assignment <essayId> with "copies": [{ objectId, copyPreference, copyStatus }]
+
 Bulk import:
   import <file.json> [--dry-run] [--on-duplicate skip|error|update] [--include-existing]
       { "users": [...], "objects": [ { ..., "assignments": [...] } ] }; see examples/import.example.json
@@ -74,6 +83,9 @@ const OPTIONS = {
   description: { type: 'string' },
   'resource-type': { type: 'string' },
   'on-duplicate': { type: 'string' },
+  // review essays
+  works: { type: 'string' },
+  copy: { type: 'string' },
   // people
   email: { type: 'string' },
   given: { type: 'string' },
@@ -141,6 +153,32 @@ async function main(argv) {
       return print(await client.listAssignments(need(args[0], 'the object id')));
     case 'add-assignment':
       return print(await client.addAssignment(need(args[0], 'the object id'), await readData(need(opts.data, '--data'))));
+    case 'bundle': {
+      const [action, ...ids] = args;
+      const id = (value, what) => {
+        if (!/^\d+$/.test(need(value, what))) throw new UsageError(`${command} ${action}: ${what} must be a number`);
+        return Number(value);
+      };
+      if (action === 'create') {
+        const objectIds = need(opts.works, '--works').split(',').map((value) => id(value.trim(), 'each id in --works'));
+        const fields = {
+          title: need(opts.title, '--title'),
+          objectIds,
+          description: opts.description,
+          hidden: opts.hidden,
+          assignmentMode: opts.mode,
+          responsibleEditorEmail: opts.editor,
+        };
+        return print(await client.createBundle(Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined))));
+      }
+      if (action === 'add') {
+        return print(await client.addBundleMember(id(ids[0], 'the essay id'), id(ids[1], 'the object id'), opts.copy));
+      }
+      if (action === 'remove') {
+        return print(await client.removeBundleMember(id(ids[0], 'the essay id'), id(ids[1], 'the object id')));
+      }
+      throw new UsageError(`${command}: create, add or remove is required (see: ofr help)`);
+    }
     case 'import': {
       const doc = JSON.parse(await readFile(need(args[0], 'a JSON file'), 'utf8'));
       return finishImport(await client.importData(doc, {

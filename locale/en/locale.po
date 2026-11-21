@@ -926,6 +926,27 @@ msgstr "The review essay has been submitted: its works can no longer be changed.
 msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
 msgstr "This review essay has a pending contract offer."
 
+msgid "plugins.generic.objectsForReview.reviewEssay.api.notFound"
+msgstr "No review essay with this id."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.workNotFound"
+msgstr "No work with this id."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.memberOfReviewEssay"
+msgstr "This work is part of the review essay {$bundleId}: import the reviewer for the review essay instead."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopies"
+msgstr "copies must be a list of entries with the id (objectId) of a work in the review essay, each work at most once."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopyPreference"
+msgstr "copyPreference must be one of: {$values}."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopyStatus"
+msgstr "copyStatus must be one of: {$values}."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.shippingAddressRequired"
+msgstr "shippingAddress is required if a physical copy of a work has not been sent yet."
+
 msgid "plugins.generic.objectsForReview.history.email.essayChanged"
 msgstr "Reviewer informed: the works of the review essay have changed"
 

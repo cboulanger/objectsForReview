@@ -925,6 +925,27 @@ msgstr "Die Sammelrezension ist eingereicht: Ihre Werke können nicht mehr geän
 msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
 msgstr "Für diese Sammelrezension läuft ein Vertragsangebot."
 
+msgid "plugins.generic.objectsForReview.reviewEssay.api.notFound"
+msgstr "Es gibt keine Sammelrezension mit dieser ID."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.workNotFound"
+msgstr "Es gibt kein Werk mit dieser ID."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.memberOfReviewEssay"
+msgstr "Dieses Werk gehört zur Sammelrezension {$bundleId}: Importieren Sie den Rezensenten stattdessen für die Sammelrezension."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopies"
+msgstr "copies muss eine Liste von Einträgen mit der ID (objectId) eines Werks der Sammelrezension sein, jedes Werk höchstens einmal."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopyPreference"
+msgstr "copyPreference muss einer dieser Werte sein: {$values}."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopyStatus"
+msgstr "copyStatus muss einer dieser Werte sein: {$values}."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.shippingAddressRequired"
+msgstr "shippingAddress ist erforderlich, wenn ein gedrucktes Exemplar eines Werks noch nicht verschickt wurde."
+
 msgid "plugins.generic.objectsForReview.history.email.essayChanged"
 msgstr "Rezensent:in informiert: Die Werke der Sammelrezension haben sich geändert"
 

@@ -10,7 +10,8 @@
  *
  * @brief REST API of the plugin, for importing data from scripts (see api/SKILL.md):
  *  works offered for review (with DOI/ISBN lookup), reviewers and publisher
- *  contacts, and review processes that are already under way.
+ *  contacts, review processes that are already under way, and review essays
+ *  (one review of several works; see BundleWorkflow).
  *
  *  Served at /index.php/{journal}/api/v1/objectsForReview/... and authenticated
  *  like the OJS API (Authorization: Bearer <API key>). Open to journal managers,
@@ -23,6 +24,7 @@ use APP\core\Application;
 use APP\facades\Repo;
 use APP\plugins\generic\objectsForReview\classes\Assignment;
 use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
+use APP\plugins\generic\objectsForReview\classes\BundleWorkflow;
 use APP\plugins\generic\objectsForReview\classes\CopyWorkflow;
 use APP\plugins\generic\objectsForReview\classes\CrossrefLookup;
 use APP\plugins\generic\objectsForReview\classes\IsbnLookup;
@@ -34,6 +36,7 @@ use APP\plugins\generic\objectsForReview\classes\Roles;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use PKP\core\Core;
 use PKP\core\PKPBaseController;
@@ -73,7 +76,13 @@ class ObjectsForReviewController extends PKPBaseController {
 		'http://purl.org/coar/resource_type/c_18cc', // sound
 	];
 
-	const IDENTIFIER_TYPES = ['doi', 'issn', 'isbn', 'uri', 'urn', 'pmid', 'pmcid', 'purl', 'arxiv', 'ark', 'handle', 'uuid', 'ecli', 'accession', 'other'];
+	/** Offer settings that can be given when a review essay is created (the rest come from its first work) */
+	const BUNDLE_OFFER_FIELDS = ['assignmentMode', 'bidDeadline', 'responsibleEditorId', 'responsibleEditorEmail', 'hidden'];
+
+	/** Locale key prefix of the review essay errors of the API */
+	const BUNDLE_ERROR_PREFIX = 'plugins.generic.objectsForReview.reviewEssay.api.';
+
+	const IDENTIFIER_TYPES = ['doi','issn', 'isbn', 'uri', 'urn', 'pmid', 'pmcid', 'purl', 'arxiv', 'ark', 'handle', 'uuid', 'ecli', 'accession', 'other'];
 
 	public function __construct(protected $plugin) {
 	}
@@ -100,6 +109,11 @@ class ObjectsForReviewController extends PKPBaseController {
 
 		Route::get('objects/{objectId}/assignments', $this->getAssignments(...))->name('objectsForReview.getAssignments')->whereNumber('objectId');
 		Route::post('objects/{objectId}/assignments', $this->addAssignment(...))->name('objectsForReview.addAssignment')->whereNumber('objectId');
+
+		Route::post('bundles', $this->addBundle(...))->name('objectsForReview.addBundle');
+		Route::post('bundles/{bundleId}/members', $this->addBundleMember(...))->name('objectsForReview.addBundleMember')->whereNumber('bundleId');
+		Route::delete('bundles/{bundleId}/members/{objectId}', $this->removeBundleMember(...))->name('objectsForReview.removeBundleMember')
+			->whereNumber('bundleId')->whereNumber('objectId');
 
 		Route::get('users', $this->getUsers(...))->name('objectsForReview.getUsers');
 		Route::post('users', $this->addUser(...))->name('objectsForReview.addUser');
@@ -274,6 +288,12 @@ class ObjectsForReviewController extends PKPBaseController {
 		if (!in_array($status, self::IMPORT_STATUSES, true)) {
 			throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidStatus', 'status must be one of: ' . implode(', ', self::IMPORT_STATUSES) . '.');
 		}
+		// The works of a review essay are reviewed through the essay (their mirrors follow its reviewer)
+		if ($object->isBundleMember()) {
+			throw new ApiError(Response::HTTP_CONFLICT, 'member_of_review_essay',
+				__(self::BUNDLE_ERROR_PREFIX . 'memberOfReviewEssay', ['bundleId' => $object->getBundleId()]), ['bundleId' => $object->getBundleId()]);
+		}
+		$copies = $object->isReviewEssay() ? $this->bundleCopies($object, $input) : null;
 
 		// The reviewer: by id, or by email (created as an author if givenName is given)
 		if (!empty($input['userId'])) {
@@ -338,7 +358,11 @@ class ObjectsForReviewController extends PKPBaseController {
 		}
 
 		if (in_array($status, Assignment::REVIEWER_STATUSES, true)) {
-			$this->applyReservation($assignment, $input, $status);
+			if ($copies !== null) {
+				$this->applyBundleReservation($assignment, $input, $status, $copies);
+			} else {
+				$this->applyReservation($assignment, $input, $status);
+			}
 		}
 
 		if (in_array($status, [Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED], true) && !empty($input['submissionId'])) {
@@ -357,9 +381,27 @@ class ObjectsForReviewController extends PKPBaseController {
 		}
 		(new ObjectForReviewDAO())->updateObject($object);
 		AssignmentWorkflow::syncReviewer($object);
+		if ($copies !== null) {
+			// The members get their mirrors, then the copy status of each work
+			BundleWorkflow::syncMembers($object);
+			$this->applyMirrorCopyStatus($assignment, $copies);
+		}
 
 		ReservationLog::logEvent($object, ReservationLog::EVENT_IMPORTED, Application::get()->getRequest()->getUser(), $user);
 		return $dao->getById($assignment->getId());
+	}
+
+	/**
+	 * The due date of a reviewer (required for status accepted).
+	 */
+	protected function reservationDueDate(array $input, string $status): ?string {
+		if (!empty($input['dueDate'])) {
+			return $this->validDate($input['dueDate'], 'dueDate');
+		}
+		if ($status === Assignment::STATUS_ACCEPTED) {
+			throw new ApiError(Response::HTTP_BAD_REQUEST, 'dueDateRequired', 'dueDate (Y-m-d) is required for status accepted.');
+		}
+		return null;
 	}
 
 	/**
@@ -368,12 +410,7 @@ class ObjectsForReviewController extends PKPBaseController {
 	protected function applyReservation(Assignment $assignment, array $input, string $status): void {
 		$data = array_fill_keys(Reservation::FIELDS, null);
 		$data['dateReserved'] = $assignment->getDateCreated();
-
-		if (!empty($input['dueDate'])) {
-			$data['dueDate'] = $this->validDate($input['dueDate'], 'dueDate');
-		} elseif ($status === Assignment::STATUS_ACCEPTED) {
-			throw new ApiError(Response::HTTP_BAD_REQUEST, 'dueDateRequired', 'dueDate (Y-m-d) is required for status accepted.');
-		}
+		$data['dueDate'] = $this->reservationDueDate($input, $status);
 
 		$preference = (string) ($input['copyPreference'] ?? Reservation::COPY_HAVE);
 		if (!in_array($preference, Reservation::COPY_PREFERENCES, true)) {
@@ -420,6 +457,225 @@ class ObjectsForReviewController extends PKPBaseController {
 				throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopySentBy', 'copySentBy must be journal or publisher.');
 			}
 			$assignment->setData('copySentBy', $input['copySentBy']);
+		}
+	}
+
+	//
+	// Review essays
+	//
+
+	/**
+	 * POST bundles: combine works into a review essay (see BundleWorkflow). A reviewer who
+	 * already has an agreement for one of the works becomes the reviewer of the essay; no
+	 * email is sent. Offer settings not given are those of the first work.
+	 */
+	public function addBundle(Request $illuminateRequest): JsonResponse {
+		if ($denied = $this->denyUnlessManager()) {
+			return $denied;
+		}
+		$input = (array) $illuminateRequest->input();
+		try {
+			$title = trim((string) ($input['title'] ?? ''));
+			if ($title === '') {
+				throw new ApiError(Response::HTTP_BAD_REQUEST, 'titleRequired', __('plugins.generic.objectsForReview.reviewEssay.titleRequired'));
+			}
+			$description = trim((string) ($input['description'] ?? ''));
+			$description = trim(strip_tags($description)) === '' ? null : $description;
+			$ids = $input['objectIds'] ?? null;
+			if (!is_array($ids) || !$ids) {
+				throw new ApiError(Response::HTTP_BAD_REQUEST, 'worksRequired', __('plugins.generic.objectsForReview.reviewEssay.worksRequired'));
+			}
+			// Unknown ids (or works of another journal) are refused by canCombine as not available
+			$works = array_map(fn ($id) => is_numeric($id) ? $this->getContextObject((int) $id) : null, array_values($ids));
+			$copyPreferences = [];
+			foreach ((array) ($input['copyPreferences'] ?? []) as $id => $preference) {
+				$copyPreferences[(int) $id] = $this->validCopyPreference($preference);
+			}
+			if ($reason = BundleWorkflow::canCombine($works)) {
+				throw $this->bundleRuleError('cannot_combine', $reason);
+			}
+
+			$offer = array_intersect_key($input, array_flip(self::BUNDLE_OFFER_FIELDS));
+			$editor = $this->getRequest()->getUser();
+			// Invalid offer settings undo the essay
+			$container = DB::transaction(function () use ($title, $description, $works, $editor, $copyPreferences, $offer) {
+				try {
+					$container = BundleWorkflow::create($this->getRequest()->getContext(), $title, $description, $works, $editor, $copyPreferences);
+				} catch (\InvalidArgumentException $e) {
+					throw $this->bundleRuleError('cannot_combine', $e);
+				}
+				if ($offer) {
+					$this->applyObjectInput($container, $offer, false);
+					(new ObjectForReviewDAO())->updateObject($container);
+				}
+				return $container;
+			});
+		} catch (ApiError $e) {
+			return $e->response();
+		}
+		return response()->json($this->objectToArray((new ObjectForReviewDAO())->getById($container->getId()), true), Response::HTTP_CREATED);
+	}
+
+	/**
+	 * POST bundles/{bundleId}/members: add a work to a review essay that is not submitted yet.
+	 * copyPreference is the reviewer's copy preference for the work, if the essay has a reviewer (default: have).
+	 */
+	public function addBundleMember(Request $illuminateRequest): JsonResponse {
+		if ($denied = $this->denyUnlessManager()) {
+			return $denied;
+		}
+		$input = (array) $illuminateRequest->input();
+		try {
+			$container = $this->getBundle((int) $illuminateRequest->route('bundleId'));
+			$work = $this->getBundleWork($input['objectId'] ?? null);
+			$copyPreference = isset($input['copyPreference']) ? $this->validCopyPreference($input['copyPreference']) : null;
+			try {
+				BundleWorkflow::addMember($container, $work, $this->getRequest()->getUser(), $copyPreference);
+			} catch (\InvalidArgumentException $e) {
+				throw $this->bundleRuleError('review_essay_rule', $e);
+			}
+		} catch (ApiError $e) {
+			return $e->response();
+		}
+		return response()->json($this->objectToArray((new ObjectForReviewDAO())->getById($container->getId()), true), Response::HTTP_OK);
+	}
+
+	/**
+	 * DELETE bundles/{bundleId}/members/{objectId}: take a work out of a review essay that is not
+	 * submitted yet. It is offered on its own again, hidden at first.
+	 */
+	public function removeBundleMember(Request $illuminateRequest): JsonResponse {
+		if ($denied = $this->denyUnlessManager()) {
+			return $denied;
+		}
+		try {
+			$container = $this->getBundle((int) $illuminateRequest->route('bundleId'));
+			$work = $this->getBundleWork($illuminateRequest->route('objectId'));
+			try {
+				BundleWorkflow::removeMember($container, $work, $this->getRequest()->getUser());
+			} catch (\InvalidArgumentException $e) {
+				throw $this->bundleRuleError('review_essay_rule', $e);
+			}
+		} catch (ApiError $e) {
+			return $e->response();
+		}
+		return response()->json($this->objectToArray((new ObjectForReviewDAO())->getById($container->getId()), true), Response::HTTP_OK);
+	}
+
+	/**
+	 * The review essay container with this id in this journal.
+	 */
+	protected function getBundle(int $id): ObjectForReview {
+		$container = $this->getContextObject($id);
+		if (!$container || !$container->isReviewEssay()) {
+			throw new ApiError(Response::HTTP_NOT_FOUND, 'bundleNotFound', __(self::BUNDLE_ERROR_PREFIX . 'notFound'));
+		}
+		return $container;
+	}
+
+	protected function getBundleWork($id): ObjectForReview {
+		$work = is_numeric($id) ? $this->getContextObject((int) $id) : null;
+		if (!$work) {
+			throw new ApiError(Response::HTTP_NOT_FOUND, 'objectNotFound', __(self::BUNDLE_ERROR_PREFIX . 'workNotFound'));
+		}
+		return $work;
+	}
+
+	/**
+	 * A 409 for a review essay rule: the reason is the locale key of BundleWorkflow, the message its translation.
+	 * @param \InvalidArgumentException|string $reason An exception of BundleWorkflow (others are passed on) or a locale key
+	 */
+	protected function bundleRuleError(string $code, \InvalidArgumentException|string $reason): ApiError {
+		if ($reason instanceof \InvalidArgumentException) {
+			if (!str_starts_with($reason->getMessage(), BundleWorkflow::ERROR_PREFIX)) {
+				throw $reason;
+			}
+			$reason = $reason->getMessage();
+		}
+		return new ApiError(Response::HTTP_CONFLICT, $code, __($reason), ['reason' => $reason]);
+	}
+
+	protected function validCopyPreference($preference): string {
+		if (!is_string($preference) || !in_array($preference, Reservation::COPY_PREFERENCES, true)) {
+			throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopyPreference',
+				__(self::BUNDLE_ERROR_PREFIX . 'invalidCopyPreference', ['values' => implode(', ', Reservation::COPY_PREFERENCES)]));
+		}
+		return $preference;
+	}
+
+	/**
+	 * The "copies" of an assignment imported for a review essay, one per work (default: have).
+	 * @return array Work id => [copyPreference, copyStatus (or null), copyStatusDate (or null)]
+	 */
+	protected function bundleCopies(ObjectForReview $container, array $input): array {
+		$copies = [];
+		foreach (BundleWorkflow::membersOf($container) as $member) {
+			$copies[(int) $member->getId()] = ['copyPreference' => Reservation::COPY_HAVE, 'copyStatus' => null, 'copyStatusDate' => null];
+		}
+		$given = $input['copies'] ?? [];
+		if (!is_array($given) || !array_is_list($given)) {
+			throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopies', __(self::BUNDLE_ERROR_PREFIX . 'invalidCopies'));
+		}
+		$seen = [];
+		foreach ($given as $entry) {
+			$id = is_array($entry) && is_numeric($entry['objectId'] ?? null) ? (int) $entry['objectId'] : null;
+			if ($id === null || !isset($copies[$id]) || isset($seen[$id])) {
+				throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopies', __(self::BUNDLE_ERROR_PREFIX . 'invalidCopies'));
+			}
+			$seen[$id] = true;
+			$copyStatus = $entry['copyStatus'] ?? null;
+			if ($copyStatus !== null && !in_array($copyStatus, self::COPY_STATUSES, true)) {
+				throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopyStatus',
+					__(self::BUNDLE_ERROR_PREFIX . 'invalidCopyStatus', ['values' => implode(', ', self::COPY_STATUSES)]));
+			}
+			$copies[$id] = [
+				'copyPreference' => $this->validCopyPreference($entry['copyPreference'] ?? Reservation::COPY_HAVE),
+				'copyStatus' => $copyStatus,
+				'copyStatusDate' => $copyStatus !== null && !empty($entry['copyStatusDate'])
+					? $this->validDateTime($entry['copyStatusDate'], 'copyStatusDate') : null,
+			];
+		}
+		return $copies;
+	}
+
+	/**
+	 * Reservation fields of the reviewer of a review essay: the copy preferences per work
+	 * (BundleWorkflow::syncMembers() moves them and the delivery details to the mirrors).
+	 */
+	protected function applyBundleReservation(Assignment $assignment, array $input, string $status, array $copies): void {
+		$data = array_fill_keys(Reservation::FIELDS, null);
+		$data['dateReserved'] = $assignment->getDateCreated();
+		$data['dueDate'] = $this->reservationDueDate($input, $status);
+		$data['copyPreferences'] = array_map(fn ($copy) => $copy['copyPreference'], $copies);
+		$preferences = array_values($data['copyPreferences']);
+		if (in_array(Reservation::COPY_OTHER, $preferences, true)) {
+			$data['copyNote'] = trim((string) ($input['copyNote'] ?? ''));
+		}
+		if ($status === Assignment::STATUS_ACCEPTED && in_array(Reservation::COPY_PHYSICAL, $preferences, true)) {
+			$data['shippingAddress'] = trim((string) ($input['shippingAddress'] ?? ''));
+			$data['phone'] = trim((string) ($input['phone'] ?? ''));
+			$toShip = array_filter($copies, fn ($copy) => $copy['copyPreference'] === Reservation::COPY_PHYSICAL
+				&& in_array($copy['copyStatus'] ?? CopyWorkflow::PENDING, [CopyWorkflow::PENDING, CopyWorkflow::REQUESTED], true));
+			if ($toShip && $data['shippingAddress'] === '') {
+				throw new ApiError(Response::HTTP_BAD_REQUEST, 'shippingAddressRequired', __(self::BUNDLE_ERROR_PREFIX . 'shippingAddressRequired'));
+			}
+		}
+		Reservation::apply($assignment, $data);
+	}
+
+	/**
+	 * The review copy statuses given in "copies", set on the mirrors of the members.
+	 */
+	protected function applyMirrorCopyStatus(Assignment $containerAssignment, array $copies): void {
+		$dao = AssignmentWorkflow::dao();
+		foreach ($dao->getMirrors($containerAssignment->getId()) as $mirror) {
+			$copy = $copies[$mirror->getObjectId()] ?? null;
+			if (!$copy || $copy['copyStatus'] === null) {
+				continue;
+			}
+			$mirror->setData('copyStatus', $copy['copyStatus']);
+			$mirror->setData('copyStatusDate', $copy['copyStatusDate'] ?? Core::getCurrentDate());
+			$dao->updateObject($mirror);
 		}
 	}
 
@@ -819,6 +1075,8 @@ class ObjectsForReviewController extends PKPBaseController {
 			'state' => AssignmentWorkflow::getState($object, $assignments),
 			'assignmentMode' => $object->getAssignmentMode(),
 			'returnRequired' => $object->isReturnRequired(),
+			'isReviewEssay' => $object->isReviewEssay(),
+			'bundleId' => $object->getBundleId(),
 		];
 		foreach (ObjectForReview::OFFER_FIELDS as $field) {
 			if (!array_key_exists($field, $data) && !in_array($field, ['invitationSubject', 'invitationBody'], true)) {
@@ -827,6 +1085,10 @@ class ObjectsForReviewController extends PKPBaseController {
 		}
 		if ($withAssignments) {
 			$data['assignments'] = array_map(fn ($a) => $this->assignmentToArray($a), $assignments);
+		}
+		if ($object->isReviewEssay()) {
+			// The works of the essay (with their mirror assignments, if assignments are asked for)
+			$data['members'] = array_map(fn ($member) => $this->objectToArray($member, $withAssignments), BundleWorkflow::membersOf($object));
 		}
 		return $data;
 	}

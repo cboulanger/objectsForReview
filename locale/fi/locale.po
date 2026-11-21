@@ -926,6 +926,27 @@ msgstr "Kooste-arvio on lähetetty: sen teoksia ei voi enää muuttaa."
 msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
 msgstr "Tällä kooste-arviolla on avoin sopimustarjous."
 
+msgid "plugins.generic.objectsForReview.reviewEssay.api.notFound"
+msgstr "Tällä tunnisteella ei ole kooste-arviota."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.workNotFound"
+msgstr "Tällä tunnisteella ei ole teosta."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.memberOfReviewEssay"
+msgstr "Tämä teos kuuluu kooste-arvioon {$bundleId}: tuo arvioija sen sijaan kooste-arviolle."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopies"
+msgstr "copies-kentän on oltava luettelo merkinnöistä, joissa on kooste-arvion teoksen tunniste (objectId), kukin teos enintään kerran."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopyPreference"
+msgstr "copyPreference-kentän on oltava jokin näistä: {$values}."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopyStatus"
+msgstr "copyStatus-kentän on oltava jokin näistä: {$values}."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.api.shippingAddressRequired"
+msgstr "shippingAddress vaaditaan, jos teoksen painettua kappaletta ei ole vielä lähetetty."
+
 msgid "plugins.generic.objectsForReview.history.email.essayChanged"
 msgstr "Arvioijalle ilmoitettu: kooste-arvion teokset ovat muuttuneet"
 
