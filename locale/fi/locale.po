@@ -233,6 +233,9 @@ msgstr "Sitoudut toimittamaan arviosi tähän päivään mennessä (viimeistää
 msgid "plugins.generic.objectsForReview.reserve.copy"
 msgstr "Julkaisun saatavuus"
 
+msgid "plugins.generic.objectsForReview.reserve.copyPerWork"
+msgstr "Kooste-arvion julkaisujen saatavuus (yksi valinta julkaisua kohden)"
+
 msgid "plugins.generic.objectsForReview.reserve.copy.have"
 msgstr "Minulla on julkaisu jo"
 

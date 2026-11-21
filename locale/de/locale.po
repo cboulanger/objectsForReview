@@ -253,6 +253,9 @@ msgstr "Sie verpflichten sich, Ihre Rezension bis zu diesem Datum einzureichen (
 msgid "plugins.generic.objectsForReview.reserve.copy"
 msgstr "Bezug des Werks"
 
+msgid "plugins.generic.objectsForReview.reserve.copyPerWork"
+msgstr "Bezug der Werke der Sammelrezension (eine Angabe je Werk)"
+
 msgid "plugins.generic.objectsForReview.reserve.copy.have"
 msgstr "Ich habe das Werk bereits"
 

@@ -98,6 +98,13 @@ class BundleWorkflowTest extends TestCase {
 		$this->assertSame('Essay (Author A: A; Author B: B)', $container->getCitation());
 	}
 
+	public function testMembersOf(): void {
+		[$container, $members] = $this->newEssay(['A', 'B']);
+		$this->assertSame(array_map(fn ($m) => $m->getId(), $members),
+			array_map(fn ($m) => $m->getId(), BundleWorkflow::membersOf($container)));
+		$this->assertSame([], BundleWorkflow::membersOf($members[0]), 'a work has no members');
+	}
+
 	public function testMirrorsAreNotCountedAsReviews(): void {
 		$work = $this->newWork('W');
 		$this->newAssignment($work, Assignment::STATUS_COMPLETED, 1, ['bundleAssignmentId' => 999999]);

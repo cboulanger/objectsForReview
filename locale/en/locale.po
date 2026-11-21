@@ -254,6 +254,9 @@ msgstr "You commit to delivering your review by this date (at the latest {$maxDa
 msgid "plugins.generic.objectsForReview.reserve.copy"
 msgstr "Access to the work"
 
+msgid "plugins.generic.objectsForReview.reserve.copyPerWork"
+msgstr "Access to the works of the review essay (one choice per work)"
+
 msgid "plugins.generic.objectsForReview.reserve.copy.have"
 msgstr "I already have the work"
 

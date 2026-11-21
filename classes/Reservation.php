@@ -83,9 +83,11 @@ class Reservation {
 	/**
 	 * Validate the reservation form.
 	 * @param array $input Raw request values
+	 * @param ObjectForReview[] $members The works of a review essay: the copy
+	 *  preference is then asked per work (input copyPreferences: work id => preference)
 	 * @return array [errors (field => locale key), data (normalized reservation fields)]
 	 */
-	public static function validate(array $input, array $dueDateRange): array {
+	public static function validate(array $input, array $dueDateRange, array $members = []): array {
 		$errors = [];
 		$data = array_fill_keys(self::FIELDS, null);
 
@@ -102,14 +104,31 @@ class Reservation {
 			$data['dueDate'] = $input['dueDate'];
 		}
 
-		$preference = (string) ($input['copyPreference'] ?? '');
-		if (!in_array($preference, self::COPY_PREFERENCES, true)) {
-			$errors['copyPreference'] = 'plugins.generic.objectsForReview.reserve.error.copyPreference';
+		if ($members) {
+			$given = is_array($input['copyPreferences'] ?? null) ? $input['copyPreferences'] : [];
+			$preferences = [];
+			foreach ($members as $member) {
+				$preference = $given[$member->getId()] ?? null;
+				if (!is_string($preference) || !in_array($preference, self::COPY_PREFERENCES, true)) {
+					$errors['copyPreference'] = 'plugins.generic.objectsForReview.reserve.error.copyPreference';
+				} else {
+					$preferences[(int) $member->getId()] = $preference;
+				}
+			}
+			$data['copyPreferences'] = isset($errors['copyPreference']) ? null : $preferences;
+			// The address or note is checked for the works already chosen, so all errors show at once
+			$chosen = array_values($preferences);
 		} else {
-			$data['copyPreference'] = $preference;
+			$preference = (string) ($input['copyPreference'] ?? '');
+			if (!in_array($preference, self::COPY_PREFERENCES, true)) {
+				$errors['copyPreference'] = 'plugins.generic.objectsForReview.reserve.error.copyPreference';
+			} else {
+				$data['copyPreference'] = $preference;
+			}
+			$chosen = [$preference];
 		}
 
-		if ($preference === self::COPY_PHYSICAL) {
+		if (in_array(self::COPY_PHYSICAL, $chosen, true)) {
 			$data['shippingAddress'] = trim((string) ($input['shippingAddress'] ?? ''));
 			$data['phone'] = trim((string) ($input['phone'] ?? ''));
 			if ($data['shippingAddress'] === '') {
@@ -118,7 +137,8 @@ class Reservation {
 			if (!preg_match('/^\+?[0-9 ()\/.\-]{6,30}$/', $data['phone'])) {
 				$errors['phone'] = 'plugins.generic.objectsForReview.reserve.error.phone';
 			}
-		} elseif ($preference === self::COPY_OTHER) {
+		}
+		if (in_array(self::COPY_OTHER, $chosen, true)) {
 			$data['copyNote'] = trim((string) ($input['copyNote'] ?? ''));
 			if ($data['copyNote'] === '') {
 				$errors['copyNote'] = 'plugins.generic.objectsForReview.reserve.error.copyNote';
@@ -157,11 +177,14 @@ class Reservation {
 	 */
 	public static function getDisplayData(Assignment $object): array {
 		$preference = $object->getData('copyPreference');
+		$perWork = self::getPerWorkPreferences($object, fn ($key) => __('plugins.generic.objectsForReview.' . $key));
 		return [
 			'dateReserved' => $object->getData('dateReserved'),
 			'dueDate' => $object->getData('dueDate'),
 			'copyPreference' => $preference,
-			'copyPreferenceLabel' => $preference ? __('plugins.generic.objectsForReview.reserve.copy.' . $preference) : null,
+			'copyPreferenceLabel' => $perWork
+				? implode("\n", array_map(fn ($row) => $row[0] . ': ' . $row[1], $perWork))
+				: ($preference ? __('plugins.generic.objectsForReview.reserve.copy.' . $preference) : null),
 			'shippingAddress' => $object->getData('shippingAddress'),
 			'phone' => $object->getData('phone'),
 			'copyNote' => $object->getData('copyNote'),
@@ -184,6 +207,9 @@ class Reservation {
 		if ($preference) {
 			$rows[] = [$t('reserve.copy'), $t('reserve.copy.' . $preference)];
 		}
+		foreach (self::getPerWorkPreferences($object, $t) as $row) {
+			$rows[] = $row;
+		}
 		foreach (['shippingAddress' => 'reserve.shippingAddress', 'phone' => 'reserve.phone', 'copyNote' => 'reserve.copyNote'] as $field => $labelKey) {
 			if ($object->getData($field)) {
 				$rows[] = [$t($labelKey), $object->getData($field)];
@@ -193,5 +219,22 @@ class Reservation {
 			fn ($row) => htmlspecialchars($row[0]) . ': ' . nl2br(htmlspecialchars($row[1])) . '<br />',
 			$rows
 		));
+	}
+
+	/**
+	 * The copy preferences per work of a review essay contract, while the
+	 * container assignment holds them (they move to the mirrors once the
+	 * reviewer is accepted).
+	 * @param callable $t Translates a key below plugins.generic.objectsForReview
+	 * @return array [[citation, preference label], ...]
+	 */
+	protected static function getPerWorkPreferences(Assignment $object, callable $t): array {
+		$rows = [];
+		$dao = new ObjectForReviewDAO();
+		foreach ((array) ($object->getData('copyPreferences') ?? []) as $workId => $preference) {
+			$citation = $dao->getById((int) $workId)?->getCitation();
+			$rows[] = [$citation ? trim(strip_tags($citation)) : '#' . $workId, $t('reserve.copy.' . $preference)];
+		}
+		return $rows;
 	}
 }

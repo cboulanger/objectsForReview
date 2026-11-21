@@ -6,7 +6,8 @@
  * Contract fields: terms, due date and how the reviewer gets the work.
  * Used by the reservation dialog (direct reservation) and the contract page
  * (selected bidders). Expects $reserveContract, $reserveDueDate,
- * $reserveErrors and $reserveInput.
+ * $reserveErrors and $reserveInput, and for a review essay $reserveMembers
+ * (the works: [{id, citation}, ...]), which asks for the copy per work.
  *}
 {assign var=input value=$reserveInput}
 <div class="ofrContractFields">
@@ -38,13 +39,29 @@
 	</div>
 
 	<fieldset class="ofrCopy">
-		<legend>{translate key="plugins.generic.objectsForReview.reserve.copy"} <span class="ofrRequired">*</span></legend>
-		{foreach from=['have', 'physical', 'electronic', 'other'] item=preference}
-			<label class="ofrRadio">
-				<input type="radio" name="copyPreference" value="{$preference}" required{if $input.copyPreference == $preference} checked{/if} />
-				{translate key="plugins.generic.objectsForReview.reserve.copy.$preference"}
-			</label>
-		{/foreach}
+		{if $reserveMembers}
+			{* Review essay: one copy preference per work *}
+			<legend>{translate key="plugins.generic.objectsForReview.reserve.copyPerWork"} <span class="ofrRequired">*</span></legend>
+			{foreach from=$reserveMembers item=member}
+				<fieldset class="ofrCopyWork">
+					<legend>{$member.citation|strip_unsafe_html}</legend>
+					{foreach from=['have', 'physical', 'electronic', 'other'] item=preference}
+						<label class="ofrRadio">
+							<input type="radio" name="copyPreferences[{$member.id|escape}]" value="{$preference}" required{if $input.copyPreferences[$member.id] == $preference} checked{/if} />
+							{translate key="plugins.generic.objectsForReview.reserve.copy.$preference"}
+						</label>
+					{/foreach}
+				</fieldset>
+			{/foreach}
+		{else}
+			<legend>{translate key="plugins.generic.objectsForReview.reserve.copy"} <span class="ofrRequired">*</span></legend>
+			{foreach from=['have', 'physical', 'electronic', 'other'] item=preference}
+				<label class="ofrRadio">
+					<input type="radio" name="copyPreference" value="{$preference}" required{if $input.copyPreference == $preference} checked{/if} />
+					{translate key="plugins.generic.objectsForReview.reserve.copy.$preference"}
+				</label>
+			{/foreach}
+		{/if}
 
 		<div class="ofrConditional" data-show-for="physical">
 			<div class="ofrField">
@@ -74,6 +91,8 @@
 	.ofrContractFields textarea, .ofrContractFields input[type=tel], .ofrResponse textarea { width: 100%; box-sizing: border-box; }
 	.ofrContractFields fieldset { border: 1px solid #ddd; padding: 0.75rem 1rem; margin: 1rem 0; }
 	.ofrContractFields legend { font-weight: bold; padding: 0 0.25rem; }
+	.ofrContractFields .ofrCopyWork { margin: 0.5rem 0; }
+	.ofrContractFields .ofrCopyWork legend { font-weight: normal; font-style: italic; }
 	.ofrRadio, .ofrCheckbox { display: block; margin: 0.35rem 0; }
 	.ofrHint { font-size: 0.875rem; color: #555; margin: 0.25rem 0 0; }
 	.ofrRequired { color: #b00; }
@@ -81,13 +100,15 @@
 </style>
 
 <script>
-	// Show the fields for the selected delivery option; only visible fields are required
+	// Show the fields for the selected delivery options (one per work in a review essay); only visible fields are required
 	document.querySelectorAll('.ofrContractFields').forEach(function (box) {ldelim}
 		function sync() {ldelim}
-			var checked = box.querySelector('input[name="copyPreference"]:checked');
-			var value = checked ? checked.value : '';
+			var values = [];
+			box.querySelectorAll('input[name^="copyPreference"]:checked').forEach(function (checked) {ldelim}
+				values.push(checked.value);
+			{rdelim});
 			box.querySelectorAll('[data-show-for]').forEach(function (part) {ldelim}
-				var active = part.getAttribute('data-show-for') === value;
+				var active = values.indexOf(part.getAttribute('data-show-for')) !== -1;
 				part.hidden = !active;
 				part.querySelectorAll('input, textarea').forEach(function (field) {ldelim}
 					field.disabled = !active;

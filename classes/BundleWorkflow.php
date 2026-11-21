@@ -53,6 +53,14 @@ class BundleWorkflow {
 	}
 
 	/**
+	 * The works of a review essay, in order ([] for any other object).
+	 * @return ObjectForReview[]
+	 */
+	public static function membersOf(ObjectForReview $object): array {
+		return $object->isReviewEssay() ? (new ObjectForReviewDAO())->getMembers((int) $object->getId()) : [];
+	}
+
+	/**
 	 * Bring the members of a review essay in line with its reviewer: create
 	 * or update the mirror assignments, and copy the submission and the
 	 * reviewer to the works.

@@ -20,6 +20,7 @@ use APP\handler\Handler;
 use APP\plugins\generic\objectsForReview\classes\ActionLink;
 use APP\plugins\generic\objectsForReview\classes\Assignment;
 use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
+use APP\plugins\generic\objectsForReview\classes\BundleWorkflow;
 use APP\plugins\generic\objectsForReview\classes\CopyWorkflow;
 use APP\plugins\generic\objectsForReview\classes\InvitationWorkflow;
 use APP\plugins\generic\objectsForReview\classes\Reservation;
@@ -33,7 +34,7 @@ use PKP\security\Validation;
 
 class ObjectsForReviewHandler extends Handler {
 
-	const CONTRACT_INPUT = ['acceptTerms', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote'];
+	const CONTRACT_INPUT = ['acceptTerms', 'dueDate', 'copyPreference', 'copyPreferences', 'shippingAddress', 'phone', 'copyNote'];
 	const MAX_STATEMENT_LENGTH = 2000;
 
 	/**
@@ -109,6 +110,8 @@ class ObjectsForReviewHandler extends Handler {
 				'dueDate' => $myStatus === Assignment::STATUS_ACCEPTED ? $mine->getData('dueDate') : null,
 				'contractDeadline' => $myStatus === Assignment::STATUS_OFFERED ? $mine->getData('contractDeadline') : null,
 				'copyStatus' => $myStatus === Assignment::STATUS_ACCEPTED ? CopyWorkflow::getStatus($mine) : null,
+				// The works of a review essay (the reservation dialog asks for a copy preference per work)
+				'members' => $this->memberRows($objectForReview),
 			];
 		}
 
@@ -141,7 +144,8 @@ class ObjectsForReviewHandler extends Handler {
 			$request->redirect(null, 'for-review');
 		}
 		$input = $this->contractInput($request);
-		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($this->plugin(), $context->getId()));
+		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($this->plugin(), $context->getId()),
+			BundleWorkflow::membersOf($object));
 		if ($errors) {
 			return $this->index($args, $request, ['objectId' => $object->getId(), 'errors' => $errors, 'input' => $input]);
 		}
@@ -281,7 +285,8 @@ class ObjectsForReviewHandler extends Handler {
 			return $this->showResponsePage($request, 'declined', $object, $assignment);
 		}
 		$input = $this->contractInput($request);
-		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($this->plugin(), $context->getId()));
+		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($this->plugin(), $context->getId()),
+			BundleWorkflow::membersOf($object));
 		if ($errors) {
 			return $this->showResponsePage($request, 'contract', $object, $assignment, $extra, ['errors' => $errors, 'input' => $input]);
 		}
@@ -326,7 +331,8 @@ class ObjectsForReviewHandler extends Handler {
 			return $this->showResponsePage($request, 'applied', $object, $assignment);
 		}
 		$input = $this->contractInput($request);
-		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($plugin, $context->getId()));
+		[$errors, $data] = Reservation::validate($input, Reservation::getDueDateRange($plugin, $context->getId()),
+			BundleWorkflow::membersOf($object));
 		if ($errors) {
 			return $this->showInvitationPage($request, $object, $assignment, $key, ['errors' => $errors, 'input' => $input]);
 		}
@@ -406,7 +412,7 @@ class ObjectsForReviewHandler extends Handler {
 			array $extra = [], array $formState = []) {
 		$plugin = $this->plugin();
 		$templateMgr = TemplateManager::getManager($request);
-		$templateMgr->assign($this->contractTemplateData($request, $formState) + $extra + [
+		$templateMgr->assign($this->contractTemplateData($request, $formState, $object) + $extra + [
 			'view' => $view,
 			'objectId' => $object?->getId(),
 			'objectDescription' => $object?->getCitation(),
@@ -422,8 +428,11 @@ class ObjectsForReviewHandler extends Handler {
 
 	/**
 	 * Template data for the contract fields (reservation dialog and contract page).
+	 * @param ?ObjectForReview $object The object of the contract: for a review
+	 *  essay, the copy preference is asked per work (on the list page, the
+	 *  dialog takes the works from the object's row instead)
 	 */
-	protected function contractTemplateData($request, array $formState): array {
+	protected function contractTemplateData($request, array $formState, $object = null): array {
 		$plugin = $this->plugin();
 		$context = $request->getContext();
 		$dueDateRange = Reservation::getDueDateRange($plugin, $context->getId());
@@ -431,9 +440,19 @@ class ObjectsForReviewHandler extends Handler {
 			'reserveContract' => Reservation::getContract($plugin, $context),
 			'reserveDueDate' => $dueDateRange,
 			'reserveErrors' => $formState['errors'] ?? [],
-			'reserveInput' => ($formState['input'] ?? []) + ['dueDate' => $dueDateRange['default'], 'copyPreference' => ''],
+			'reserveInput' => ($formState['input'] ?? []) + ['dueDate' => $dueDateRange['default'], 'copyPreference' => '', 'copyPreferences' => []],
+			'reserveMembers' => $object ? $this->memberRows($object) : [],
 			'contractFieldsTemplate' => $plugin->getTemplateResource('frontend/contractFields.tpl'),
 		];
+	}
+
+	/**
+	 * The works of a review essay for the contract fields ([] for any other object).
+	 * @return array [['id' => ..., 'citation' => ...], ...]
+	 */
+	protected function memberRows($object): array {
+		return array_map(fn ($member) => ['id' => $member->getId(), 'citation' => $member->getCitation()],
+			BundleWorkflow::membersOf($object));
 	}
 
 	protected function contractInput($request): array {
@@ -441,6 +460,7 @@ class ObjectsForReviewHandler extends Handler {
 		foreach (self::CONTRACT_INPUT as $name) {
 			$input[$name] = $request->getUserVar($name);
 		}
+		$input['copyPreferences'] = is_array($input['copyPreferences']) ? $input['copyPreferences'] : [];
 		return $input;
 	}
 

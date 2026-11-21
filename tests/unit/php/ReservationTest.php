@@ -113,4 +113,49 @@ class ReservationTest extends TestCase {
 		$this->assertNotSame('', (string) $data['copyPreferenceLabel']);
 		$this->assertStringNotContainsString('##', (string) $data['copyPreferenceLabel'], 'label is translated');
 	}
+
+	public function testPerWorkCopyPreferences(): void {
+		$members = [$this->object(['objectId' => 5]), $this->object(['objectId' => 6])];
+		$input = $this->valid(['copyPreference' => null, 'copyPreferences' => ['5' => 'physical', '6' => 'have']]);
+		[$errors] = Reservation::validate($input, $this->range, $members);
+		$this->assertArrayHasKey('shippingAddress', $errors, 'a physical copy of one work needs the address');
+		$this->assertArrayHasKey('phone', $errors);
+
+		[$errors, $data] = Reservation::validate($input + ['shippingAddress' => 'Street 1', 'phone' => '+49 30 123456'], $this->range, $members);
+		$this->assertSame([], $errors);
+		$this->assertSame([5 => 'physical', 6 => 'have'], $data['copyPreferences']);
+		$this->assertNull($data['copyPreference']);
+		$this->assertSame('Street 1', $data['shippingAddress']);
+	}
+
+	public function testPerWorkCopyPreferenceMissingOrInvalid(): void {
+		$members = [$this->object(['objectId' => 5]), $this->object(['objectId' => 6])];
+		foreach ([['5' => 'have'], ['5' => 'have', '6' => 'pdf'], [], null] as $preferences) {
+			[$errors, $data] = Reservation::validate($this->valid(['copyPreferences' => $preferences]), $this->range, $members);
+			$this->assertSame('plugins.generic.objectsForReview.reserve.error.copyPreference', $errors['copyPreference'] ?? null, json_encode($preferences));
+			$this->assertNull($data['copyPreferences']);
+		}
+		[$errors] = Reservation::validate($this->valid(['copyPreferences' => ['5' => 'physical']]), $this->range, $members);
+		$this->assertArrayHasKey('copyPreference', $errors);
+		$this->assertArrayHasKey('shippingAddress', $errors, 'all errors show at once');
+	}
+
+	public function testPerWorkOtherNeedsNote(): void {
+		$members = [$this->object(['objectId' => 5]), $this->object(['objectId' => 6])];
+		$input = $this->valid(['copyPreferences' => ['5' => 'other', '6' => 'electronic'], 'shippingAddress' => 'Street 1']);
+		[$errors, $data] = Reservation::validate($input, $this->range, $members);
+		$this->assertArrayHasKey('copyNote', $errors);
+		$this->assertNull($data['shippingAddress'], 'no physical copy: the address is not kept');
+		[$errors, $data] = Reservation::validate($input + ['copyNote' => 'Library'], $this->range, $members);
+		$this->assertSame([], $errors);
+		$this->assertSame('Library', $data['copyNote']);
+	}
+
+	public function testPerWorkPreferencesAreShownOnePerLine(): void {
+		$assignment = $this->assignment(Assignment::STATUS_ACCEPTED, ['copyPreferences' => [999999901 => 'physical', 999999902 => 'have']]);
+		$label = (string) Reservation::getDisplayData($assignment)['copyPreferenceLabel'];
+		$this->assertCount(2, explode("\n", $label));
+		$this->assertStringContainsString(__('plugins.generic.objectsForReview.reserve.copy.physical'), $label);
+		$this->assertStringContainsString(__('plugins.generic.objectsForReview.reserve.copy.have'), $label);
+	}
 }

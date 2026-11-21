@@ -92,7 +92,7 @@
             </form>
           {elseif $o.reservable}
             {if $currentUser}
-              <a class="pkp_button ofrReserveButton" id="reserveObject-{$o.objectId|escape}" href="{url op="index" reserve=$o.objectId}" data-object-id="{$o.objectId|escape}" data-description="{$o.citation|strip_tags|escape}">{translate key='plugins.generic.objectsForReview.reserve'}</a>
+              <a class="pkp_button ofrReserveButton" id="reserveObject-{$o.objectId|escape}" href="{url op="index" reserve=$o.objectId}" data-object-id="{$o.objectId|escape}" data-description="{$o.citation|strip_tags|escape}"{if $o.members} data-review-essay="1"{/if}>{translate key='plugins.generic.objectsForReview.reserve'}</a>
             {else}
               {translate key='plugins.generic.objectsForReview.objectAvailable'}
             {/if}

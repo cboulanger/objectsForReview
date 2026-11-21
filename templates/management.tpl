@@ -232,7 +232,7 @@
 									{if $row.assignmentStatus != 'accepted'}<div class="ofrDetail ofrWarning">{translate key="plugins.generic.objectsForReview.status.`$row.assignmentStatus`"}</div>{/if}
 								</td>
 								<td>
-									{$row.copyPreferenceLabel|escape}<br />
+									{$row.copyPreferenceLabel|escape|nl2br}<br />
 									<strong>{$row.copyStatusLabel|escape}</strong>
 									<div class="ofrDetail">{$row.copyStatusDate|date_format:$dateFormatShort}</div>
 									{if $row.copyReminderCount}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.copy.reminders" number=$row.copyReminderCount date=$row.copyReminderSent|date_format:$dateFormatShort}</div>{/if}
@@ -346,7 +346,7 @@
 									{if $row.reminderSent}<br />{translate key="plugins.generic.objectsForReview.column.reminderSent"}: {$row.reminderSent|date_format:$dateFormatShort}{/if}
 								</td>
 								<td>
-									{$row.copyPreferenceLabel|escape}
+									{$row.copyPreferenceLabel|escape|nl2br}
 									{if $row.copyStatusLabel}<div><strong>{$row.copyStatusLabel|escape}</strong></div>{/if}
 									{if $row.shippingAddress}<div class="ofrDetail">{$row.shippingAddress|escape|nl2br}</div>{/if}
 									{if $row.phone}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.reserve.phone"}: {$row.phone|escape}</div>{/if}
