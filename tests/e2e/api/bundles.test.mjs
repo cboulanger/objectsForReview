@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { admin, newUser, newWork, raw, rejects } from './fixtures.mjs';
-import { apiKey, date } from '../../lib/ojs.mjs';
+import { apiKey, date, sql } from '../../lib/ojs.mjs';
 
 /** A hidden review essay of new works */
 async function newBundle(count = 2, extra = {}) {
@@ -165,6 +165,63 @@ test('import a submitted review essay: the works get submitted mirrors with thei
   assert.deepEqual([mirrorOf(a).copyPreference, mirrorOf(a).copyStatus, mirrorOf(a).copyStatusDate],
     ['physical', 'returnRequested', '2026-10-20 00:00:00']);
   assert.deepEqual([mirrorOf(b).copyPreference, mirrorOf(b).copyStatus], ['electronic', 'notNeeded']);
+});
+
+test('import with copy statuses: a mirror whose copy has arrived keeps no delivery details', async () => {
+  const { bundle, works: [a, b] } = await newBundle();
+  const reviewer = await newUser();
+  const assignment = await admin().addAssignment(bundle.id, {
+    email: reviewer.email, status: 'accepted', dueDate: date(90),
+    shippingAddress: 'E2E Street 1, 10115 Berlin', phone: '+49 30 000000',
+    copies: [
+      { objectId: a.id, copyPreference: 'physical', copyStatus: 'received' },
+      { objectId: b.id, copyPreference: 'physical', copyStatus: 'pending' },
+    ],
+  });
+  const container = await admin().getObject(bundle.id);
+  const personal = (work) => {
+    const mirror = container.members.find((m) => m.id === work.id).assignments.find((m) => m.bundleAssignmentId === assignment.id);
+    const rows = sql(`SELECT setting_name FROM objects_for_review_assignment_settings WHERE assignment_id = ${Number(mirror.id)}
+      AND setting_name IN ('shippingAddress', 'phone') AND setting_value <> ''`);
+    return rows.map((row) => row.setting_name).sort();
+  };
+  assert.deepEqual(personal(a), [], 'the received copy: no address, no phone');
+  assert.deepEqual(personal(b), ['phone', 'shippingAddress'], 'the copy still to be sent keeps them');
+});
+
+test('PUT objects: the resource type of an essay cannot change, and a work cannot become one', async () => {
+  const { bundle, works: [a] } = await newBundle();
+  const book = 'http://purl.org/coar/resource_type/c_2f33';
+  await assert.rejects(admin().updateObject(bundle.id, { resourceType: book }), (error) => {
+    assert.equal(error.status, 409);
+    assert.equal(error.code, 'review_essay_rule');
+    assert.equal(error.body.reason, 'plugins.generic.objectsForReview.reviewEssay.error.resourceType');
+    assert.ok(error.body.errorMessage && !error.body.errorMessage.startsWith('plugins.'), 'the message is translated');
+    return true;
+  });
+  const container = await admin().getObject(bundle.id);
+  assert.equal(container.resourceType, 'reviewEssay');
+  assert.equal(container.isReviewEssay, true);
+  assert.equal((await admin().updateObject(bundle.id, { resourceType: 'reviewEssay', year: '2025' })).resourceType, 'reviewEssay',
+    'the same type is accepted');
+
+  await rejects(admin().updateObject(a.id, { resourceType: 'reviewEssay' }), 400, 'invalidResourceType');
+  const loose = await newWork();
+  await rejects(admin().updateObject(loose.id, { resourceType: 'reviewEssay' }), 400, 'invalidResourceType');
+  assert.equal((await admin().getObject(loose.id)).isReviewEssay, false);
+});
+
+test('import on a work that is not a review essay: copies give invalidCopies', async () => {
+  const work = await newWork();
+  const reviewer = await newUser();
+  await assert.rejects(admin().addAssignment(work.id, { email: reviewer.email, status: 'accepted', dueDate: date(90),
+    copies: [{ objectId: work.id, copyPreference: 'electronic' }] }), (error) => {
+    assert.equal(error.status, 400);
+    assert.equal(error.code, 'invalidCopies');
+    assert.ok(error.body.errorMessage && !error.body.errorMessage.startsWith('plugins.'), 'the message is translated');
+    return true;
+  });
+  assert.equal((await admin().getObject(work.id)).assignments.length, 0, 'nothing was saved');
 });
 
 test('create: copyPreferences only for the works of the essay', async () => {

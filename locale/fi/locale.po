@@ -926,6 +926,9 @@ msgstr "Kooste-arvio on lähetetty: sen teoksia ei voi enää muuttaa."
 msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
 msgstr "Tällä kooste-arviolla on avoin sopimustarjous."
 
+msgid "plugins.generic.objectsForReview.reviewEssay.error.resourceType"
+msgstr "Kooste-arvion resurssityyppiä ei voi muuttaa. Pura kooste-arvio sen sijaan."
+
 msgid "plugins.generic.objectsForReview.reviewEssay.api.notFound"
 msgstr "Tällä tunnisteella ei ole kooste-arviota."
 
@@ -994,6 +997,9 @@ msgstr "Piilota kooste-arvio toistaiseksi julkisesta luettelosta"
 
 msgid "plugins.generic.objectsForReview.reviewEssay.emailNotice"
 msgstr "Jos kooste-arviolla on arvioija, hänelle ilmoitetaan sähköpostilla ”Kooste-arvio muuttunut” (mallipohjan teksti sellaisenaan)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.endsBidsNotice"
+msgstr "Valittujen teosten avoimet hakemukset ja kutsut päätetään, kun kooste-arvio luodaan. Hakijoille ja kutsutuille ei lähetetä sähköpostia, ja heidän linkkinsä lakkaavat toimimasta."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.membersHint"
 msgstr "Teoksia lisätään kooste-arvioon ja poistetaan siitä luettelon toiminnoilla."

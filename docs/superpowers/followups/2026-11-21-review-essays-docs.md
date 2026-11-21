@@ -72,14 +72,15 @@ Errors are `{"error": "<code>", "errorMessage": "<text>"}` with status 400 (inva
 
 Review essays add:
 
-- 400 `titleRequired`, `worksRequired`, `invalidCopies` (`copies` or `copyPreferences` name a work outside the essay, or one twice), `invalidCopyPreference`, `invalidCopyStatus`, `shippingAddressRequired`;
+- 400 `titleRequired`, `worksRequired`, `invalidCopies` (`copies` or `copyPreferences` name a work outside the essay, or one twice; or `copies` is given for an assignment of a work that is not a review essay), `invalidCopyPreference`, `invalidCopyStatus`, `shippingAddressRequired`, `invalidResourceType` (`PUT objects/{id}` with `resourceType: reviewEssay`: an essay is created with `POST bundles`);
 - 404 `bundleNotFound` (no review essay with this id), `objectNotFound`;
-- 409 `cannot_combine` (`POST bundles`) and `review_essay_rule` (adding or removing a work), each with `reason`, one of:
+- 409 `cannot_combine` (`POST bundles`) and `review_essay_rule` (adding or removing a work, or changing the `resourceType` of an essay), each with `reason`, one of:
   - `plugins.generic.objectsForReview.reviewEssay.error.notAvailable` (a work is already in an essay, attached to a submission, closed, or an essay itself; or the id is unknown),
   - `...error.twoReviewers` (more than one work has a reviewer, or the work to add has one),
   - `...error.pending` (a contract offer or an invitation round is pending for a work),
   - `...error.lastMember` (the last work can't be removed),
-  - `...error.submitted` (the essay is submitted);
+  - `...error.submitted` (the essay is submitted),
+  - `...error.resourceType` (`PUT objects/{id}` would change the resource type of an essay);
 - 409 `member_of_review_essay` with `bundleId`: an assignment was imported on a work of an essay; import it on the essay.
 ```
 

@@ -501,7 +501,9 @@ class ObjectsForReviewHandler extends Handler {
 			Validation::redirectLogin();
 		}
 		$object = $this->getObject($request, (int) $request->getUserVar('objectId'));
-		if (!$object || $object->getSubmissionId() || $object->getData('offerClosed') || (!$allowMember && $object->isBundleMember())) {
+		// The offer of a work of a review essay is that of its essay
+		$offer = $object && $object->isBundleMember() ? (BundleWorkflow::getContainer($object) ?? $object) : $object;
+		if (!$object || $object->getSubmissionId() || $offer->getData('offerClosed') || (!$allowMember && $object->isBundleMember())) {
 			$request->redirect(null, 'for-review');
 		}
 		return [$object, $request->getUser(), $request->getContext()];

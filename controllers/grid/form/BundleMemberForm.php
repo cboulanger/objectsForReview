@@ -19,6 +19,7 @@ namespace APP\plugins\generic\objectsForReview\controllers\grid\form;
 
 use APP\core\Application;
 use APP\plugins\generic\objectsForReview\classes\Assignment;
+use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
 use APP\plugins\generic\objectsForReview\classes\BundleWorkflow;
 use APP\plugins\generic\objectsForReview\classes\ObjectForReview;
 use APP\plugins\generic\objectsForReview\classes\ObjectForReviewDAO;
@@ -72,7 +73,10 @@ class BundleMemberForm extends \PKP\form\Form {
 	 * @return ObjectForReview[] id => work
 	 */
 	protected function getWorks(): array {
-		return ReviewEssayForm::getCombinableWorks((int) $this->context->getId());
+		// A work with its own reviewer cannot join (BundleWorkflow::addMember: the essay has one reviewer)
+		$dao = AssignmentWorkflow::dao();
+		return array_filter(ReviewEssayForm::getCombinableWorks((int) $this->context->getId()),
+			fn ($work) => !$dao->getReviewer((int) $work->getId()));
 	}
 
 	/**

@@ -103,8 +103,8 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 		$objectsForReview = $objectForReviewDao->getAll($context->getId(), true, true);
 		$assignmentsByObject = AssignmentWorkflow::dao()->getByContextId($context->getId());
 
-		// Each review essay is followed by its works; a work of an essay that is no longer
-		// listed (it was submitted) stays in place, named with its essay
+		// Each review essay is followed by its works. A work is always listed with its essay:
+		// syncMembers gives the works the essay's submission, so neither or both are listed.
 		$objects = [];
 		while ($objectForReview = $objectsForReview->next()) {
 			$objects[$objectForReview->getId()] = $objectForReview;
@@ -114,11 +114,10 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 			if (isset($gridData[$objectId])) {
 				continue;
 			}
-			$container = $objectForReview->isBundleMember() ? BundleWorkflow::getContainer($objectForReview) : null;
-			if ($container && isset($objects[$container->getId()])) {
+			if ($objectForReview->isBundleMember() && BundleWorkflow::getContainer($objectForReview)) {
 				continue;
 			}
-			$gridData[$objectId] = $this->getRowData($objectForReview, $assignmentsByObject, $container, (bool) $container);
+			$gridData[$objectId] = $this->getRowData($objectForReview, $assignmentsByObject, null);
 			foreach (BundleWorkflow::membersOf($objectForReview) as $member) {
 				$gridData[$member->getId()] = $this->getRowData($member, $assignmentsByObject, $objectForReview);
 			}
@@ -191,21 +190,20 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 	/**
 	 * Data of a row.
 	 * @param array $assignmentsByObject object id => assignments
-	 * @param ?ObjectForReview $container The review essay of a work
-	 * @param bool $containerNotListed The review essay is not in the list (it was submitted)
+	 * @param ?ObjectForReview $container The review essay of a work (listed below it)
 	 */
-	protected function getRowData(ObjectForReview $objectForReview, array $assignmentsByObject, ?ObjectForReview $container,
-			bool $containerNotListed = false): array {
+	protected function getRowData(ObjectForReview $objectForReview, array $assignmentsByObject, ?ObjectForReview $container): array {
 		$assignments = $assignmentsByObject[$objectForReview->getId()] ?? [];
 		$state = AssignmentWorkflow::getState($objectForReview, $assignments);
 		$userName = __('plugins.generic.objectsForReview.offerState.' . $state);
 		if ($objectForReview->getUserId() && ($user = Repo::user()->get($objectForReview->getUserId(), true))) {
 			$userName .= ': ' . $user->getFullName() . ' (' . $user->getEmail() . ')';
-		} elseif ($objectForReview->isBidding() && in_array($state, [AssignmentWorkflow::STATE_OPEN, AssignmentWorkflow::STATE_SELECTION], true)) {
+		} elseif (!$container && $objectForReview->isBidding() && in_array($state, [AssignmentWorkflow::STATE_OPEN, AssignmentWorkflow::STATE_SELECTION], true)) {
 			$userName .= ' (' . __('plugins.generic.objectsForReview.offerState.bidCount',
 				['number' => count(AssignmentWorkflow::filter($assignments, Assignment::BIDDER_STATUSES))]) . ')';
 		}
-		if ($objectForReview->isHidden()) {
+		// A work of an essay is offered through its essay: the essay's row shows bids and whether it is hidden
+		if (!$container && $objectForReview->isHidden()) {
 			$userName .= ' · ' . __('plugins.generic.objectsForReview.hidden');
 		}
 
@@ -217,8 +215,6 @@ class ObjectsForReviewManagementGridHandler extends GridHandler {
 			'hidden' => $objectForReview->isHidden(),
 			// container | member | null
 			'essayRole' => $objectForReview->isReviewEssay() ? 'container' : ($container ? 'member' : null),
-			// A work whose review essay is not listed: the essay's title
-			'essayTitle' => $container && $containerNotListed ? $container->getTitle() : null,
 		);
 	}
 

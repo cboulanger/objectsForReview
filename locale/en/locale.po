@@ -926,6 +926,9 @@ msgstr "The review essay has been submitted: its works can no longer be changed.
 msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
 msgstr "This review essay has a pending contract offer."
 
+msgid "plugins.generic.objectsForReview.reviewEssay.error.resourceType"
+msgstr "The resource type of a review essay cannot be changed. Dissolve the review essay instead."
+
 msgid "plugins.generic.objectsForReview.reviewEssay.api.notFound"
 msgstr "No review essay with this id."
 
@@ -994,6 +997,9 @@ msgstr "Hide the review essay from the public list for now"
 
 msgid "plugins.generic.objectsForReview.reviewEssay.emailNotice"
 msgstr "If the review essay has a reviewer, they are informed with the email \"Review essay changed\" (the template text, sent without editing)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.endsBidsNotice"
+msgstr "Open bids and invitations on the selected works are ended when the review essay is created. The bidders and invited people are not emailed, and their links stop working."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.membersHint"
 msgstr "Works are added to the review essay and removed from it with the actions in the list."

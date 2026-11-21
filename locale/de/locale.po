@@ -925,6 +925,9 @@ msgstr "Die Sammelrezension ist eingereicht: Ihre Werke können nicht mehr geän
 msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
 msgstr "Für diese Sammelrezension läuft ein Vertragsangebot."
 
+msgid "plugins.generic.objectsForReview.reviewEssay.error.resourceType"
+msgstr "Der Ressourcentyp einer Sammelrezension kann nicht geändert werden. Lösen Sie die Sammelrezension stattdessen auf."
+
 msgid "plugins.generic.objectsForReview.reviewEssay.api.notFound"
 msgstr "Es gibt keine Sammelrezension mit dieser ID."
 
@@ -993,6 +996,9 @@ msgstr "Sammelrezension vorerst in der öffentlichen Liste verbergen"
 
 msgid "plugins.generic.objectsForReview.reviewEssay.emailNotice"
 msgstr "Hat die Sammelrezension eine Rezensentin/einen Rezensenten, wird diese Person mit der E-Mail „Sammelrezension geändert“ informiert (Text der Vorlage, ohne Bearbeitung)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.endsBidsNotice"
+msgstr "Offene Bewerbungen und Einladungen zu den ausgewählten Werken werden beendet, wenn die Sammelrezension angelegt wird. Die Bewerberinnen/Bewerber und Eingeladenen erhalten keine E-Mail, ihre Links funktionieren nicht mehr."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.membersHint"
 msgstr "Werke werden mit den Aktionen in der Liste zur Sammelrezension hinzugefügt und aus ihr entfernt."

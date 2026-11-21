@@ -204,6 +204,10 @@ class ReservationActionsHandler extends Handler {
 		if (!$object || !$request->isPost() || !$request->checkCSRF()) {
 			return new JSONMessage(false, __('user.authorization.accessDenied'));
 		}
+		if ($object->isBundleMember()) {
+			// A work of a review essay is offered through its essay
+			return new JSONMessage(false, __('plugins.generic.objectsForReview.desk.notPossible'));
+		}
 		$user = $request->getUser();
 		$assignments = AssignmentWorkflow::dao()->getByObjectId($object->getId());
 		$state = AssignmentWorkflow::getState($object, $assignments);
@@ -273,7 +277,8 @@ class ReservationActionsHandler extends Handler {
 				$assignment = $candidate;
 			}
 		}
-		if (!$assignment) {
+		if (!$assignment || $assignment->isMirror()) {
+			// A mirror follows the essay's reviewer assignment and is not acted on by itself
 			return [null, []];
 		}
 		$allowed = match ($mode) {

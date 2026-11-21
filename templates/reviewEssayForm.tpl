@@ -78,6 +78,7 @@
 			{fbvFormSection list=true}
 				{fbvElement type="checkbox" id="hidden" value="1" checked=$hidden label="plugins.generic.objectsForReview.reviewEssay.hidden"}
 			{/fbvFormSection}
+			<p class="ofrHint">{translate key="plugins.generic.objectsForReview.reviewEssay.endsBidsNotice"}</p>
 			<p class="ofrHint">{translate key="plugins.generic.objectsForReview.reviewEssay.emailNotice"}</p>
 		{/if}
 	{/fbvFormArea}

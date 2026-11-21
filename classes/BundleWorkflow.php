@@ -33,10 +33,6 @@ use PKP\user\User;
 
 class BundleWorkflow {
 
-	/** Container assignment statuses that the mirrors follow (see getReviewerAssignment) */
-	const MIRRORED_STATUSES = [Assignment::STATUS_ACCEPTED, Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED,
-		Assignment::STATUS_RETRACTED, Assignment::STATUS_CANCELLED];
-
 	/** Locale key prefix of the errors (an exception's message is the full key) */
 	const ERROR_PREFIX = 'plugins.generic.objectsForReview.reviewEssay.error.';
 

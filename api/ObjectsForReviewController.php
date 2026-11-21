@@ -293,6 +293,10 @@ class ObjectsForReviewController extends PKPBaseController {
 			throw new ApiError(Response::HTTP_CONFLICT, 'member_of_review_essay',
 				__(self::BUNDLE_ERROR_PREFIX . 'memberOfReviewEssay', ['bundleId' => $object->getBundleId()]), ['bundleId' => $object->getBundleId()]);
 		}
+		// "copies" lists the works of a review essay; any other work has copyPreference instead
+		if (!$object->isReviewEssay() && ($input['copies'] ?? null) !== null) {
+			throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopies', __(self::BUNDLE_ERROR_PREFIX . 'invalidCopies'));
+		}
 		$copies = $object->isReviewEssay() ? $this->bundleCopies($object, $input) : null;
 
 		// The reviewer: by id, or by email (created as an author if givenName is given)
@@ -685,6 +689,10 @@ class ObjectsForReviewController extends PKPBaseController {
 			}
 			$mirror->setData('copyStatus', $copy['copyStatus']);
 			$mirror->setData('copyStatusDate', $copy['copyStatusDate'] ?? Core::getCurrentDate());
+			if (!in_array($copy['copyStatus'], [CopyWorkflow::PENDING, CopyWorkflow::REQUESTED, CopyWorkflow::SENT], true)) {
+				// The copy has arrived (or none is needed): the delivery details copied onto the mirror are no longer needed
+				Reservation::erasePersonalData($mirror);
+			}
 			$dao->updateObject($mirror);
 		}
 	}
@@ -929,7 +937,14 @@ class ObjectsForReviewController extends PKPBaseController {
 		}
 		if ($has('resourceType') || $isNew) {
 			$resourceType = (string) ($input['resourceType'] ?? IsbnLookup::BOOK_TYPE);
-			if (!in_array($resourceType, self::RESOURCE_TYPES, true)) {
+			// A review essay is made with POST bundles and stays one until it is dissolved
+			if ($object->isReviewEssay()) {
+				if ($resourceType !== ObjectForReview::RESOURCE_TYPE_REVIEW_ESSAY) {
+					throw $this->bundleRuleError('review_essay_rule', BundleWorkflow::ERROR_PREFIX . 'resourceType');
+				}
+			} elseif ($resourceType === ObjectForReview::RESOURCE_TYPE_REVIEW_ESSAY) {
+				throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidResourceType', 'A work cannot become a review essay: create one with POST bundles.');
+			} elseif (!in_array($resourceType, self::RESOURCE_TYPES, true)) {
 				throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidResourceType', 'resourceType must be a COAR resource type URI: ' . implode(', ', self::RESOURCE_TYPES) . '.');
 			}
 			$object->setResourceType($resourceType);

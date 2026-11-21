@@ -48,7 +48,7 @@ class ObjectsForReviewManagementGridCellProvider extends GridCellProvider {
 
 	/**
 	 * The description (column flag anyhtml): a review essay is labelled as such, its works
-	 * are indented below it; a work of a review essay that is not listed names the essay.
+	 * are indented below it.
 	 */
 	protected function getDescriptionHtml(array $item): string {
 		$description = PKPString::stripUnsafeHtml((string) $item['description']);
@@ -56,11 +56,6 @@ class ObjectsForReviewManagementGridCellProvider extends GridCellProvider {
 			case 'container':
 				return '<strong>' . htmlspecialchars(__('plugins.generic.objectsForReview.reviewEssay.label')) . '</strong> ' . $description;
 			case 'member':
-				if (!empty($item['essayTitle'])) {
-					// Not below its essay, so not indented
-					return htmlspecialchars(__('plugins.generic.objectsForReview.reviewEssay.memberOf', ['title' => $item['essayTitle']]))
-						. ' ' . $description;
-				}
 				return '<span class="ofrEssayMember">↳ ' . $description . '</span>';
 		}
 		return $description;

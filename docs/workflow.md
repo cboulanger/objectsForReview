@@ -185,8 +185,8 @@ flowchart TD
     C -. "one work has a reviewer" .-> T["The reviewer is taken over:<br/>the agreement covers all works,<br/>reviewer informed by email"]
     T --> E
     E["Review essay: one offer,<br/>its works listed beneath it"] --> S["Shared process, once for the essay<br/>(see Overview): offer, reservation or bidding,<br/>agreement with a copy choice per work,<br/>writing, submission, publication"]
-    S --> CA["Work A: review copy<br/>from its publisher or stock;<br/>after publication, notify its publisher"]
-    S --> CB["Work B: review copy<br/>from its publisher or stock;<br/>after publication, notify its publisher"]
+    S -. "from the agreement on:<br/>per work, in parallel" .-> CA["Work A: review copy<br/>from its publisher or stock;<br/>after publication, notify its publisher"]
+    S -. "from the agreement on:<br/>per work, in parallel" .-> CB["Work B: review copy<br/>from its publisher or stock;<br/>after publication, notify its publisher"]
     E -. "Add work /<br/>Remove from review essay<br/>(until submitted)" .-> CH["Works change;<br/>a reviewer is informed by email;<br/>a removed work is offered<br/>on its own, hidden"]
     E -. "Dissolve<br/>(only without a reviewer)" .-> D["Each work is offered<br/>on its own again, hidden"]
     S -- "reviewer withdraws<br/>or is cancelled" --> X["The essay is offered again"]

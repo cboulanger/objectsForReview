@@ -166,9 +166,8 @@ class BundleWorkflowTest extends TestCase {
 				$this->assertSame(1, (int) (new ObjectForReviewDAO())->getById($member->getId())->getUserId());
 			}
 			$mirrorA = (new AssignmentDAO())->getByObjectId($a->getId())[0];
-			if ($status === Assignment::STATUS_SUBMITTED) {
-				$this->assertNull($mirrorA->getData('shippingAddress'), 'personal data is not kept for submitted reviews');
-			}
+			$this->assertNull($mirrorA->getData('shippingAddress'), "{$status}: personal data is not kept for finished reviews");
+			$this->assertNull($mirrorA->getData('phone'), "{$status}: personal data is not kept for finished reviews");
 			$containerAssignment = (new AssignmentDAO())->getById($reviewer->getId());
 			$this->assertNull($containerAssignment->getData('copyPreferences'));
 			$this->assertNull($containerAssignment->getData('shippingAddress'));
@@ -625,5 +624,52 @@ class BundleWorkflowTest extends TestCase {
 		}
 		$this->assertFalse(AssignmentWorkflow::isBiddingOpen($dao->getById($empty->getId()), []), 'no works: no bids');
 		$this->assertTrue(AssignmentWorkflow::isBiddingOpen($dao->getById($essay->getId()), []), 'with a work: bidding open');
+	}
+
+	//
+	// The editor's actions (ReservationActionsHandler)
+	//
+
+	/** A request of the editor's dialogs for these parameters */
+	protected function handlerRequest(array $vars): object {
+		// The plugin registers its DAO when it is loaded, which these tests do not do
+		\PKP\db\DAORegistry::registerDAO('ObjectForReviewDAO', new ObjectForReviewDAO());
+		$context = $this->context();
+		$user = $this->editor();
+		return new class($vars, $context, $user) {
+			public function __construct(private array $vars, private $context, private $user) {}
+			public function getUserVar($key) { return $this->vars[$key] ?? null; }
+			public function getContext() { return $this->context; }
+			public function getUser() { return $this->user; }
+			public function isPost() { return true; }
+			public function checkCSRF() { return true; }
+		};
+	}
+
+	public function testHandlerRefusesMirrorsAsTargets(): void {
+		[$container, [$a], $reviewer] = $this->essayWithReviewer(['A' => 'electronic', 'B' => 'have']);
+		$mirror = (new AssignmentDAO())->getByObjectId($a->getId())[0];
+		$this->assertTrue($mirror->isMirror());
+		$handler = new \APP\plugins\generic\objectsForReview\controllers\ReservationActionsHandler($this->plugin());
+		foreach (['message', 'cancel'] as $mode) {
+			[$object, $assignments] = $this->invoke($handler, 'getTarget',
+				$this->handlerRequest(['objectId' => $a->getId(), 'assignmentId' => $mirror->getId()]), $mode);
+			$this->assertNull($object, "{$mode}: a mirror is not a target");
+			$this->assertSame([], $assignments);
+		}
+		[$object, $assignments] = $this->invoke($handler, 'getTarget',
+			$this->handlerRequest(['objectId' => $container->getId(), 'assignmentId' => $reviewer->getId()]), 'message');
+		$this->assertSame($container->getId(), $object->getId(), 'the reviewer of the essay is');
+		$this->assertSame([$reviewer->getId()], array_map(fn ($assignment) => $assignment->getId(), $assignments));
+	}
+
+	public function testHandlerRefusesOfferActionsOnMembers(): void {
+		[$container, [$a]] = $this->newEssay(['A', 'B']);
+		$handler = new \APP\plugins\generic\objectsForReview\controllers\ReservationActionsHandler($this->plugin());
+		foreach (['closeOffer', 'switchToDirect', 'reopenBidding', 'reopenOffer'] as $action) {
+			$result = $this->invoke($handler, 'offerAction', $this->handlerRequest(['objectId' => $a->getId()]), $action);
+			$this->assertFalse($result->getStatus(), "{$action}: refused on a work of an essay");
+		}
+		$this->assertFalse((bool) $this->reload($a)->getData('offerClosed'), 'the offer of the work is unchanged');
 	}
 }
