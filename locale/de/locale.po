@@ -922,6 +922,114 @@ msgstr "Eine Sammelrezension mit Rezensentin/Rezensent kann nicht aufgelöst wer
 msgid "plugins.generic.objectsForReview.reviewEssay.error.submitted"
 msgstr "Die Sammelrezension ist eingereicht: Ihre Werke können nicht mehr geändert werden."
 
+msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
+msgstr "Für diese Sammelrezension läuft ein Vertragsangebot oder eine Einladungsrunde."
+
+msgid "plugins.generic.objectsForReview.history.email.essayChanged"
+msgstr "Rezensent:in informiert: Die Werke der Sammelrezension haben sich geändert"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.create"
+msgstr "Sammelrezension anlegen"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.label"
+msgstr "Sammelrezension:"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.memberOf"
+msgstr "(Sammelrezension: {$title})"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.title"
+msgstr "Titel der Sammelrezension"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.titleRequired"
+msgstr "Bitte geben Sie einen Titel für die Sammelrezension ein."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.works"
+msgstr "Werke"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.works.description"
+msgstr "Werke, die schon zu einer Sammelrezension gehören, einer Einreichung zugeordnet sind oder für die ein Vertragsangebot oder eine Einladungsrunde läuft, werden nicht angezeigt. Höchstens eines der ausgewählten Werke darf eine Rezensentin/einen Rezensenten haben: Diese Person schreibt dann die Sammelrezension."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.worksRequired"
+msgstr "Bitte wählen Sie mindestens ein Werk aus."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.noWorks"
+msgstr "Es gibt keine Werke, die zu einer Sammelrezension zusammengefasst werden können."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.workHasReviewer"
+msgstr "hat Rezensent:in"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.copyPreference"
+msgstr "Zugang der Rezensentin/des Rezensenten zu diesem Werk"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.copyPreference.description"
+msgstr "Die Sammelrezension hat eine Rezensentin/einen Rezensenten. Wählen Sie, wie diese Person Zugang zum hinzugefügten Werk erhält."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.copyPreferences.description"
+msgstr "Die Rezensentin/der Rezensent des ausgewählten Werks mit „hat Rezensent:in“ übernimmt die Sammelrezension. Wählen Sie für jedes andere Werk, wie diese Person Zugang erhält."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.hidden"
+msgstr "Sammelrezension vorerst in der öffentlichen Liste verbergen"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.emailNotice"
+msgstr "Hat die Sammelrezension eine Rezensentin/einen Rezensenten, wird diese Person mit der E-Mail „Sammelrezension geändert“ informiert (Text der Vorlage, ohne Bearbeitung)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.membersHint"
+msgstr "Werke werden mit den Aktionen in der Liste zur Sammelrezension hinzugefügt und aus ihr entfernt."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.created"
+msgstr "Die Sammelrezension wurde angelegt."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.saved"
+msgstr "Die Sammelrezension wurde gespeichert."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.workAdded"
+msgstr "Das Werk wurde zur Sammelrezension hinzugefügt."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.workRemoved"
+msgstr "Das Werk wurde aus der Sammelrezension entfernt. Es wird wieder einzeln angeboten, zunächst verborgen."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.reviewerEmailed"
+msgstr "Die Rezensentin/der Rezensent wurde per E-Mail informiert (Text der Vorlage, unbearbeitet)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.selectRequired"
+msgstr "Bitte treffen Sie eine gültige Auswahl."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.essay"
+msgstr "Sammelrezension"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.work"
+msgstr "Werk"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.noWorksToAdd"
+msgstr "Es gibt keine Werke, die zur Sammelrezension hinzugefügt werden können."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.noEssays"
+msgstr "Es gibt keine Sammelrezension, zu der dieses Werk hinzugefügt werden kann."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.addWork"
+msgstr "Werk hinzufügen"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.addToEssay"
+msgstr "Zu Sammelrezension hinzufügen…"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.dissolve"
+msgstr "Auflösen"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.dissolve.confirm"
+msgstr "Diese Sammelrezension auflösen? Ihre Werke werden wieder einzeln angeboten, zunächst verborgen."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.remove"
+msgstr "Aus Sammelrezension entfernen"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.remove.confirm"
+msgstr "Dieses Werk aus der Sammelrezension entfernen? Es wird wieder einzeln angeboten, zunächst verborgen. Hat die Sammelrezension eine Rezensentin/einen Rezensenten, wird diese Person mit der E-Mail „Sammelrezension geändert“ informiert (Text der Vorlage, ohne Bearbeitung)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.delete.confirmEssay"
+msgstr "Diese Sammelrezension löschen? Sie wird zuerst aufgelöst: Ihre Werke bleiben in der Liste und werden wieder einzeln angeboten, zunächst verborgen. Eine Sammelrezension mit Rezensent:in kann nicht gelöscht werden."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.delete.confirmWork"
+msgstr "Dieses Werk löschen? Es wird zuerst aus seiner Sammelrezension entfernt (die Rezensentin/der Rezensent der Sammelrezension wird gegebenenfalls per E-Mail informiert). Das letzte Werk einer Sammelrezension kann nicht gelöscht werden."
+
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Standard-Vergabe für neue Angebote"
 

@@ -123,16 +123,24 @@ class AvailableobjectsForReviewForm extends \PKP\form\Form {
 		$templateMgr->assign('identifierTypes', $identifierTypes);
 		$templateMgr->assign('resourceTypes', $resourceTypes);
 		$templateMgr->assign('identifierLookupTemplate', $this->plugin->getTemplateResource('identifierLookup.tpl'));
+		self::assignOfferSettings($templateMgr, $this->plugin, (int) $this->contextId);
+		$publisherContacts = Roles::getMembers($this->plugin, (int) $this->contextId, Roles::PUBLISHER);
+		$templateMgr->assign('hasPublisherContacts', (bool) $publisherContacts);
+		$templateMgr->assign('publisherContacts', ['' => __('plugins.generic.objectsForReview.offer.noPublisherContact')] + $publisherContacts);
+		return parent::fetch($request);
+	}
+
+	/**
+	 * Template variables of the offer settings (offerSettingsFields.tpl), also used by ReviewEssayForm.
+	 */
+	public static function assignOfferSettings(TemplateManager $templateMgr, $plugin, int $contextId): void {
+		$templateMgr->assign('offerSettingsTemplate', $plugin->getTemplateResource('offerSettingsFields.tpl'));
 		$templateMgr->assign('assignmentModes', [
 			ObjectForReview::MODE_DIRECT => __('plugins.generic.objectsForReview.offer.mode.direct'),
 			ObjectForReview::MODE_BIDDING => __('plugins.generic.objectsForReview.offer.mode.bidding'),
 		]);
 		$templateMgr->assign('bookReviewEditors', ['' => __('plugins.generic.objectsForReview.offer.noEditor')]
-			+ Roles::getMembers($this->plugin, (int) $this->contextId, Roles::EDITOR));
-		$publisherContacts = Roles::getMembers($this->plugin, (int) $this->contextId, Roles::PUBLISHER);
-		$templateMgr->assign('hasPublisherContacts', (bool) $publisherContacts);
-		$templateMgr->assign('publisherContacts', ['' => __('plugins.generic.objectsForReview.offer.noPublisherContact')] + $publisherContacts);
-		return parent::fetch($request);
+			+ Roles::getMembers($plugin, $contextId, Roles::EDITOR));
 	}
 
 	/**

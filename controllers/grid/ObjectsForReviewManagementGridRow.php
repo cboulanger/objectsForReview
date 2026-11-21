@@ -43,13 +43,16 @@ class ObjectsForReviewManagementGridRow extends GridRow {
 
 		if (!empty($objectId)) {
 			$router = $request->getRouter();
+			$data = $this->getData();
+			// container (review essay) | member (work of a review essay) | null
+			$essayRole = $data['essayRole'] ?? null;
 
-			// Create the "edit" action
+			// Create the "edit" action (a review essay has its own form)
 			$this->addAction(
 				new LinkAction(
 					'edit',
 					new AjaxModal(
-						$router->url($request, null, null, 'editAvailableObjectForReview', null, array('objectId' => $objectId)),
+						$router->url($request, null, null, $essayRole === 'container' ? 'editReviewEssay' : 'editAvailableObjectForReview', null, array('objectId' => $objectId)),
 						__('grid.action.edit'),
 						'modal_edit',
 						true),
@@ -58,32 +61,90 @@ class ObjectsForReviewManagementGridRow extends GridRow {
 				)
 			);
 
-			// Invitation page (InvitationWorkflow)
-			$this->addAction(
-				new LinkAction(
-					'invite',
-					new RedirectAction($request->getDispatcher()->url($request, \APP\core\Application::ROUTE_PAGE, null,
-						\APP\plugins\generic\objectsForReview\pages\ObjectsForReviewManagementHandler::PAGE, 'invite', [$objectId])),
-					__('plugins.generic.objectsForReview.invitation.inviteReviewers'),
-					'invite'
-				)
-			);
+			if ($essayRole === 'container') {
+				// Add a work to the review essay
+				$this->addAction(
+					new LinkAction(
+						'addWork',
+						new AjaxModal(
+							$router->url($request, null, null, 'editBundleMember', null, ['containerId' => $objectId]),
+							__('plugins.generic.objectsForReview.reviewEssay.addWork'),
+							'modal_add_item'),
+						__('plugins.generic.objectsForReview.reviewEssay.addWork'),
+						'add_item'
+					)
+				);
+				// Dissolve the review essay (BundleWorkflow refuses it with a reviewer)
+				$this->addAction(
+					new LinkAction(
+						'dissolve',
+						new RemoteActionConfirmationModal(
+							$request->getSession(),
+							__('plugins.generic.objectsForReview.reviewEssay.dissolve.confirm'),
+							__('plugins.generic.objectsForReview.reviewEssay.dissolve'),
+							$router->url($request, null, null, 'dissolveReviewEssay', null, ['objectId' => $objectId]), 'modal_delete'
+						),
+						__('plugins.generic.objectsForReview.reviewEssay.dissolve'),
+						'delete'
+					)
+				);
+			} elseif ($essayRole === 'member') {
+				$this->addAction(
+					new LinkAction(
+						'removeFromReviewEssay',
+						new RemoteActionConfirmationModal(
+							$request->getSession(),
+							__('plugins.generic.objectsForReview.reviewEssay.remove.confirm'),
+							__('plugins.generic.objectsForReview.reviewEssay.remove'),
+							$router->url($request, null, null, 'removeFromReviewEssay', null, ['objectId' => $objectId]), 'modal_delete'
+						),
+						__('plugins.generic.objectsForReview.reviewEssay.remove'),
+						'delete'
+					)
+				);
+			} else {
+				// Add the work to a review essay
+				$this->addAction(
+					new LinkAction(
+						'addToReviewEssay',
+						new AjaxModal(
+							$router->url($request, null, null, 'editBundleMember', null, ['workId' => $objectId]),
+							__('plugins.generic.objectsForReview.reviewEssay.addToEssay'),
+							'modal_add_item'),
+						__('plugins.generic.objectsForReview.reviewEssay.addToEssay'),
+						'add_item'
+					)
+				);
+			}
 
-						// Hide from the public list, or show again
-			$hidden = !empty($this->getData()['hidden']);
-			$label = __($hidden ? 'plugins.generic.objectsForReview.show' : 'plugins.generic.objectsForReview.hide');
-			$this->addAction(
-				new LinkAction(
-					'toggleHidden',
-					new AjaxAction(
-						$router->url($request, null, null, 'toggleHidden', null, ['objectId' => $objectId]),
-						AjaxAction::AJAX_REQUEST_TYPE_POST,
-						['csrfToken' => $request->getSession()->token()]
-					),
-					$label,
-					$hidden ? 'unhide' : 'hide'
-				)
-			);
+			if ($essayRole !== 'member') {
+				// Invitation page (InvitationWorkflow)
+				$this->addAction(
+					new LinkAction(
+						'invite',
+						new RedirectAction($request->getDispatcher()->url($request, \APP\core\Application::ROUTE_PAGE, null,
+							\APP\plugins\generic\objectsForReview\pages\ObjectsForReviewManagementHandler::PAGE, 'invite', [$objectId])),
+						__('plugins.generic.objectsForReview.invitation.inviteReviewers'),
+						'invite'
+					)
+				);
+
+				// Hide from the public list, or show again
+				$hidden = !empty($data['hidden']);
+				$label = __($hidden ? 'plugins.generic.objectsForReview.show' : 'plugins.generic.objectsForReview.hide');
+				$this->addAction(
+					new LinkAction(
+						'toggleHidden',
+						new AjaxAction(
+							$router->url($request, null, null, 'toggleHidden', null, ['objectId' => $objectId]),
+							AjaxAction::AJAX_REQUEST_TYPE_POST,
+							['csrfToken' => $request->getSession()->token()]
+						),
+						$label,
+						$hidden ? 'unhide' : 'hide'
+					)
+				);
+			}
 
 			// Audit trail of the object's reservations
 			$this->addAction(
@@ -99,13 +160,18 @@ class ObjectsForReviewManagementGridRow extends GridRow {
 				)
 			);
 
-			// Create the "delete" action
+			// Create the "delete" action (a review essay is dissolved first, a work is first removed from its essay)
+			$confirmKey = match ($essayRole) {
+				'container' => 'plugins.generic.objectsForReview.reviewEssay.delete.confirmEssay',
+				'member' => 'plugins.generic.objectsForReview.reviewEssay.delete.confirmWork',
+				default => 'common.confirmDelete',
+			};
 			$this->addAction(
 				new LinkAction(
 					'delete',
 					new RemoteActionConfirmationModal(
 						$request->getSession(),
-						__('common.confirmDelete'),
+						__($confirmKey),
 						__('grid.action.delete'),
 						$router->url($request, null, null, 'deleteAvailableObjectForReview', null, array('objectId' => $objectId)), 'modal_delete'
 					),

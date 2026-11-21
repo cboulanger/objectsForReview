@@ -649,6 +649,8 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 				. ' .objectsForReviewManagement .ofrNewInvitee input { width: 100%; max-width: 30rem; }'
 				. ' .objectsForReviewManagement input[type=text], .objectsForReviewManagement input[type=email], .objectsForReviewManagement input[type=search] { border: 1px solid #bbb; border-radius: 3px; padding: 0.4rem 0.5rem; font: inherit; }'
 				. ' .ofrBadge { display: inline-block; margin-left: 0.25rem; padding: 0 0.4rem; border: 1px solid #888; border-radius: 3px; font-size: 0.75rem; line-height: 1.4; color: #555; vertical-align: middle; }'
+				. ' .ofrEssayMember { display: inline-block; padding-left: 1.5rem; }'
+				. ' .ofrEssayWorkChoice { list-style: none; padding: 0; } .ofrEssayWorkChoice li { margin-bottom: 0.5rem; } .ofrEssayCopyPreference { margin: 0.25rem 0 0 1.5rem; }'
 				. ' .ofrReturnTarget { display: block; margin: 0.5rem 0; } .ofrReturnTarget .ofrDetail { display: block; margin-left: 1.5rem; font-size: 0.875rem; }',
 			[
 				'inline' => true,

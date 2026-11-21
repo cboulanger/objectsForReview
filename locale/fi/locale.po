@@ -923,6 +923,114 @@ msgstr "Kooste-arviota, jolla on arvioija, ei voi purkaa."
 msgid "plugins.generic.objectsForReview.reviewEssay.error.submitted"
 msgstr "Kooste-arvio on lähetetty: sen teoksia ei voi enää muuttaa."
 
+msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
+msgstr "Tällä kooste-arviolla on avoin sopimustarjous tai käynnissä oleva kutsukierros."
+
+msgid "plugins.generic.objectsForReview.history.email.essayChanged"
+msgstr "Arvioijalle ilmoitettu: kooste-arvion teokset ovat muuttuneet"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.create"
+msgstr "Luo kooste-arvio"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.label"
+msgstr "Kooste-arvio:"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.memberOf"
+msgstr "(kooste-arvio: {$title})"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.title"
+msgstr "Kooste-arvion otsikko"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.titleRequired"
+msgstr "Anna kooste-arviolle otsikko."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.works"
+msgstr "Teokset"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.works.description"
+msgstr "Luettelossa ei näytetä teoksia, jotka kuuluvat jo kooste-arvioon, on liitetty käsikirjoitukseen tai joilla on avoin sopimustarjous tai kutsukierros. Enintään yhdellä valituista teoksista saa olla arvioija: hän kirjoittaa silloin kooste-arvion."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.worksRequired"
+msgstr "Valitse vähintään yksi teos."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.noWorks"
+msgstr "Ei ole teoksia, joista voisi koota kooste-arvion."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.workHasReviewer"
+msgstr "arvioija on jo valittu"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.copyPreference"
+msgstr "Arvioijan pääsy tähän teokseen"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.copyPreference.description"
+msgstr "Kooste-arviolla on arvioija. Valitse, miten hän saa pääsyn lisättyyn teokseen."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.copyPreferences.description"
+msgstr "Valitun teoksen, jolla arvioija on jo valittu, arvioijasta tulee kooste-arvion arvioija. Valitse jokaiselle muulle teokselle, miten hän saa siihen pääsyn."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.hidden"
+msgstr "Piilota kooste-arvio toistaiseksi julkisesta luettelosta"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.emailNotice"
+msgstr "Jos kooste-arviolla on arvioija, hänelle ilmoitetaan sähköpostilla ”Kooste-arvio muuttunut” (mallipohjan teksti sellaisenaan)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.membersHint"
+msgstr "Teoksia lisätään kooste-arvioon ja poistetaan siitä luettelon toiminnoilla."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.created"
+msgstr "Kooste-arvio luotiin."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.saved"
+msgstr "Kooste-arvio tallennettiin."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.workAdded"
+msgstr "Teos lisättiin kooste-arvioon."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.workRemoved"
+msgstr "Teos poistettiin kooste-arviosta. Sitä tarjotaan taas erikseen, aluksi piilotettuna."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.reviewerEmailed"
+msgstr "Arvioijalle ilmoitettiin sähköpostilla (mallipohjan teksti muokkaamattomana)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.selectRequired"
+msgstr "Tee kelvollinen valinta."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.essay"
+msgstr "Kooste-arvio"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.work"
+msgstr "Teos"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.noWorksToAdd"
+msgstr "Ei ole teoksia, jotka voisi lisätä kooste-arvioon."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.noEssays"
+msgstr "Ei ole kooste-arviota, johon tämän teoksen voisi lisätä."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.addWork"
+msgstr "Lisää teos"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.addToEssay"
+msgstr "Lisää kooste-arvioon…"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.dissolve"
+msgstr "Pura"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.dissolve.confirm"
+msgstr "Puretaanko tämä kooste-arvio? Sen teoksia tarjotaan taas erikseen, aluksi piilotettuina."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.remove"
+msgstr "Poista kooste-arviosta"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.remove.confirm"
+msgstr "Poistetaanko tämä teos kooste-arviosta? Sitä tarjotaan taas erikseen, aluksi piilotettuna. Jos kooste-arviolla on arvioija, hänelle ilmoitetaan sähköpostilla ”Kooste-arvio muuttunut” (mallipohjan teksti sellaisenaan)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.delete.confirmEssay"
+msgstr "Poistetaanko tämä kooste-arvio? Se puretaan ensin: sen teokset jäävät luetteloon ja niitä tarjotaan taas erikseen, aluksi piilotettuina. Kooste-arviota, jolla on arvioija, ei voi poistaa."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.delete.confirmWork"
+msgstr "Poistetaanko tämä teos? Se poistetaan ensin kooste-arviostaan (kooste-arvion mahdolliselle arvioijalle ilmoitetaan sähköpostilla). Kooste-arvion viimeistä teosta ei voi poistaa."
+
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Uusien tarjousten oletusjakotapa"
 

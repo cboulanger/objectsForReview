@@ -132,13 +132,18 @@ class BundleWorkflow {
 
 	/**
 	 * Can these works be combined into a review essay (or added to one)?
-	 * @param ObjectForReview[] $works
+	 * @param ObjectForReview[] $works (a null entry, e.g. an unknown id, is not available)
 	 * @return ?string Null if allowed, otherwise the locale key of the reason
 	 */
 	public static function canCombine(array $works): ?string {
 		$dao = AssignmentWorkflow::dao();
 		$reviewers = 0;
 		$pending = false;
+		foreach ($works as $work) {
+			if (!$work instanceof ObjectForReview) {
+				return self::ERROR_PREFIX . 'notAvailable';
+			}
+		}
 		$ids = array_map(fn (ObjectForReview $work) => $work->getId(), $works);
 		if (count($ids) !== count(array_unique($ids))) {
 			return self::ERROR_PREFIX . 'notAvailable';
@@ -182,7 +187,7 @@ class BundleWorkflow {
 		}
 		return DB::transaction(function () use ($context, $title, $description, $works, $editor, $copyPreferences) {
 			$objectDao = new ObjectForReviewDAO();
-			$works = array_map(fn (ObjectForReview $work) => $objectDao->getById($work->getId()), array_values($works));
+			$works = array_map(fn ($work) => $work instanceof ObjectForReview ? $objectDao->getById($work->getId()) : null, array_values($works));
 			self::check(self::canCombine($works));
 
 			$container = $objectDao->newDataObject();
@@ -239,7 +244,7 @@ class BundleWorkflow {
 		$containerAssignment->setUserId($assignment->getUserId());
 		$containerAssignment->setStatus(Assignment::STATUS_ACCEPTED);
 		$containerAssignment->setDateCreated($assignment->getDateCreated());
-		foreach (['dueDate', 'dateReserved', 'shippingAddress', 'phone'] as $field) {
+		foreach (['dueDate', 'dateReserved', 'reminderSent', 'shippingAddress', 'phone', 'copyNote'] as $field) {
 			if ($assignment->getData($field) !== null) {
 				$containerAssignment->setData($field, $assignment->getData($field));
 			}
@@ -355,7 +360,7 @@ class BundleWorkflow {
 				throw new \InvalidArgumentException(self::ERROR_PREFIX . 'hasReviewer');
 			}
 			if ($dao->getByObjectId($container->getId(), [Assignment::STATUS_OFFERED])) {
-				throw new \InvalidArgumentException(self::ERROR_PREFIX . 'pending');
+				throw new \InvalidArgumentException(self::ERROR_PREFIX . 'pendingEssay');
 			}
 
 			AssignmentWorkflow::discardList($container, null, $editor);

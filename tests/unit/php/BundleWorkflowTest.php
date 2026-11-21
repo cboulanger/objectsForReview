@@ -345,11 +345,12 @@ class BundleWorkflowTest extends TestCase {
 	public function testCreateTakesOverExistingReviewer(): void {
 		$a = $this->newWork('A');
 		$b = $this->newWork('B');
+		$c = $this->newWork('C');
 		$r = $this->newAssignment($a, Assignment::STATUS_ACCEPTED, 1, ['dueDate' => '2030-01-31', 'dateReserved' => '2029-01-01',
 			'copyPreference' => 'physical', 'shippingAddress' => 'Somewhere 1', 'phone' => '+49 30 123456',
-			'copyStatus' => 'requested']);
+			'copyStatus' => 'requested', 'reminderSent' => '2030-01-24', 'copyNote' => 'From the library']);
 
-		$container = $this->createEssay([$a, $b], [$b->getId() => 'electronic']);
+		$container = $this->createEssay([$a, $b, $c], [$b->getId() => 'electronic', $c->getId() => 'other']);
 
 		$containerAssignments = (new AssignmentDAO())->getByObjectId($container->getId());
 		$this->assertCount(1, $containerAssignments);
@@ -357,6 +358,10 @@ class BundleWorkflowTest extends TestCase {
 		$this->assertSame(Assignment::STATUS_ACCEPTED, $reviewer->getStatus());
 		$this->assertSame('2030-01-31', $reviewer->getData('dueDate'));
 		$this->assertSame('2029-01-01', $reviewer->getData('dateReserved'));
+		// No second due-date reminder
+		$this->assertSame('2030-01-24', $reviewer->getData('reminderSent'));
+		// The note of an 'other' copy reaches the new mirror (and then lives only there)
+		$this->assertSame('From the library', (new AssignmentDAO())->getByObjectId($c->getId())[0]->getData('copyNote'));
 		$this->assertSame($reviewer->getId(), BundleWorkflow::getReviewerAssignment($container)->getId());
 		// A's assignment became the mirror; no second mirror for A
 		$assignmentsA = (new AssignmentDAO())->getByObjectId($a->getId());
@@ -519,6 +524,32 @@ class BundleWorkflowTest extends TestCase {
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage('plugins.generic.objectsForReview.reviewEssay.error.hasReviewer');
 		BundleWorkflow::dissolve($container, $this->editor());
+	}
+
+	public function testDissolveRefusedWithContractOffer(): void {
+		[$container] = $this->newEssay(['A', 'B']);
+		$this->newAssignment($container, Assignment::STATUS_OFFERED, 1);
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage('plugins.generic.objectsForReview.reviewEssay.error.pendingEssay');
+		BundleWorkflow::dissolve($container, $this->editor());
+	}
+
+	public function testCreateRefusesUnknownWork(): void {
+		$a = $this->newWork('A');
+		$unknown = $this->newWork('Gone');
+		(new ObjectForReviewDAO())->deleteById($unknown->getId());
+
+		$notAvailable = 'plugins.generic.objectsForReview.reviewEssay.error.notAvailable';
+		$this->assertSame($notAvailable, BundleWorkflow::canCombine([$a, null]));
+		foreach ([[$a, null], [$a, $unknown]] as $works) {
+			try {
+				$this->createEssay($works);
+				$this->fail('An unknown work was accepted');
+			} catch (\InvalidArgumentException $e) {
+				$this->assertSame($notAvailable, $e->getMessage());
+			}
+		}
+		$this->assertNull($this->reload($a)->getBundleId());
 	}
 
 	public function testDissolveFreesMembers(): void {

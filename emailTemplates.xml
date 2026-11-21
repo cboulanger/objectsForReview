@@ -33,4 +33,5 @@
   <email key="OFR_INVITATION_REMINDER" subject="emails.ofrInvitationReminder.subject" name="emails.ofrInvitationReminder.name" body="emails.ofrInvitationReminder.body"/>
   <email key="OFR_INVITATION_EXHAUSTED" subject="emails.ofrInvitationExhausted.subject" name="emails.ofrInvitationExhausted.name" body="emails.ofrInvitationExhausted.body"/>
   <email key="OFR_CONFIRMATION" subject="emails.ofrConfirmation.subject" name="emails.ofrConfirmation.name" body="emails.ofrConfirmation.body"/>
+  <email key="OFR_REVIEW_ESSAY_CHANGED" subject="emails.ofrReviewEssayChanged.subject" name="emails.ofrReviewEssayChanged.name" body="emails.ofrReviewEssayChanged.body"/>
 </emails>

@@ -60,19 +60,7 @@
 		{/fbvFormSection}
 	{/fbvFormArea}
 
-	{fbvFormArea id="availableObjectsForReviewOfferArea" title="plugins.generic.objectsForReview.offer.title"}
-		{fbvFormSection label="plugins.generic.objectsForReview.offer.mode" description="plugins.generic.objectsForReview.offer.mode.description" for="assignmentMode"}
-			{fbvElement type="select" id="assignmentMode" from=$assignmentModes selected=$assignmentMode translate=false size=$fbvStyles.size.MEDIUM}
-		{/fbvFormSection}
-
-		{fbvFormSection label="plugins.generic.objectsForReview.offer.bidDeadline" description="plugins.generic.objectsForReview.offer.bidDeadline.description" for="bidDeadline" class="ofrBidDeadlineSection"}
-			<input type="date" id="bidDeadline" name="bidDeadline" value="{$bidDeadline|escape}" />
-		{/fbvFormSection}
-
-		{fbvFormSection label="plugins.generic.objectsForReview.offer.responsibleEditor" description="plugins.generic.objectsForReview.offer.responsibleEditor.description" for="responsibleEditorId"}
-			{fbvElement type="select" id="responsibleEditorId" from=$bookReviewEditors selected=$responsibleEditorId translate=false size=$fbvStyles.size.MEDIUM}
-		{/fbvFormSection}
-	{/fbvFormArea}
+	{include file=$offerSettingsTemplate formId="availableObjectsForReviewForm" areaId="availableObjectsForReviewOfferArea"}
 
 	{fbvFormArea id="availableObjectsForReviewCopyArea" title="plugins.generic.objectsForReview.offer.copyTitle"}
 		{fbvFormSection label="plugins.generic.objectsForReview.offer.publisherContact" description="plugins.generic.objectsForReview.offer.publisherContact.description" for="publisherContactId"}
@@ -84,17 +72,6 @@
 			{fbvElement type="checkbox" id="returnRequired" value="1" checked=$returnRequired label="plugins.generic.objectsForReview.offer.returnRequired"}
 			{fbvElement type="checkbox" id="notifyPublisher" value="1" checked=$notifyPublisher label="plugins.generic.objectsForReview.offer.notifyPublisher"}
 		{/fbvFormSection}
-		<script>
-			$(function() {ldelim}
-				var $mode = $('#availableObjectsForReviewForm [name="assignmentMode"]');
-				function sync() {ldelim} $('#availableObjectsForReviewForm .ofrBidDeadlineSection').toggle($mode.val() === 'bidding'); {rdelim}
-				$mode.on('change', sync);
-				sync();
-			{rdelim});
-		</script>
-
-		
-
 	{/fbvFormArea}
 
 	{fbvFormSection class="formButtons"}

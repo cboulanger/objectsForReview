@@ -59,6 +59,7 @@ class ReservationMailer {
 		ReservationEmailEventType::INVITATION_DECLINED->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewInvitationDeclined::class,
 		ReservationEmailEventType::INVITATION_REMINDER->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewInvitationReminder::class,
 		ReservationEmailEventType::INVITATION_EXHAUSTED->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewInvitationExhausted::class,
+		ReservationEmailEventType::ESSAY_CHANGED->value => \APP\plugins\generic\objectsForReview\mailables\ObjectsForReviewEssayChanged::class,
 	];
 
 	/** Placeholders filled in by send(), per recipient */
@@ -190,6 +191,30 @@ class ReservationMailer {
 		$mailable->subject($subject)->body($body);
 		Mail::send($mailable);
 		ReservationLog::logEmail($object, $type, null, $recipient, $from, $subject, $body);
+	}
+
+	/**
+	 * Tell the reviewer of a review essay that its list of works has changed (the
+	 * template text, unedited), recorded in the essay's audit trail.
+	 * @return bool Whether there was a reviewer (with an accepted agreement) to email
+	 */
+	public static function sendEssayChanged($plugin, $context, ObjectForReview $container, ?User $sender): bool {
+		$assignment = BundleWorkflow::getReviewerAssignment($container);
+		if (!$assignment || $assignment->getStatus() !== Assignment::STATUS_ACCEPTED) {
+			return false;
+		}
+		$reviewer = Repo::user()->get($assignment->getUserId(), true);
+		if (!$reviewer) {
+			return false;
+		}
+		self::ensureTemplates($plugin, $context->getId());
+		$container = (new ObjectForReviewDAO())->getById($container->getId());
+		[$subject, $body] = self::compose($context, ReservationEmailEventType::ESSAY_CHANGED, $container, $assignment, $reviewer, $sender, [
+			'reviewerName' => htmlspecialchars($reviewer->getFullName()),
+			'journalName' => htmlspecialchars($context->getLocalizedName($context->getPrimaryLocale())),
+		]);
+		self::send($context, ReservationEmailEventType::ESSAY_CHANGED, $container, $reviewer, $sender, $subject, $body);
+		return true;
 	}
 
 	/**

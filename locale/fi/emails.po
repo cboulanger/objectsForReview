@@ -300,3 +300,15 @@ msgstr "Kutsukierros ilman tulosta: {$objectDescription}"
 
 msgid "emails.ofrInvitationExhausted.body"
 msgstr "<p>Hyvä {$recipientName},</p><p>kaikki seuraavan teoksen kutsulistalla olevat ovat kieltäytyneet tai jättäneet vastaamatta:<br />{$objectDescription}</p><p>Voit lisätä henkilöitä ja jatkaa kierrosta tai lopettaa sen: <a href=\"{$invitationListUrl}\">{$invitationListUrl}</a></p>"
+
+msgid "emails.ofrReviewEssayChanged.name"
+msgstr "Kooste-arvio muuttunut (arvioijalle)"
+
+msgid "emails.ofrReviewEssayChanged.description"
+msgstr "Kirja-arvioiden toimittaja lähettää tämän kooste-arvion arvioijalle, kun arvioon lisätään teoksia tai siitä poistetaan teoksia, tai kun yhden teoksen arviointisopimuksesta tulee kooste-arvio."
+
+msgid "emails.ofrReviewEssayChanged.subject"
+msgstr "Kooste-arviosi lehteen {$journalName}: teosluettelo on muuttunut"
+
+msgid "emails.ofrReviewEssayChanged.body"
+msgstr "<p>Hyvä {$reviewerName},</p><p>kooste-arvio, jonka lupauduit kirjoittamaan, kattaa nyt seuraavat teokset:<br />{$objectDescription}</p><p>Määräpäivä: {$dueDate}</p><p>Jos sinulla on kysyttävää, ota meihin yhteyttä.</p><p>Ystävällisin terveisin<br />{$journalName}</p>"

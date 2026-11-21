@@ -297,3 +297,15 @@ msgstr "Einladungsrunde ohne Ergebnis: {$objectDescription}"
 
 msgid "emails.ofrInvitationExhausted.body"
 msgstr "<p>Liebe/r {$recipientName},</p><p>alle Personen auf der Einladungsliste für das folgende Werk haben abgesagt oder nicht geantwortet:<br />{$objectDescription}</p><p>Sie können weitere Personen hinzufügen und die Runde fortsetzen oder sie beenden: <a href=\"{$invitationListUrl}\">{$invitationListUrl}</a></p>"
+
+msgid "emails.ofrReviewEssayChanged.name"
+msgstr "Sammelrezension geändert (an Rezensent:in)"
+
+msgid "emails.ofrReviewEssayChanged.description"
+msgstr "Wird von der Rezensionsredaktion an die Rezensentin/den Rezensenten einer Sammelrezension gesendet, wenn Werke hinzugefügt oder entfernt werden oder die Rezensionsvereinbarung für ein Werk zu einer Sammelrezension wird."
+
+msgid "emails.ofrReviewEssayChanged.subject"
+msgstr "Ihre Sammelrezension für {$journalName}: Liste der Werke geändert"
+
+msgid "emails.ofrReviewEssayChanged.body"
+msgstr "<p>Liebe:r {$reviewerName},</p><p>die Sammelrezension, die Sie übernommen haben, umfasst jetzt diese Werke:<br />{$objectDescription}</p><p>Abgabetermin: {$dueDate}</p><p>Bei Fragen wenden Sie sich gern an uns.</p><p>Mit freundlichen Grüßen<br />{$journalName}</p>"

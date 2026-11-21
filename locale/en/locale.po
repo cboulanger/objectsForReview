@@ -923,6 +923,114 @@ msgstr "A review essay with a reviewer cannot be dissolved."
 msgid "plugins.generic.objectsForReview.reviewEssay.error.submitted"
 msgstr "The review essay has been submitted: its works can no longer be changed."
 
+msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
+msgstr "This review essay has a pending contract offer or a running invitation round."
+
+msgid "plugins.generic.objectsForReview.history.email.essayChanged"
+msgstr "Reviewer informed: the works of the review essay have changed"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.create"
+msgstr "Create review essay"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.label"
+msgstr "Review essay:"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.memberOf"
+msgstr "(review essay: {$title})"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.title"
+msgstr "Title of the review essay"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.titleRequired"
+msgstr "Please enter a title for the review essay."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.works"
+msgstr "Works"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.works.description"
+msgstr "Works that are already in a review essay, attached to a submission, or have a pending contract offer or invitation round are not listed. At most one of the selected works may have a reviewer: that reviewer then writes the review essay."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.worksRequired"
+msgstr "Please select at least one work."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.noWorks"
+msgstr "There are no works that can be combined into a review essay."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.workHasReviewer"
+msgstr "has a reviewer"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.copyPreference"
+msgstr "Reviewer's access to this work"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.copyPreference.description"
+msgstr "The review essay has a reviewer. Choose how they get access to the added work."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.copyPreferences.description"
+msgstr "The reviewer of the selected work marked \"has a reviewer\" becomes the reviewer of the review essay. Choose how they get access to each of the other works."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.hidden"
+msgstr "Hide the review essay from the public list for now"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.emailNotice"
+msgstr "If the review essay has a reviewer, they are informed with the email \"Review essay changed\" (the template text, sent without editing)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.membersHint"
+msgstr "Works are added to the review essay and removed from it with the actions in the list."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.created"
+msgstr "The review essay was created."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.saved"
+msgstr "The review essay was saved."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.workAdded"
+msgstr "The work was added to the review essay."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.workRemoved"
+msgstr "The work was removed from the review essay. It is offered on its own again, hidden at first."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.reviewerEmailed"
+msgstr "The reviewer was informed by email (the template text, unedited)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.selectRequired"
+msgstr "Please make a valid selection."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.essay"
+msgstr "Review essay"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.work"
+msgstr "Work"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.noWorksToAdd"
+msgstr "There are no works that can be added to the review essay."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.noEssays"
+msgstr "There is no review essay to which this work can be added."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.addWork"
+msgstr "Add work"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.addToEssay"
+msgstr "Add to review essay…"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.dissolve"
+msgstr "Dissolve"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.dissolve.confirm"
+msgstr "Dissolve this review essay? Its works are offered on their own again, hidden at first."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.remove"
+msgstr "Remove from review essay"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.remove.confirm"
+msgstr "Remove this work from the review essay? It is offered on its own again, hidden at first. If the review essay has a reviewer, they are informed with the email \"Review essay changed\" (the template text, sent without editing)."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.delete.confirmEssay"
+msgstr "Delete this review essay? It is dissolved first: its works stay in the list and are offered on their own again, hidden at first. A review essay with a reviewer cannot be deleted."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.delete.confirmWork"
+msgstr "Delete this work? It is removed from its review essay first (the reviewer of the essay, if any, is informed by email). The last work of a review essay cannot be deleted."
+
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Default assignment for new offers"
 
