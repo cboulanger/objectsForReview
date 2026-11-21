@@ -175,6 +175,74 @@ class BundleWorkflowTest extends TestCase {
 		$this->assertSame(Assignment::STATUS_COMPLETED, (new AssignmentDAO())->getByObjectId($a->getId())[0]->getStatus());
 	}
 
+	public function testAcceptedBidderIsMirroredEvenIfALaterBidderWasCancelled(): void {
+		[$container, [$a, $b]] = $this->newEssay(['A', 'B']);
+		// Bidder C bid on a later day; the contract offer was cancelled. Bidder B bid earlier and accepted.
+		$c = $this->newAssignment($container, Assignment::STATUS_CANCELLED, 999999999, ['dateCreated' => '2031-01-02 10:00:00']);
+		$reviewer = $this->newAssignment($container, Assignment::STATUS_ACCEPTED, 1, [
+			'dateCreated' => '2031-01-01 10:00:00', 'dueDate' => '2030-01-31',
+			'copyPreferences' => [$a->getId() => 'electronic', $b->getId() => 'have'],
+		]);
+		BundleWorkflow::syncMembers($container);
+
+		foreach ([$a, $b] as $member) {
+			$mirrors = (new AssignmentDAO())->getByObjectId($member->getId());
+			$this->assertCount(1, $mirrors);
+			$this->assertSame($reviewer->getId(), $mirrors[0]->getBundleAssignmentId());
+			$this->assertSame(Assignment::STATUS_ACCEPTED, $mirrors[0]->getStatus());
+		}
+	}
+
+	public function testMirrorsOfAnEarlierReviewerStayWhenANewReviewerIsMirrored(): void {
+		[$container, [$a]] = $this->newEssay(['A']);
+		$first = $this->newAssignment($container, Assignment::STATUS_ACCEPTED, 1, ['dueDate' => '2030-01-31', 'copyPreferences' => [$a->getId() => 'have']]);
+		BundleWorkflow::syncMembers($container);
+		AssignmentWorkflow::retract($this->plugin(), $container, (new AssignmentDAO())->getById($first->getId()), \APP\facades\Repo::user()->get(1, true));
+		$second = $this->newAssignment($container, Assignment::STATUS_ACCEPTED, 1, ['dueDate' => '2030-02-28', 'copyPreferences' => [$a->getId() => 'have']]);
+		BundleWorkflow::syncMembers($container);
+
+		$byAssignment = [];
+		foreach ((new AssignmentDAO())->getByObjectId($a->getId()) as $mirror) {
+			$byAssignment[$mirror->getBundleAssignmentId()] = $mirror->getStatus();
+		}
+		$this->assertSame([$first->getId() => Assignment::STATUS_RETRACTED, $second->getId() => Assignment::STATUS_ACCEPTED], $byAssignment);
+	}
+
+	public function testCancelByEditorCancelsMirrors(): void {
+		[$container, [$a, $b]] = $this->newEssay(['A', 'B']);
+		$reviewer = $this->newAssignment($container, Assignment::STATUS_ACCEPTED, 1, ['dueDate' => '2030-01-31',
+			'copyPreferences' => [$a->getId() => 'electronic', $b->getId() => 'have']]);
+		BundleWorkflow::syncMembers($container);
+
+		AssignmentWorkflow::cancelByEditor($container, (new AssignmentDAO())->getById($reviewer->getId()), \APP\facades\Repo::user()->get(1, true));
+
+		foreach ([$a, $b] as $member) {
+			$this->assertSame(Assignment::STATUS_CANCELLED, (new AssignmentDAO())->getByObjectId($member->getId())[0]->getStatus());
+		}
+	}
+
+	public function testPersonalDataLeavesTheMirrorOnAttachAndRetract(): void {
+		$user = \APP\facades\Repo::user()->get(1, true);
+		foreach (['attach', 'retract'] as $transition) {
+			[$container, [$a]] = $this->newEssay(['A']);
+			$reviewer = $this->newAssignment($container, Assignment::STATUS_ACCEPTED, 1, ['dueDate' => '2030-01-31',
+				'copyPreferences' => [$a->getId() => 'physical'], 'shippingAddress' => 'Somewhere 1', 'phone' => '+49 30 123456']);
+			BundleWorkflow::syncMembers($container);
+			$mirror = (new AssignmentDAO())->getByObjectId($a->getId())[0];
+			$this->assertSame('Somewhere 1', $mirror->getData('shippingAddress'));
+
+			$assignment = (new AssignmentDAO())->getById($reviewer->getId());
+			if ($transition === 'attach') {
+				AssignmentWorkflow::attach($container, $assignment, $user, 424242);
+			} else {
+				AssignmentWorkflow::retract($this->plugin(), $container, $assignment, $user);
+			}
+			$mirror = (new AssignmentDAO())->getById($mirror->getId());
+			$this->assertNull($mirror->getData('shippingAddress'), $transition);
+			$this->assertNull($mirror->getData('phone'), $transition);
+		}
+	}
+
 	public function testMemberStateFollowsContainer(): void {
 		[$container, [$a]] = $this->newEssay(['A']);
 		$member = (new ObjectForReviewDAO())->getById($a->getId());

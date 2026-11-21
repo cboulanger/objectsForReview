@@ -33,7 +33,7 @@ use PKP\user\User;
 
 class BundleWorkflow {
 
-	/** Container assignment statuses that the mirrors follow (the newest such assignment is the reviewer) */
+	/** Container assignment statuses that the mirrors follow (see getReviewerAssignment) */
 	const MIRRORED_STATUSES = [Assignment::STATUS_ACCEPTED, Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED,
 		Assignment::STATUS_RETRACTED, Assignment::STATUS_CANCELLED];
 
@@ -93,7 +93,7 @@ class BundleWorkflow {
 			if ($status === Assignment::STATUS_ACCEPTED) {
 				// The delivery details now live on the mirrors
 				$changed = false;
-				foreach (['shippingAddress', 'phone', 'copyPreferences'] as $field) {
+				foreach (['shippingAddress', 'phone', 'copyPreferences', 'copyNote'] as $field) {
 					if ($reviewerAssignment->getData($field) !== null) {
 						$reviewerAssignment->unsetData($field);
 						$changed = true;
@@ -116,11 +116,23 @@ class BundleWorkflow {
 	}
 
 	/**
-	 * The container assignment the mirrors follow: the newest one with a mirrored status.
+	 * The container assignment the mirrors follow: the current reviewer (accepted, submitted
+	 * or completed), otherwise the ended assignment (retracted or cancelled) with the latest status date.
 	 */
 	protected static function getReviewerAssignment(ObjectForReview $container): ?Assignment {
 		$assignments = AssignmentWorkflow::dao()->getByObjectId($container->getId(), self::MIRRORED_STATUSES);
-		return $assignments ? end($assignments) : null;
+		$ended = null;
+		foreach ($assignments as $assignment) {
+			if ($assignment->isReviewer()) {
+				return $assignment;
+			}
+			if (!$ended
+				|| strcmp((string) $assignment->getDateStatus(), (string) $ended->getDateStatus()) > 0
+				|| ((string) $assignment->getDateStatus() === (string) $ended->getDateStatus() && $assignment->getId() > $ended->getId())) {
+				$ended = $assignment;
+			}
+		}
+		return $ended;
 	}
 
 	/**

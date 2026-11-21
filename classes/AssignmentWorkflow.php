@@ -53,7 +53,8 @@ class AssignmentWorkflow {
 	 * @param Assignment[] $assignments All assignments of the object
 	 */
 	public static function getState(ObjectForReview $object, array $assignments): string {
-		if ($object->isBundleMember() && ($container = BundleWorkflow::getContainer($object))) {
+		if (!$object->isReviewEssay() && $object->isBundleMember()
+				&& ($container = BundleWorkflow::getContainer($object)) && !$container->isBundleMember()) {
 			return self::getState($container, self::dao()->getByObjectId($container->getId()));
 		}
 		if ($object->getData('offerClosed')) {
@@ -160,12 +161,12 @@ class AssignmentWorkflow {
 			self::dao()->insertObject($assignment);
 		}
 		self::syncReviewer($object);
+		self::syncBundle($object);
 		ReservationLog::logEvent($object, $viaInvitation ? ReservationLog::EVENT_RESERVED_VIA_INVITATION : ReservationLog::EVENT_RESERVED,
 			$user, $user, ['reviewDueDate' => $data['dueDate']]);
 		InvitationWorkflow::onReserved($object, $assignment);
 		$plugin->notifyEditor($user, $object, 'OFR_NEW_RESERVATION', Reservation::getEmailDetails($assignment, $context));
 		self::sendConfirmation($plugin, $context, $object, $assignment, $user);
-		self::syncBundle($object);
 		return $assignment;
 	}
 
@@ -261,12 +262,12 @@ class AssignmentWorkflow {
 		self::setStatus($assignment, Assignment::STATUS_ACCEPTED);
 		ActionLink::invalidate($assignment->getId(), ActionLink::ACTION_CONTRACT);
 		self::syncReviewer($object);
+		self::syncBundle($object);
 		$reviewer = Repo::user()->get($assignment->getUserId(), true);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_CONTRACT_ACCEPTED, $reviewer, $reviewer, ['reviewDueDate' => $data['dueDate']]);
 		InvitationWorkflow::onReserved($object, $assignment);
 		$plugin->notifyEditor($reviewer, $object, 'OFR_NEW_RESERVATION', Reservation::getEmailDetails($assignment, $context));
 		self::sendConfirmation($plugin, $context, $object, $assignment, $reviewer);
-		self::syncBundle($object);
 	}
 
 	/**
