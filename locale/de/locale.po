@@ -862,6 +862,27 @@ msgstr "Rezension von {$recipientName} veröffentlicht"
 msgid "plugins.generic.objectsForReview.history.event.imported"
 msgstr "Über die API importiert: {$recipientName}"
 
+msgid "plugins.generic.objectsForReview.history.event.essayMirrored"
+msgstr "Sammelrezension: {$recipientName} — die Vereinbarung mit der Rezensentin/dem Rezensenten umfasst dieses Werk"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus"
+msgstr "Sammelrezension: {$recipientName} — Status geändert"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.accepted"
+msgstr "Sammelrezension: {$recipientName} — Status geändert zu Reserviert"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.submitted"
+msgstr "Sammelrezension: {$recipientName} — Status geändert zu Rezension eingereicht"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.completed"
+msgstr "Sammelrezension: {$recipientName} — Status geändert zu Rezension veröffentlicht"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.retracted"
+msgstr "Sammelrezension: {$recipientName} — Status geändert zu Von der Rezensentin/dem Rezensenten storniert"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.cancelled"
+msgstr "Sammelrezension: {$recipientName} — Status geändert zu Von der Redaktion storniert"
+
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Standard-Vergabe für neue Angebote"
 

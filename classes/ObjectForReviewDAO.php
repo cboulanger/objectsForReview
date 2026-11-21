@@ -153,8 +153,8 @@ class ObjectForReviewDAO extends DAO {
 	}
 
 	/**
-	 * Delete a objectForReview by ID.
-	 * @param $objectForReviewId int
+	 * Works of a review essay, in their order.
+	 * @return ObjectForReview[]
 	 */
 	function getMembers(int $containerId): array {
 		$ids = DB::table('objects_for_review_settings')
@@ -167,6 +167,10 @@ class ObjectForReviewDAO extends DAO {
 		return $members;
 	}
 
+	/**
+	 * Delete a objectForReview by ID.
+	 * @param $objectForReviewId int
+	 */
 	function deleteById($objectId) {
 		(new AssignmentDAO())->deleteByObjectId((int) $objectId);
 		$this->update(

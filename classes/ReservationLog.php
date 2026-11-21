@@ -75,6 +75,9 @@ class ReservationLog {
 	const EVENT_ROUND_STARTED_PARALLEL = 0x1F0F230;
 	const EVENT_ROUND_FINISHED = 0x1F0F231;
 	const EVENT_IMPORTED = 0x1F0F232;
+	/** Review essays (see BundleWorkflow), logged on the works */
+	const EVENT_ESSAY_MIRRORED = 0x1F0F233;
+	const EVENT_ESSAY_STATUS = 0x1F0F234;
 
 	const EVENT_MESSAGES = [
 		self::EVENT_RESERVED => 'plugins.generic.objectsForReview.history.event.reserved',
@@ -114,6 +117,9 @@ class ReservationLog {
 		self::EVENT_ROUND_STARTED_PARALLEL => 'plugins.generic.objectsForReview.history.event.roundStartedParallel',
 		self::EVENT_ROUND_FINISHED => 'plugins.generic.objectsForReview.history.event.roundFinished',
 		self::EVENT_IMPORTED => 'plugins.generic.objectsForReview.history.event.imported',
+		self::EVENT_ESSAY_MIRRORED => 'plugins.generic.objectsForReview.history.event.essayMirrored',
+		// Logged with the message essayStatus.<status>
+		self::EVENT_ESSAY_STATUS => 'plugins.generic.objectsForReview.history.event.essayStatus',
 		self::EVENT_LIST_DISCARDED => 'plugins.generic.objectsForReview.history.event.listDiscarded',
 		self::EVENT_COMPLETED => 'plugins.generic.objectsForReview.history.event.completed',
 		self::EVENT_COPY_REQUESTED => 'plugins.generic.objectsForReview.history.event.copyRequested',

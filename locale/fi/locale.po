@@ -863,6 +863,27 @@ msgstr "Henkilön {$recipientName} arvio julkaistu"
 msgid "plugins.generic.objectsForReview.history.event.imported"
 msgstr "Tuotu API:n kautta: {$recipientName}"
 
+msgid "plugins.generic.objectsForReview.history.event.essayMirrored"
+msgstr "Kooste-arvio: {$recipientName} — arvioijan sopimus kattaa tämän teoksen"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus"
+msgstr "Kooste-arvio: {$recipientName} — tila muuttui"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.accepted"
+msgstr "Kooste-arvio: {$recipientName} — tilaksi muuttui Varattu"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.submitted"
+msgstr "Kooste-arvio: {$recipientName} — tilaksi muuttui Arvio lähetetty"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.completed"
+msgstr "Kooste-arvio: {$recipientName} — tilaksi muuttui Arvio julkaistu"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.retracted"
+msgstr "Kooste-arvio: {$recipientName} — tilaksi muuttui Arvioija perui"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.cancelled"
+msgstr "Kooste-arvio: {$recipientName} — tilaksi muuttui Toimitus perui"
+
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Uusien tarjousten oletusjakotapa"
 

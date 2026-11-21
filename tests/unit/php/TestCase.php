@@ -74,4 +74,7 @@ class FakePlugin {
 		$this->settings[$name] = $value;
 		$this->updated[$name] = $value;
 	}
+
+	public function notifyEditor(...$args) {
+	}
 }

@@ -87,6 +87,9 @@ class InvitationWorkflow {
 	 * it from the public list doesn't matter.
 	 */
 	public static function canInvite(ObjectForReview $object, ?array $assignments = null): bool {
+		if ($object->isBundleMember()) {
+			return false;
+		}
 		$assignments ??= AssignmentWorkflow::dao()->getByObjectId($object->getId());
 		return $object->isBidding()
 			? AssignmentWorkflow::isBiddingOpen($object, $assignments)
@@ -97,7 +100,7 @@ class InvitationWorkflow {
 	 * Can the user be added to the object's list?
 	 */
 	public static function canAdd(ObjectForReview $object, int $userId): bool {
-		return !$object->getData('offerClosed') && !$object->getSubmissionId()
+		return !$object->isBundleMember() && !$object->getData('offerClosed') && !$object->getSubmissionId()
 			&& !AssignmentWorkflow::dao()->getByObjectAndUser($object->getId(), $userId, self::BLOCKING_STATUSES);
 	}
 

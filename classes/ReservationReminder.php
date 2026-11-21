@@ -71,6 +71,10 @@ class ReservationReminder extends ScheduledTask {
 		$latestDueDate = (new \DateTimeImmutable('today'))->modify("+{$days} days")->format('Y-m-d');
 		$sent = 0;
 		foreach ($this->assignments($context, [Assignment::STATUS_ACCEPTED]) as [$object, $assignment]) {
+			// The reviewer of a review essay is reminded once, through the container assignment
+			if ($assignment->isMirror()) {
+				continue;
+			}
 			$dueDate = $assignment->getData('dueDate');
 			if (!$dueDate || $assignment->getData('reminderSent') || $dueDate < $today || $dueDate > $latestDueDate) {
 				continue;

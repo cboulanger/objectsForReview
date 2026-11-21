@@ -863,6 +863,27 @@ msgstr "Review by {$recipientName} published"
 msgid "plugins.generic.objectsForReview.history.event.imported"
 msgstr "Imported through the API: {$recipientName}"
 
+msgid "plugins.generic.objectsForReview.history.event.essayMirrored"
+msgstr "Review essay: {$recipientName} — the reviewer's agreement covers this work"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus"
+msgstr "Review essay: {$recipientName} — status changed"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.accepted"
+msgstr "Review essay: {$recipientName} — status changed to Reserved"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.submitted"
+msgstr "Review essay: {$recipientName} — status changed to Review submitted"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.completed"
+msgstr "Review essay: {$recipientName} — status changed to Review published"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.retracted"
+msgstr "Review essay: {$recipientName} — status changed to Cancelled by the reviewer"
+
+msgid "plugins.generic.objectsForReview.history.event.essayStatus.cancelled"
+msgstr "Review essay: {$recipientName} — status changed to Cancelled by the editors"
+
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Default assignment for new offers"
 

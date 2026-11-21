@@ -53,6 +53,9 @@ class AssignmentWorkflow {
 	 * @param Assignment[] $assignments All assignments of the object
 	 */
 	public static function getState(ObjectForReview $object, array $assignments): string {
+		if ($object->isBundleMember() && ($container = BundleWorkflow::getContainer($object))) {
+			return self::getState($container, self::dao()->getByObjectId($container->getId()));
+		}
 		if ($object->getData('offerClosed')) {
 			return self::STATE_CLOSED;
 		}
@@ -75,7 +78,7 @@ class AssignmentWorkflow {
 	 * Can reviewers bid for the object?
 	 */
 	public static function isBiddingOpen(ObjectForReview $object, array $assignments): bool {
-		if (!$object->isBidding() || $object->getData('offerClosed') || $object->getSubmissionId() || $object->getData('biddingClosed')) {
+		if ($object->isBundleMember() || !$object->isBidding() || $object->getData('offerClosed') || $object->getSubmissionId() || $object->getData('biddingClosed')) {
 			return false;
 		}
 		if (self::filter($assignments, array_merge(Assignment::REVIEWER_STATUSES, [Assignment::STATUS_OFFERED]))) {
@@ -93,7 +96,8 @@ class AssignmentWorkflow {
 	 * Can the object be reserved directly?
 	 */
 	public static function isReservable(ObjectForReview $object, array $assignments): bool {
-		return !$object->isBidding()
+		return !$object->isBundleMember()
+			&& !$object->isBidding()
 			&& self::getState($object, $assignments) === self::STATE_OPEN;
 	}
 
@@ -143,7 +147,9 @@ class AssignmentWorkflow {
 		$assignment->setUserId($user->getId());
 		$assignment->setStatus(Assignment::STATUS_ACCEPTED);
 		Reservation::apply($assignment, $data);
-		CopyWorkflow::init($assignment);
+		if (!$object->isReviewEssay()) {
+			CopyWorkflow::init($assignment);
+		}
 		if ($invitation) {
 			// The reservation or bid dates from now; the invitation date stays in dateInvited
 			$assignment->setDateCreated(Core::getCurrentDate());
@@ -159,6 +165,7 @@ class AssignmentWorkflow {
 		InvitationWorkflow::onReserved($object, $assignment);
 		$plugin->notifyEditor($user, $object, 'OFR_NEW_RESERVATION', Reservation::getEmailDetails($assignment, $context));
 		self::sendConfirmation($plugin, $context, $object, $assignment, $user);
+		self::syncBundle($object);
 		return $assignment;
 	}
 
@@ -248,7 +255,9 @@ class AssignmentWorkflow {
 	public static function acceptContract($plugin, $context, ObjectForReview $object, Assignment $assignment, array $data): void {
 		self::requireStatus($assignment, [Assignment::STATUS_OFFERED]);
 		Reservation::apply($assignment, $data);
-		CopyWorkflow::init($assignment);
+		if (!$object->isReviewEssay()) {
+			CopyWorkflow::init($assignment);
+		}
 		self::setStatus($assignment, Assignment::STATUS_ACCEPTED);
 		ActionLink::invalidate($assignment->getId(), ActionLink::ACTION_CONTRACT);
 		self::syncReviewer($object);
@@ -257,6 +266,7 @@ class AssignmentWorkflow {
 		InvitationWorkflow::onReserved($object, $assignment);
 		$plugin->notifyEditor($reviewer, $object, 'OFR_NEW_RESERVATION', Reservation::getEmailDetails($assignment, $context));
 		self::sendConfirmation($plugin, $context, $object, $assignment, $reviewer);
+		self::syncBundle($object);
 	}
 
 	/**
@@ -307,6 +317,7 @@ class AssignmentWorkflow {
 		$reviewer = Repo::user()->get($assignment->getUserId(), true);
 		ReservationLog::logEvent($object, $wasOffered ? ReservationLog::EVENT_CONTRACT_WITHDRAWN : ReservationLog::EVENT_CANCELLED_BY_EDITOR,
 			$editor, $reviewer);
+		self::syncBundle($object);
 	}
 
 	/**
@@ -321,6 +332,7 @@ class AssignmentWorkflow {
 		self::syncReviewer($object);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_CANCELLED_BY_REVIEWER, $user, $user, $viaLink ? ReservationLog::viaLink($user) : []);
 		$plugin->notifyEditor($user, $object, 'OFR_CANCEL_RESERVATION');
+		self::syncBundle($object);
 	}
 
 	/**
@@ -342,6 +354,7 @@ class AssignmentWorkflow {
 		$object->setSubmissionId($submissionId);
 		(new ObjectForReviewDAO())->updateObject($object);
 		ReservationLog::logEvent($object, ReservationLog::EVENT_ATTACHED, $user, $user, ['submissionId' => $submissionId]);
+		self::syncBundle($object);
 	}
 
 	/**
@@ -353,6 +366,7 @@ class AssignmentWorkflow {
 		foreach (self::dao()->getByObjectId($object->getId(), [Assignment::STATUS_SUBMITTED]) as $assignment) {
 			self::setStatus($assignment, Assignment::STATUS_ACCEPTED);
 		}
+		self::syncBundle($object);
 	}
 
 	/**
@@ -367,6 +381,7 @@ class AssignmentWorkflow {
 		}
 		self::discardList($object, $assignments);
 		InvitationWorkflow::endAll($object);
+		self::syncBundle($object);
 	}
 
 	/**
@@ -447,6 +462,15 @@ class AssignmentWorkflow {
 		if ((int) $object->getUserId() !== (int) $userId) {
 			$object->setUserId($userId);
 			(new ObjectForReviewDAO())->updateObject($object);
+		}
+	}
+
+	/**
+	 * Bring the works of a review essay in line with its reviewer (see BundleWorkflow).
+	 */
+	protected static function syncBundle(ObjectForReview $object): void {
+		if ($object->isReviewEssay()) {
+			BundleWorkflow::syncMembers($object);
 		}
 	}
 
