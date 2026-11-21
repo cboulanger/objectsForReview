@@ -67,7 +67,8 @@ class ObjectsForReviewHandler extends Handler {
 		$objectsForReview = DAORegistry::getDAO('ObjectForReviewDAO')->getAll($contextId, true, true);
 		$gridData = [];
 		while ($objectForReview = $objectsForReview->next()) {
-			if ($objectForReview->getData('offerClosed')) {
+			// The works of a review essay are listed under the essay
+			if ($objectForReview->getData('offerClosed') || $objectForReview->isBundleMember()) {
 				continue;
 			}
 			$objectId = $objectForReview->getId();
@@ -88,6 +89,11 @@ class ObjectsForReviewHandler extends Handler {
 			if ($hidden && !$myActiveStatus) {
 				continue;
 			}
+			$members = $this->memberRows($objectForReview, $currentUser);
+			// A review essay without works is not offered
+			if ($objectForReview->isReviewEssay() && !$members) {
+				continue;
+			}
 			$gridData[$objectId] = [
 				'objectId' => $objectId,
 				'identifierType' => $objectForReview->getIdentifierType(),
@@ -99,6 +105,7 @@ class ObjectsForReviewHandler extends Handler {
 				'year' => $objectForReview->getYear(),
 				'citation' => $objectForReview->getCitation(),
 				'description' => $objectForReview->getDescription(),
+				'reviewEssay' => $objectForReview->isReviewEssay(),
 				'state' => AssignmentWorkflow::getState($objectForReview, $assignments),
 				'bidding' => $objectForReview->isBidding(),
 				'biddingOpen' => !$hidden && AssignmentWorkflow::isBiddingOpen($objectForReview, $assignments),
@@ -109,9 +116,11 @@ class ObjectsForReviewHandler extends Handler {
 				'myDate' => $mine?->getDateCreated(),
 				'dueDate' => $myStatus === Assignment::STATUS_ACCEPTED ? $mine->getData('dueDate') : null,
 				'contractDeadline' => $myStatus === Assignment::STATUS_OFFERED ? $mine->getData('contractDeadline') : null,
-				'copyStatus' => $myStatus === Assignment::STATUS_ACCEPTED ? CopyWorkflow::getStatus($mine) : null,
-				// The works of a review essay (the reservation dialog asks for a copy preference per work)
-				'members' => $this->memberRows($objectForReview),
+				// For a review essay, the copy status is that of each work (members)
+				'copyStatus' => $myStatus === Assignment::STATUS_ACCEPTED && !$objectForReview->isReviewEssay() ? CopyWorkflow::getStatus($mine) : null,
+				// The works of a review essay (the reservation dialog asks for a copy preference per work),
+				// with the current user's review copy status of each work
+				'members' => $members,
 			];
 		}
 
@@ -169,7 +178,8 @@ class ObjectsForReviewHandler extends Handler {
 	 * The reviewer confirms that the review copy has arrived.
 	 */
 	function confirmReceipt($args, $request) {
-		[$object, $user, $context] = $this->requirePost($request);
+		// Also on a work of a review essay: the assignment is the reviewer's mirror on the work
+		[$object, $user, $context] = $this->requirePost($request, true);
 		$assignment = AssignmentWorkflow::dao()->getByObjectAndUser($object->getId(), $user->getId(), [Assignment::STATUS_ACCEPTED]);
 		if ($assignment && CopyWorkflow::getStatus($assignment) === CopyWorkflow::SENT) {
 			CopyWorkflow::confirmReceipt($this->plugin(), $context, $object, $assignment, $user);
@@ -447,12 +457,20 @@ class ObjectsForReviewHandler extends Handler {
 	}
 
 	/**
-	 * The works of a review essay for the contract fields ([] for any other object).
-	 * @return array [['id' => ..., 'citation' => ...], ...]
+	 * The works of a review essay for the list and the contract fields ([] for any other object).
+	 * @param ?\PKP\user\User $user With a user who has an accepted assignment (the mirror) on a work: copyStatus is that work's copy status
+	 * @return array [['id' => ..., 'citation' => ..., 'identifierUrl' => ..., 'copyStatus' => ...], ...]
 	 */
-	protected function memberRows($object): array {
-		return array_map(fn ($member) => ['id' => $member->getId(), 'citation' => $member->getCitation()],
-			BundleWorkflow::membersOf($object));
+	protected function memberRows($object, $user = null): array {
+		return array_map(function ($member) use ($user) {
+			$mirror = $user ? AssignmentWorkflow::dao()->getByObjectAndUser($member->getId(), $user->getId(), [Assignment::STATUS_ACCEPTED]) : null;
+			return [
+				'id' => $member->getId(),
+				'citation' => $member->getCitation(),
+				'identifierUrl' => $member->getIdentifierUrl(),
+				'copyStatus' => $mirror ? CopyWorkflow::getStatus($mirror) : null,
+			];
+		}, BundleWorkflow::membersOf($object));
 	}
 
 	protected function contractInput($request): array {
@@ -474,15 +492,16 @@ class ObjectsForReviewHandler extends Handler {
 
 	/**
 	 * Checks for the POST actions of logged-in users on the list page.
+	 * @param bool $allowMember Allow a work of a review essay (otherwise only the essay can be acted on)
 	 * @return array [ObjectForReview, User, Context]
 	 */
-	protected function requirePost($request): array {
+	protected function requirePost($request, bool $allowMember = false): array {
 		if (!$request->checkCSRF()) fatalError('CSRF check failed, please try again!');
 		if (!$request->getUser()) {
 			Validation::redirectLogin();
 		}
 		$object = $this->getObject($request, (int) $request->getUserVar('objectId'));
-		if (!$object || $object->getSubmissionId() || $object->getData('offerClosed')) {
+		if (!$object || $object->getSubmissionId() || $object->getData('offerClosed') || (!$allowMember && $object->isBundleMember())) {
 			$request->redirect(null, 'for-review');
 		}
 		return [$object, $request->getUser(), $request->getContext()];

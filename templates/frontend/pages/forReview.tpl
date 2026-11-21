@@ -36,12 +36,38 @@
 			{foreach from=$objectsForReview item=objectForReview}
       <tr>
 				<td data-sort="{$objectForReview.title|escape}">
-            {$objectForReview.title|escape}<br />
-            {$objectForReview.identifierType|escape}:
-            {if $objectForReview.identifierUrl}
-              <a href="{$objectForReview.identifierUrl|escape}" target="_blank" rel="noopener noreferrer">{$objectForReview.identifier|escape}</a>
+            {$objectForReview.title|escape}
+            {if $objectForReview.reviewEssay}
+              {* A review essay: its works, with the current reviewer's review copy status of each *}
+              <ul class="ofrEssayWorks">
+                {foreach from=$objectForReview.members item=member}
+                  <li>
+                    {if $member.identifierUrl}
+                      <a href="{$member.identifierUrl|escape}" target="_blank" rel="noopener noreferrer">{$member.citation|escape}</a>
+                    {else}
+                      {$member.citation|escape}
+                    {/if}
+                    {if $member.copyStatus && $member.copyStatus != 'notNeeded' && $member.copyStatus != 'received'}
+                      <span class="ofrMyStatus ofrCopyStatus">{translate key="plugins.generic.objectsForReview.copy.reviewerStatus.`$member.copyStatus`"}</span>
+                    {/if}
+                    {if $member.copyStatus == 'sent'}
+                      <form class="pkp_form" method="post" action="{url op="confirmReceipt"}">
+                        {csrf}
+                        <input type="hidden" name="objectId" value="{$member.id|escape}" />
+                        <button type="submit" class="pkp_button ofrReceivedButton">{translate key='plugins.generic.objectsForReview.copy.confirmReceipt'}</button>
+                      </form>
+                    {/if}
+                  </li>
+                {/foreach}
+              </ul>
             {else}
-              {$objectForReview.identifier|escape}
+              <br />
+              {$objectForReview.identifierType|escape}:
+              {if $objectForReview.identifierUrl}
+                <a href="{$objectForReview.identifierUrl|escape}" target="_blank" rel="noopener noreferrer">{$objectForReview.identifier|escape}</a>
+              {else}
+                {$objectForReview.identifier|escape}
+              {/if}
             {/if}
             {if $objectForReview.description}
               <div class="ofrObjectDescription">{$objectForReview.description|strip_unsafe_html}</div>
@@ -139,6 +165,9 @@
 				.ofrMyStatus, .ofrBidDeadline { font-size: 0.875rem; margin: 0 0 0.5rem; }
 				.ofrObjectDescription { font-size: 0.875rem; margin-top: 0.5rem; }
 				.ofrObjectDescription p { margin: 0 0 0.25rem; }
+				.ofrEssayWorks { margin: 0.25rem 0 0; padding-left: 1.25rem; }
+				.ofrEssayWorks li { margin-bottom: 0.25rem; }
+				.ofrEssayWorks .ofrCopyStatus { display: block; }
 			</style>
 			<script>
 				(function () {ldelim}

@@ -544,4 +544,20 @@ class BundleWorkflowTest extends TestCase {
 		$newest = $this->newAssignment($container, Assignment::STATUS_ACCEPTED, 1, ['dateCreated' => '2030-01-02 10:00:00']);
 		$this->assertSame($newest->getId(), BundleWorkflow::getReviewerAssignment($container)->getId());
 	}
+
+	public function testEssayWithoutWorksIsNotOffered(): void {
+		$dao = new ObjectForReviewDAO();
+		[$empty] = $this->newEssay([]);
+		[$essay] = $this->newEssay(['A']);
+		$this->assertFalse(AssignmentWorkflow::isReservable($empty, []), 'no works: not reservable');
+		$this->assertTrue(AssignmentWorkflow::isReservable($essay, []), 'with a work: reservable');
+
+		foreach ([$empty, $essay] as $container) {
+			$container = $dao->getById($container->getId());
+			$container->setOfferSetting('assignmentMode', ObjectForReview::MODE_BIDDING);
+			$dao->updateObject($container);
+		}
+		$this->assertFalse(AssignmentWorkflow::isBiddingOpen($dao->getById($empty->getId()), []), 'no works: no bids');
+		$this->assertTrue(AssignmentWorkflow::isBiddingOpen($dao->getById($essay->getId()), []), 'with a work: bidding open');
+	}
 }

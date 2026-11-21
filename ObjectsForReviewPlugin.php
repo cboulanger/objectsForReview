@@ -257,7 +257,10 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 		$submission = $args[2];
 		$objects = (new ObjectForReviewDAO())->getBySubmissionId($submission->getId());
 		while ($object = $objects->next()) {
-			AssignmentWorkflow::complete($object);
+			// The works of a review essay are completed with the essay (BundleWorkflow::syncMembers)
+			if (!$object->isBundleMember()) {
+				AssignmentWorkflow::complete($object);
+			}
 		}
 		return false;
 	}
@@ -379,7 +382,10 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 
         $objectsForReview = [];
         while ($objectForReview = $objectForReviewResult->next()) {
-            $objectsForReview[] = $this->getObjectForReviewData($objectForReview);
+            // A review essay is one entry (its citation lists the works)
+            if (!$objectForReview->isBundleMember()) {
+                $objectsForReview[] = $this->getObjectForReviewData($objectForReview);
+            }
         }
 
         /** @var TemplateManager $templateMgr */
@@ -449,7 +455,8 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 			'identifierType' => $objectForReview->getIdentifierType(),
 			'resourceType' => $objectForReview->getResourceType(),
 			'authors' => $objectForReview->getAuthors(),
-			'title' => $objectForReview->getTitle(),
+			// A review essay has no authors, publisher or year: its citation is the title with the works
+			'title' => $objectForReview->isReviewEssay() ? $objectForReview->getCitation() : $objectForReview->getTitle(),
 			'publisher' => $objectForReview->getPublisher(),
 			'year' => $objectForReview->getYear(),
 		];
@@ -494,6 +501,10 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 			$templateData = array();
 
 			while ($objectForReview = $objectsForReview->next()) {
+				// Only the reviewed works, not the review essay that holds them
+				if ($objectForReview->isReviewEssay()) {
+					continue;
+				}
 				$objectId = $objectForReview->getId();
 				$templateData[$objectId] = array(
 					'identifierType' => $objectForReview->getIdentifierType(),
@@ -503,7 +514,7 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 				);
 			}
 
-			if ($objectsForReview){
+			if ($templateData){
 				$templateMgr->assign('objectsForReview', $templateData);
 				$output .= $templateMgr->fetch($this->getTemplateResource('listReviews.tpl'));
 			}

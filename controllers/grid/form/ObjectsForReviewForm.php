@@ -103,10 +103,15 @@ class ObjectsForReviewForm extends \PKP\form\Form {
 		if ($objectsForReview){
 			$reservedObjects = array();
 			while ($objectForReview = $objectsForReview->next()) {
+				// The works of a review essay are attached with the essay
+				if ($objectForReview->isBundleMember()) {
+					continue;
+				}
 				$objectId = $objectForReview->getId();
 				$reservedObjects[$objectId] = array(
 					'objectId' => $objectId,
-					'description' => $objectForReview->getAuthors() . ": " . $objectForReview->getTitle(),
+					'description' => $objectForReview->isReviewEssay() ? $objectForReview->getCitation()
+						: $objectForReview->getAuthors() . ": " . $objectForReview->getTitle(),
 					'userId' => $objectForReview->getUserId()
 				);
 			}

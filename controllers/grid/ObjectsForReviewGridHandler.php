@@ -114,11 +114,16 @@ class ObjectsForReviewGridHandler extends GridHandler {
 
 		$gridData = array();
 		while ($objectForReview = $objectsForReview->next()) {
+			// A review essay is one row; its citation lists the works
+			if ($objectForReview->isBundleMember()) {
+				continue;
+			}
 			$objectId = $objectForReview->getId();
 			$gridData[$objectId] = array(
 				'identifierType' => $objectForReview->getIdentifierType(),
 				'identifier' => $objectForReview->getIdentifier(),
-				'description' => $objectForReview->getCitation()
+				'description' => $objectForReview->getCitation(),
+				'reviewEssay' => $objectForReview->isReviewEssay()
 			);
 		}
 
@@ -217,6 +222,9 @@ class ObjectsForReviewGridHandler extends GridHandler {
 		$context = $request->getContext();
 		$submission = $this->getSubmission();
 		$submissionId = $submission->getId();
+		if (!$this->isEditable($objectId, $submissionId)) {
+			return new JSONMessage(false, __('user.authorization.accessDenied'));
+		}
 
 		$this->setupTemplate($request);
 
@@ -240,6 +248,9 @@ class ObjectsForReviewGridHandler extends GridHandler {
 		$context = $request->getContext();
 		$submission = $this->getSubmission();
 		$submissionId = $submission->getId();
+		if (!$this->isEditable($objectId, $submissionId)) {
+			return new JSONMessage(false, __('user.authorization.accessDenied'));
+		}
 
 		$this->setupTemplate($request);
 
@@ -280,7 +291,8 @@ class ObjectsForReviewGridHandler extends GridHandler {
 
 		$objectForReviewDao = DAORegistry::getDAO('ObjectForReviewDAO');
 		$objectForReview = $objectForReviewDao->getById($objectId, $submissionId);
-		if (!$objectForReview) {
+		// The works of a review essay are removed with the essay
+		if (!$objectForReview || $objectForReview->isBundleMember()) {
 			return new JSONMessage(false, __('user.authorization.accessDenied'));
 		}
 
@@ -317,7 +329,8 @@ class ObjectsForReviewGridHandler extends GridHandler {
 		if (!$objectForReview
 			|| $currentUser->getId() != $objectForReview->getUserId()
 			|| $objectForReview->getContextId() != $context->getId()
-			|| $objectForReview->getSubmissionId()) {
+			|| $objectForReview->getSubmissionId()
+			|| $objectForReview->isBundleMember()) {
 			return new JSONMessage(false, __('user.authorization.accessDenied'));
 		}
 		$assignment = AssignmentWorkflow::dao()->getByObjectAndUser($objectForReview->getId(), $currentUser->getId(), [Assignment::STATUS_ACCEPTED]);
@@ -330,6 +343,19 @@ class ObjectsForReviewGridHandler extends GridHandler {
 		$json = DAO::getDataChangedEvent($submissionId);
 		$json->setGlobalEvent('plugin:objectsForReview:added', $this->plugin->getObjectForReviewData($objectForReview));
 		return $json;
+	}
+
+	/**
+	 * Can the object be edited in the form? A new one can; a review essay and its works
+	 * cannot (the editor manages them on the plugin's pages).
+	 * @param $objectId mixed Object ID (empty for a new object)
+	 */
+	protected function isEditable($objectId, int $submissionId): bool {
+		if (!$objectId) {
+			return true;
+		}
+		$objectForReview = DAORegistry::getDAO('ObjectForReviewDAO')->getById((int) $objectId, $submissionId);
+		return $objectForReview && !$objectForReview->isReviewEssay() && !$objectForReview->isBundleMember();
 	}
 
 	/**

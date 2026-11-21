@@ -85,7 +85,14 @@ class AssignmentWorkflow {
 		if (self::filter($assignments, array_merge(Assignment::REVIEWER_STATUSES, [Assignment::STATUS_OFFERED]))) {
 			return false;
 		}
-		return !self::isBidDeadlinePassed($object);
+		return !self::isBidDeadlinePassed($object) && !self::isEmptyEssay($object);
+	}
+
+	/**
+	 * A review essay without works cannot be offered.
+	 */
+	protected static function isEmptyEssay(ObjectForReview $object): bool {
+		return $object->isReviewEssay() && !BundleWorkflow::membersOf($object);
 	}
 
 	public static function isBidDeadlinePassed(ObjectForReview $object): bool {
@@ -99,7 +106,8 @@ class AssignmentWorkflow {
 	public static function isReservable(ObjectForReview $object, array $assignments): bool {
 		return !$object->isBundleMember()
 			&& !$object->isBidding()
-			&& self::getState($object, $assignments) === self::STATE_OPEN;
+			&& self::getState($object, $assignments) === self::STATE_OPEN
+			&& !self::isEmptyEssay($object);
 	}
 
 	/**

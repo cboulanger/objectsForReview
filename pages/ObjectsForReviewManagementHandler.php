@@ -468,7 +468,8 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$dispatcher = $request->getDispatcher();
 		$rows = [];
 		foreach ($this->getObjects($request) as $object) {
-			if (!$object->getSubmissionId()) {
+			// The works of a review essay are listed, not the essay
+			if (!$object->getSubmissionId() || $object->isReviewEssay()) {
 				continue;
 			}
 			$submission = Repo::submission()->get((int) $object->getSubmissionId());

@@ -46,19 +46,22 @@ class ObjectsForReviewGridRow extends GridRow {
 		if (!empty($objectId) && !$this->isReadOnly()) {
 			$router = $request->getRouter();
 
-			// Create the "edit" action
-			$this->addAction(
-				new LinkAction(
-					'editObjectForReviewItem',
-					new AjaxModal(
-						$router->url($request, null, null, 'editObjectForReview', null, array('objectId' => $objectId, 'submissionId' => $submissionId)),
+			// Create the "edit" action (not for a review essay: the editor manages it on the plugin's pages)
+			$data = $this->getData();
+			if (empty($data['reviewEssay'])) {
+				$this->addAction(
+					new LinkAction(
+						'editObjectForReviewItem',
+						new AjaxModal(
+							$router->url($request, null, null, 'editObjectForReview', null, array('objectId' => $objectId, 'submissionId' => $submissionId)),
+							__('grid.action.edit'),
+							'modal_edit',
+							true),
 						__('grid.action.edit'),
-						'modal_edit',
-						true),
-					__('grid.action.edit'),
-					'edit'
-				)
-			);
+						'edit'
+					)
+				);
+			}
 
 			// Create the "delete" action
 			$this->addAction(
