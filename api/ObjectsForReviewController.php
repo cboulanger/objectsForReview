@@ -82,7 +82,7 @@ class ObjectsForReviewController extends PKPBaseController {
 	/** Locale key prefix of the review essay errors of the API */
 	const BUNDLE_ERROR_PREFIX = 'plugins.generic.objectsForReview.reviewEssay.api.';
 
-	const IDENTIFIER_TYPES = ['doi','issn', 'isbn', 'uri', 'urn', 'pmid', 'pmcid', 'purl', 'arxiv', 'ark', 'handle', 'uuid', 'ecli', 'accession', 'other'];
+	const IDENTIFIER_TYPES = ['doi', 'issn', 'isbn', 'uri', 'urn', 'pmid', 'pmcid', 'purl', 'arxiv', 'ark', 'handle', 'uuid', 'ecli', 'accession', 'other'];
 
 	public function __construct(protected $plugin) {
 	}
@@ -373,21 +373,24 @@ class ObjectsForReviewController extends PKPBaseController {
 			$object->setSubmissionId($submission->getId());
 		}
 
-		$dao->insertObject($assignment);
+		// All or nothing: a review essay is not left half imported
+		DB::transaction(function () use ($dao, $assignment, $object, $status, $copies, $user) {
+			$dao->insertObject($assignment);
 
-		// Bidding is over once someone has been chosen
-		if ($object->isBidding() && ($status === Assignment::STATUS_OFFERED || in_array($status, Assignment::REVIEWER_STATUSES, true))) {
-			$object->setOfferSetting('biddingClosed', true);
-		}
-		(new ObjectForReviewDAO())->updateObject($object);
-		AssignmentWorkflow::syncReviewer($object);
-		if ($copies !== null) {
-			// The members get their mirrors, then the copy status of each work
-			BundleWorkflow::syncMembers($object);
-			$this->applyMirrorCopyStatus($assignment, $copies);
-		}
+			// Bidding is over once someone has been chosen
+			if ($object->isBidding() && ($status === Assignment::STATUS_OFFERED || in_array($status, Assignment::REVIEWER_STATUSES, true))) {
+				$object->setOfferSetting('biddingClosed', true);
+			}
+			(new ObjectForReviewDAO())->updateObject($object);
+			AssignmentWorkflow::syncReviewer($object);
+			if ($copies !== null) {
+				// The members get their mirrors, then the copy status of each work
+				BundleWorkflow::syncMembers($object);
+				$this->applyMirrorCopyStatus($assignment, $copies);
+			}
 
-		ReservationLog::logEvent($object, ReservationLog::EVENT_IMPORTED, Application::get()->getRequest()->getUser(), $user);
+			ReservationLog::logEvent($object, ReservationLog::EVENT_IMPORTED, Application::get()->getRequest()->getUser(), $user);
+		});
 		return $dao->getById($assignment->getId());
 	}
 
@@ -412,28 +415,14 @@ class ObjectsForReviewController extends PKPBaseController {
 		$data['dateReserved'] = $assignment->getDateCreated();
 		$data['dueDate'] = $this->reservationDueDate($input, $status);
 
-		$preference = (string) ($input['copyPreference'] ?? Reservation::COPY_HAVE);
-		if (!in_array($preference, Reservation::COPY_PREFERENCES, true)) {
-			throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopyPreference', 'copyPreference must be one of: ' . implode(', ', Reservation::COPY_PREFERENCES) . '.');
-		}
+		$preference = $this->validCopyPreference($input['copyPreference'] ?? Reservation::COPY_HAVE);
 		$data['copyPreference'] = $preference;
 		if ($preference === Reservation::COPY_OTHER) {
 			$data['copyNote'] = trim((string) ($input['copyNote'] ?? ''));
 		}
-
-		$copyStatus = $input['copyStatus'] ?? null;
-		if ($copyStatus !== null && !in_array($copyStatus, self::COPY_STATUSES, true)) {
-			throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopyStatus', 'copyStatus must be one of: ' . implode(', ', self::COPY_STATUSES) . '.');
-		}
-
-		// Delivery details are kept only while a physical copy is still on its way (see Reservation::erasePersonalData)
-		if ($status === Assignment::STATUS_ACCEPTED && $preference === Reservation::COPY_PHYSICAL) {
-			$data['shippingAddress'] = trim((string) ($input['shippingAddress'] ?? ''));
-			$data['phone'] = trim((string) ($input['phone'] ?? ''));
-			$toShip = in_array($copyStatus ?? CopyWorkflow::PENDING, [CopyWorkflow::PENDING, CopyWorkflow::REQUESTED], true);
-			if ($toShip && $data['shippingAddress'] === '') {
-				throw new ApiError(Response::HTTP_BAD_REQUEST, 'shippingAddressRequired', 'shippingAddress is required for a physical copy that has not been sent yet.');
-			}
+		$copyStatus = $this->validCopyStatus($input['copyStatus'] ?? null);
+		if ($status === Assignment::STATUS_ACCEPTED) {
+			$this->applyDeliveryDetails($data, $input, [['copyPreference' => $preference, 'copyStatus' => $copyStatus]]);
 		}
 
 		Reservation::apply($assignment, $data);
@@ -488,7 +477,11 @@ class ObjectsForReviewController extends PKPBaseController {
 			// Unknown ids (or works of another journal) are refused by canCombine as not available
 			$works = array_map(fn ($id) => is_numeric($id) ? $this->getContextObject((int) $id) : null, array_values($ids));
 			$copyPreferences = [];
+			$objectIds = array_map(fn ($id) => is_numeric($id) ? (int) $id : null, array_values($ids));
 			foreach ((array) ($input['copyPreferences'] ?? []) as $id => $preference) {
+				if (!is_numeric($id) || !in_array((int) $id, $objectIds, true)) {
+					throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopies', __(self::BUNDLE_ERROR_PREFIX . 'invalidCopies'));
+				}
 				$copyPreferences[(int) $id] = $this->validCopyPreference($preference);
 			}
 			if ($reason = BundleWorkflow::canCombine($works)) {
@@ -623,11 +616,7 @@ class ObjectsForReviewController extends PKPBaseController {
 				throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopies', __(self::BUNDLE_ERROR_PREFIX . 'invalidCopies'));
 			}
 			$seen[$id] = true;
-			$copyStatus = $entry['copyStatus'] ?? null;
-			if ($copyStatus !== null && !in_array($copyStatus, self::COPY_STATUSES, true)) {
-				throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopyStatus',
-					__(self::BUNDLE_ERROR_PREFIX . 'invalidCopyStatus', ['values' => implode(', ', self::COPY_STATUSES)]));
-			}
+			$copyStatus = $this->validCopyStatus($entry['copyStatus'] ?? null);
 			$copies[$id] = [
 				'copyPreference' => $this->validCopyPreference($entry['copyPreference'] ?? Reservation::COPY_HAVE),
 				'copyStatus' => $copyStatus,
@@ -651,16 +640,37 @@ class ObjectsForReviewController extends PKPBaseController {
 		if (in_array(Reservation::COPY_OTHER, $preferences, true)) {
 			$data['copyNote'] = trim((string) ($input['copyNote'] ?? ''));
 		}
-		if ($status === Assignment::STATUS_ACCEPTED && in_array(Reservation::COPY_PHYSICAL, $preferences, true)) {
-			$data['shippingAddress'] = trim((string) ($input['shippingAddress'] ?? ''));
-			$data['phone'] = trim((string) ($input['phone'] ?? ''));
-			$toShip = array_filter($copies, fn ($copy) => $copy['copyPreference'] === Reservation::COPY_PHYSICAL
-				&& in_array($copy['copyStatus'] ?? CopyWorkflow::PENDING, [CopyWorkflow::PENDING, CopyWorkflow::REQUESTED], true));
-			if ($toShip && $data['shippingAddress'] === '') {
-				throw new ApiError(Response::HTTP_BAD_REQUEST, 'shippingAddressRequired', __(self::BUNDLE_ERROR_PREFIX . 'shippingAddressRequired'));
-			}
+		if ($status === Assignment::STATUS_ACCEPTED) {
+			$this->applyDeliveryDetails($data, $input, $copies);
 		}
 		Reservation::apply($assignment, $data);
+	}
+
+	/**
+	 * Delivery details of an accepted reviewer who gets a physical copy. They are kept only while
+	 * a copy is on its way (see Reservation::erasePersonalData), and required while one is still to be sent.
+	 * @param array $copies [copyPreference, copyStatus (or null)] of each work
+	 */
+	protected function applyDeliveryDetails(array &$data, array $input, array $copies): void {
+		$physical = array_filter($copies, fn ($copy) => $copy['copyPreference'] === Reservation::COPY_PHYSICAL);
+		if (!$physical) {
+			return;
+		}
+		$data['shippingAddress'] = trim((string) ($input['shippingAddress'] ?? ''));
+		$data['phone'] = trim((string) ($input['phone'] ?? ''));
+		$toShip = array_filter($physical,
+			fn ($copy) => in_array($copy['copyStatus'] ?? CopyWorkflow::PENDING, [CopyWorkflow::PENDING, CopyWorkflow::REQUESTED], true));
+		if ($toShip && $data['shippingAddress'] === '') {
+			throw new ApiError(Response::HTTP_BAD_REQUEST, 'shippingAddressRequired', __(self::BUNDLE_ERROR_PREFIX . 'shippingAddressRequired'));
+		}
+	}
+
+	protected function validCopyStatus($copyStatus): ?string {
+		if ($copyStatus !== null && !in_array($copyStatus, self::COPY_STATUSES, true)) {
+			throw new ApiError(Response::HTTP_BAD_REQUEST, 'invalidCopyStatus',
+				__(self::BUNDLE_ERROR_PREFIX . 'invalidCopyStatus', ['values' => implode(', ', self::COPY_STATUSES)]));
+		}
+		return $copyStatus;
 	}
 
 	/**

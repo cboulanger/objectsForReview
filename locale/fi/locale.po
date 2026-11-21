@@ -936,7 +936,7 @@ msgid "plugins.generic.objectsForReview.reviewEssay.api.memberOfReviewEssay"
 msgstr "Tämä teos kuuluu kooste-arvioon {$bundleId}: tuo arvioija sen sijaan kooste-arviolle."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopies"
-msgstr "copies-kentän on oltava luettelo merkinnöistä, joissa on kooste-arvion teoksen tunniste (objectId), kukin teos enintään kerran."
+msgstr "copies (luettelo merkinnöistä, joissa on objectId) ja copyPreferences (teoksen tunnisteen mukaan) saavat mainita vain kooste-arvion teoksia, kunkin teoksen enintään kerran."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopyPreference"
 msgstr "copyPreference-kentän on oltava jokin näistä: {$values}."

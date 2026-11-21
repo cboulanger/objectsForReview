@@ -141,6 +141,41 @@ class BundleWorkflowTest extends TestCase {
 		$this->assertStringContainsString(': Essay ', $labels[0]);
 	}
 
+	public function testFinishedReviewerWithoutMirrorsIsMirrored(): void {
+		foreach ([Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED] as $status) {
+			[$container, [$a, $b]] = $this->newEssay(['A', 'B']);
+			$reviewer = $this->newAssignment($container, $status, 1, [
+				'dueDate' => '2030-01-31', 'dateReserved' => '2029-06-01 00:00:00', 'dateStatus' => '2029-12-01 10:00:00',
+				'shippingAddress' => 'Somewhere 1', 'phone' => '+49 30 123456',
+				'copyPreferences' => [$a->getId() => 'physical', $b->getId() => 'electronic'],
+			]);
+			BundleWorkflow::syncMembers($container);
+			BundleWorkflow::syncMembers($container); // idempotent
+
+			foreach ([[$a, 'physical'], [$b, 'electronic']] as [$member, $preference]) {
+				$mirrors = (new AssignmentDAO())->getByObjectId($member->getId());
+				$this->assertCount(1, $mirrors, "{$status}: one mirror");
+				$mirror = $mirrors[0];
+				$this->assertSame($reviewer->getId(), $mirror->getBundleAssignmentId());
+				$this->assertSame($status, $mirror->getStatus());
+				$this->assertSame('2029-12-01 10:00:00', $mirror->getDateStatus());
+				$this->assertSame('2030-01-31', $mirror->getData('dueDate'));
+				$this->assertSame('2029-06-01 00:00:00', $mirror->getData('dateReserved'));
+				$this->assertSame($preference, $mirror->getData('copyPreference'));
+				$this->assertSame('notNeeded', $mirror->getData('copyStatus'), 'no copy is asked for a finished review');
+				$this->assertSame(1, (int) (new ObjectForReviewDAO())->getById($member->getId())->getUserId());
+			}
+			$mirrorA = (new AssignmentDAO())->getByObjectId($a->getId())[0];
+			if ($status === Assignment::STATUS_SUBMITTED) {
+				$this->assertNull($mirrorA->getData('shippingAddress'), 'personal data is not kept for submitted reviews');
+			}
+			$containerAssignment = (new AssignmentDAO())->getById($reviewer->getId());
+			$this->assertNull($containerAssignment->getData('copyPreferences'));
+			$this->assertNull($containerAssignment->getData('shippingAddress'));
+			$this->assertCount(1, ReservationLog::getHistory($a), "{$status}: the mirror is logged once");
+		}
+	}
+
 	public function testRetractEndsMirrorsAndKeepsSentCopiesReturnable(): void {
 		[$container, [$a, $b]] = $this->newEssay(['A', 'B']);
 		$reviewer = $this->newAssignment($container, Assignment::STATUS_ACCEPTED, 1, [

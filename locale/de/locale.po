@@ -935,7 +935,7 @@ msgid "plugins.generic.objectsForReview.reviewEssay.api.memberOfReviewEssay"
 msgstr "Dieses Werk gehört zur Sammelrezension {$bundleId}: Importieren Sie den Rezensenten stattdessen für die Sammelrezension."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopies"
-msgstr "copies muss eine Liste von Einträgen mit der ID (objectId) eines Werks der Sammelrezension sein, jedes Werk höchstens einmal."
+msgstr "copies (eine Liste von Einträgen mit objectId) und copyPreferences (nach Werk-ID) dürfen nur Werke der Sammelrezension nennen, jedes Werk höchstens einmal."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopyPreference"
 msgstr "copyPreference muss einer dieser Werte sein: {$values}."

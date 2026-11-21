@@ -139,6 +139,40 @@ test('import on an essay: without copies every work is "have"; copies are valida
   }
 });
 
+test('import a submitted review essay: the works get submitted mirrors with their copy status', async () => {
+  const { bundle, works: [a, b] } = await newBundle();
+  const reviewer = await newUser();
+  const assignment = await admin().addAssignment(bundle.id, {
+    email: reviewer.email, status: 'submitted', dateStatus: '2026-10-15 09:00:00',
+    copies: [
+      { objectId: a.id, copyPreference: 'physical', copyStatus: 'returnRequested', copyStatusDate: '2026-10-20' },
+      { objectId: b.id, copyPreference: 'electronic' },
+    ],
+  });
+  assert.equal(assignment.status, 'submitted');
+  assert.equal(assignment.copyPreferences, null, 'the preferences moved to the mirrors');
+
+  const container = await admin().getObject(bundle.id);
+  assert.equal(container.reviewerId, reviewer.id);
+  for (const member of container.members) {
+    const mirrors = member.assignments.filter((m) => m.bundleAssignmentId === assignment.id);
+    assert.equal(mirrors.length, 1, `one mirror on work ${member.id}`);
+    assert.equal(mirrors[0].status, 'submitted');
+    assert.equal(mirrors[0].dateStatus, '2026-10-15 09:00:00');
+    assert.equal(member.reviewerId, reviewer.id);
+  }
+  const mirrorOf = (work) => container.members.find((m) => m.id === work.id).assignments[0];
+  assert.deepEqual([mirrorOf(a).copyPreference, mirrorOf(a).copyStatus, mirrorOf(a).copyStatusDate],
+    ['physical', 'returnRequested', '2026-10-20 00:00:00']);
+  assert.deepEqual([mirrorOf(b).copyPreference, mirrorOf(b).copyStatus], ['electronic', 'notNeeded']);
+});
+
+test('create: copyPreferences only for the works of the essay', async () => {
+  const [a, other] = [await newWork(), await newWork()];
+  await rejects(admin().createBundle({ title: 'E2E', objectIds: [a.id], copyPreferences: { [other.id]: 'have' } }), 400, 'invalidCopies');
+  assert.equal((await admin().getObject(a.id)).bundleId, null);
+});
+
 test('combining two works that each have a reviewer gives cannot_combine', async () => {
   const [a, b] = [await newWork(), await newWork()];
   for (const work of [a, b]) {

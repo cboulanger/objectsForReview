@@ -85,6 +85,9 @@ class BundleWorkflow {
 				$mirror = $mirrors[$member->getId()] ?? null;
 				if ($status === Assignment::STATUS_ACCEPTED) {
 					self::syncAccepted($container, $reviewerAssignment, $member, $mirror, $reviewer);
+				} elseif (!$mirror && in_array($status, [Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED], true)) {
+					// A finished review without mirrors (e.g. imported): the works get theirs now
+					self::createMirror($container, $reviewerAssignment, $member, $reviewer, $status);
 				} elseif ($mirror && in_array($status, [Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED], true)) {
 					if ($mirror->isReviewer() && $mirror->getStatus() !== $status) {
 						if ($status === Assignment::STATUS_SUBMITTED) {
@@ -101,7 +104,7 @@ class BundleWorkflow {
 				}
 			}
 
-			if ($status === Assignment::STATUS_ACCEPTED) {
+			if (in_array($status, [Assignment::STATUS_ACCEPTED, Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED], true)) {
 				// The delivery details now live on the mirrors
 				$changed = false;
 				foreach (['shippingAddress', 'phone', 'copyPreferences', 'copyNote'] as $field) {
@@ -433,32 +436,51 @@ class BundleWorkflow {
 	}
 
 	/**
+	 * Create the mirror of a member: the copy preference for the work and the delivery details
+	 * from the container assignment, with the reviewer's status.
+	 * @param string $status Accepted, or submitted/completed for a finished review that had no mirrors (e.g. imported)
+	 */
+	protected static function createMirror(ObjectForReview $container, Assignment $reviewerAssignment, ObjectForReview $member,
+			?User $reviewer, string $status): void {
+		$dao = AssignmentWorkflow::dao();
+		$preferences = (array) ($reviewerAssignment->getData('copyPreferences') ?? []);
+		$preference = $preferences[$member->getId()] ?? Reservation::COPY_HAVE;
+		$mirror = $dao->newDataObject();
+		$mirror->setObjectId($member->getId());
+		$mirror->setContextId($member->getContextId());
+		$mirror->setUserId($reviewerAssignment->getUserId());
+		$mirror->setStatus(Assignment::STATUS_ACCEPTED);
+		$mirror->setData('bundleAssignmentId', $reviewerAssignment->getId());
+		$mirror->setData('dueDate', $reviewerAssignment->getData('dueDate'));
+		$mirror->setData('dateReserved', $reviewerAssignment->getData('dateReserved'));
+		$mirror->setData('copyPreference', $preference);
+		if ($preference === Reservation::COPY_PHYSICAL) {
+			$mirror->setData('shippingAddress', $reviewerAssignment->getData('shippingAddress'));
+			$mirror->setData('phone', $reviewerAssignment->getData('phone'));
+		} elseif ($preference === Reservation::COPY_OTHER) {
+			$mirror->setData('copyNote', $reviewerAssignment->getData('copyNote'));
+		}
+		CopyWorkflow::init($mirror);
+		if ($status !== Assignment::STATUS_ACCEPTED) {
+			// As on attaching the review: a finished review keeps no delivery details. No copy is
+			// asked for any more (as for an imported finished review of a single work).
+			Reservation::erasePersonalData($mirror);
+			$mirror->setData('copyStatus', CopyWorkflow::NOT_NEEDED);
+			$mirror->setStatus($status);
+			$mirror->setDateStatus($reviewerAssignment->getDateStatus());
+		}
+		$dao->insertObject($mirror);
+		ReservationLog::logEvent($member, ReservationLog::EVENT_ESSAY_MIRRORED, null, $reviewer, self::logData($container));
+	}
+
+	/**
 	 * The reviewer's agreement is accepted: create the member's mirror, or bring it back to "accepted" (detach).
 	 */
 	protected static function syncAccepted(ObjectForReview $container, Assignment $reviewerAssignment, ObjectForReview $member,
 			?Assignment $mirror, ?User $reviewer): void {
 		$dao = AssignmentWorkflow::dao();
 		if (!$mirror) {
-			$preferences = (array) ($reviewerAssignment->getData('copyPreferences') ?? []);
-			$preference = $preferences[$member->getId()] ?? Reservation::COPY_HAVE;
-			$mirror = $dao->newDataObject();
-			$mirror->setObjectId($member->getId());
-			$mirror->setContextId($member->getContextId());
-			$mirror->setUserId($reviewerAssignment->getUserId());
-			$mirror->setStatus(Assignment::STATUS_ACCEPTED);
-			$mirror->setData('bundleAssignmentId', $reviewerAssignment->getId());
-			$mirror->setData('dueDate', $reviewerAssignment->getData('dueDate'));
-			$mirror->setData('dateReserved', $reviewerAssignment->getData('dateReserved'));
-			$mirror->setData('copyPreference', $preference);
-			if ($preference === Reservation::COPY_PHYSICAL) {
-				$mirror->setData('shippingAddress', $reviewerAssignment->getData('shippingAddress'));
-				$mirror->setData('phone', $reviewerAssignment->getData('phone'));
-			} elseif ($preference === Reservation::COPY_OTHER) {
-				$mirror->setData('copyNote', $reviewerAssignment->getData('copyNote'));
-			}
-			CopyWorkflow::init($mirror);
-			$dao->insertObject($mirror);
-			ReservationLog::logEvent($member, ReservationLog::EVENT_ESSAY_MIRRORED, null, $reviewer, self::logData($container));
+			self::createMirror($container, $reviewerAssignment, $member, $reviewer, Assignment::STATUS_ACCEPTED);
 			return;
 		}
 		$changed = false;

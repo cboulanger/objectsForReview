@@ -936,7 +936,7 @@ msgid "plugins.generic.objectsForReview.reviewEssay.api.memberOfReviewEssay"
 msgstr "This work is part of the review essay {$bundleId}: import the reviewer for the review essay instead."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopies"
-msgstr "copies must be a list of entries with the id (objectId) of a work in the review essay, each work at most once."
+msgstr "copies (a list of entries with an objectId) and copyPreferences (by work id) may only name works of the review essay, each work at most once."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.api.invalidCopyPreference"
 msgstr "copyPreference must be one of: {$values}."
