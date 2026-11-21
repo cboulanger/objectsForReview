@@ -225,6 +225,7 @@ class ObjectForReview extends \PKP\core\DataObject {
 				return CrossrefLookup::doiUrl($identifier);
 			case 'isbn':
 				return IsbnLookup::worldcatUrl($identifier);
+			case 'uri': // "Link" in the forms
 			case 'link':
 				return preg_match('#^https?://#i', $identifier) ? $identifier : null;
 		}

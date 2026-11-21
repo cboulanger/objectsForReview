@@ -1,0 +1,69 @@
+{
+  "users": [
+    {
+      "email": "review-copies@example-press.org",
+      "givenName": "Petra",
+      "familyName": "Press",
+      "affiliation": "Example Press",
+      "mailingAddress": "Example Press\nReview Copies\nVerlagsstr. 1\n10115 Berlin",
+      "country": "DE",
+      "roles": ["publisherContact"]
+    },
+    {
+      "email": "a.reviewer@example.edu",
+      "givenName": "Alex",
+      "familyName": "Reviewer",
+      "affiliation": "Example University",
+      "roles": ["author"]
+    }
+  ],
+  "objects": [
+    {
+      "isbn": "978-3-16-148410-0",
+      "publisherContactEmail": "review-copies@example-press.org",
+      "notifyPublisher": true,
+      "assignments": [
+        {
+          "email": "a.reviewer@example.edu",
+          "status": "accepted",
+          "dateCreated": "2026-09-01",
+          "dueDate": "2027-01-31",
+          "copyPreference": "physical",
+          "copyStatus": "received",
+          "copySentBy": "publisher"
+        }
+      ]
+    },
+    {
+      "doi": "10.1000/example-doi",
+      "assignmentMode": "bidding",
+      "bidDeadline": "2026-12-31",
+      "returnRequired": false,
+      "assignments": [
+        {
+          "email": "new.bidder@example.org",
+          "givenName": "Nora",
+          "familyName": "Bidder",
+          "status": "bid",
+          "statement": "I work on this topic."
+        }
+      ]
+    },
+    {
+      "identifier": "https://example.org/a-website",
+      "identifierType": "uri",
+      "resourceType": "http://purl.org/coar/resource_type/c_7ad9",
+      "title": "A website under review",
+      "authors": "Doe, Jane",
+      "year": "2025",
+      "returnRequired": false,
+      "assignments": [
+        {
+          "email": "a.reviewer@example.edu",
+          "status": "submitted",
+          "submissionId": 42
+        }
+      ]
+    }
+  ]
+}

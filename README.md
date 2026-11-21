@@ -34,6 +34,7 @@ Changed or new in this fork:
 - **Audit trail.** Every step and every email is recorded in the offer's history.
 - **Privacy.** Delivery addresses and phone numbers are deleted once the copy has arrived, and bid statements once the review is published. Copies are never forwarded from one reviewer to the next.
 - **Editable emails.** All emails are templates under Settings › Emails, in English, German and Finnish.
+- **API for imports.** Works (by DOI or ISBN), reviewers, publisher contacts and review processes already under way can be imported with an OJS API key, with a Node command line client. See [api/SKILL.md](api/SKILL.md).
 
 ## Documentation
 
@@ -86,6 +87,8 @@ dev/ojs-dev.sh build   # rebuild the image after changing files in dev/
 
 The test journal has accounts for each role: admin, an author, a book review editor, a second reviewer and a publisher contact. Each password is `ojs` followed by the user name, for example `ojsbre`. [dev/README.md](dev/README.md) lists the accounts and explains how to run the daily task by hand and how to share a folder outside `/Users` with the Podman VM on macOS.
 
+Tests: `tests/run.sh` runs the PHP unit tests (PHPUnit in the container), the unit tests of the API client, and the API end-to-end tests against the container. See [tests/README.md](tests/README.md), which also explains how to add suites (e.g. browser tests).
+
 How the code is organised:
 
 | Path | Contents |
@@ -98,6 +101,8 @@ How the code is organised:
 | `classes/ReservationReminder.php` | Daily task |
 | `pages/` | Public page, one-click link pages, backend pages (To-do, Reviewers & bidders, ...) |
 | `controllers/` | Grids and modal forms |
+| `api/` | REST API controller (`/api/v1/objectsForReview`) and the Node client `ofr` (see `api/SKILL.md`) |
+| `tests/` | Test suites and their runner (`tests/run.sh`) |
 | `ObjectsForReviewSchemaMigration.php` | Tables. Idempotent; raise `SCHEMA_VERSION` when changing it |
 
 Strings live in `locale/{en,de,fi}/locale.po`, and email templates in `emailTemplates.xml` and `locale/*/emails.po`.

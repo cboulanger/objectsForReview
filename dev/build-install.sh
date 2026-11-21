@@ -20,10 +20,12 @@ if ! grep -q '^installed = On' config.inc.php; then
 	exit 1
 fi
 
-# Development settings: log mails instead of sending them, show stack traces
+# Development settings: log mails instead of sending them, show stack traces,
+# fixed secret for API keys (api/SKILL.md)
 sed -i \
 	-e 's/^default = sendmail/default = log/' \
 	-e 's/^show_stacktrace = Off/show_stacktrace = On/' \
+	-e 's/^api_key_secret = ""/api_key_secret = "ojs-dev-api-key-secret"/' \
 	config.inc.php
 
 runuser -u www-data -- php tools/devSetup.php journal

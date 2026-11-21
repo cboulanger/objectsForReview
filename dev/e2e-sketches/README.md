@@ -6,7 +6,7 @@ Ad-hoc [Playwright](https://playwright.dev/) scripts written while developing th
 - They expect the data of the dev container *as it was at the time*: the accounts from `dev/devSetup.php users` (some renamed to Anna Weber, Jonas Becker, Clara Lindqvist), offers created by earlier scripts, and leftovers from earlier runs. Many only work in a certain order, and running one twice usually fails, because the first run changed the data.
 - They use the plugin's current names: URLs (`manageObjectsForReview`, `for-review`), CSS classes (`ofr…`), tables (`objects_for_review_…`), email subjects. These will change when the plugin is renamed.
 
-What is worth reusing: the helpers in `lib.mjs`, the selectors, the tricks for forcing time-dependent cases, and the list of scenarios below.
+The real test suites are in [`tests/`](../../tests/README.md); browser tests belong in `tests/e2e/ui` (see "Adding a suite" there). What is worth reusing: the helpers in `lib.mjs`, the selectors, the tricks for forcing time-dependent cases, and the list of scenarios below.
 
 ## Running
 

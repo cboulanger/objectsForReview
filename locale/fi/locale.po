@@ -95,9 +95,6 @@ msgstr "Tekijät"
 msgid "plugins.generic.objectsForReview.itemTitle"
 msgstr "Nimike"
 
-msgid "plugins.generic.objectsForReview.itemDescription"
-msgstr "Kuvaus"
-
 msgid "plugins.generic.objectsForReview.itemDescription.description"
 msgstr "Valinnainen. Näytetään nimikkeen alla arvioitavaksi tarjottujen teosten luettelossa."
 
@@ -319,6 +316,27 @@ msgstr "Anna kuukaudet kokonaislukuina (enintään 24); oletus ei saa ylittää 
 
 msgid "plugins.generic.objectsForReview.contract.default"
 msgstr "<p>Varaamalla tämän julkaisun hyväksyt seuraavat ehdot:</p><ul><li>Kirjoitat julkaisusta arvion ja lähetät sen lehdelle valitsemaasi määräpäivään mennessä.</li><li>Jos et ehdi toimittaa arviota ajallaan, ilmoitat toimitukselle mahdollisimman pian.</li><li>Jos perut varauksen tai et toimita arviota, toimitus voi pyytää sinua palauttamaan saamasi arvostelukappaleen.</li><li>Arviosi käy läpi lehden tavanomaisen toimitusprosessin; lähettäminen ei takaa julkaisua.</li></ul>"
+
+msgid "plugins.generic.objectsForReview.doiLookup.button"
+msgstr "Hae DOI"
+
+msgid "plugins.generic.objectsForReview.doiLookup.loading"
+msgstr "Haetaan metatietoja Crossrefistä…"
+
+msgid "plugins.generic.objectsForReview.doiLookup.done"
+msgstr "Metatiedot haettu Crossrefistä. Tarkista kentät ennen tallentamista."
+
+msgid "plugins.generic.objectsForReview.doiLookup.failed"
+msgstr "Crossref-haku epäonnistui. Yritä myöhemmin uudelleen tai syötä metatiedot käsin."
+
+msgid "plugins.generic.objectsForReview.doiLookup.notFound"
+msgstr "Tätä DOI-tunnistetta ei löytynyt Crossrefistä. Se voi olla rekisteröity toisessa palvelussa (esim. DataCite); syötä metatiedot käsin."
+
+msgid "plugins.generic.objectsForReview.doiLookup.invalid"
+msgstr "Anna kelvollinen DOI, esim. 10.1000/xyz123."
+
+msgid "plugins.generic.objectsForReview.doiLookup.editorSuffix"
+msgstr "toim."
 
 msgid "plugins.generic.objectsForReview.isbnLookup.button"
 msgstr "Hae ISBN"
@@ -841,6 +859,9 @@ msgstr "Hakijalista hylätty ({$recipientCount})"
 
 msgid "plugins.generic.objectsForReview.history.event.completed"
 msgstr "Henkilön {$recipientName} arvio julkaistu"
+
+msgid "plugins.generic.objectsForReview.history.event.imported"
+msgstr "Tuotu API:n kautta: {$recipientName}"
 
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Uusien tarjousten oletusjakotapa"

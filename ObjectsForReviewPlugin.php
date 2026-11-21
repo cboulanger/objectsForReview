@@ -27,6 +27,7 @@ use APP\plugins\generic\objectsForReview\classes\Roles;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewGridHandler;
 use APP\plugins\generic\objectsForReview\controllers\grid\ObjectsForReviewManagementGridHandler;
 use APP\plugins\generic\objectsForReview\ObjectsForReviewSchemaMigration;
+use APP\plugins\generic\objectsForReview\api\ObjectsForReviewController;
 use APP\plugins\generic\objectsForReview\pages\ObjectsForReviewHandler;
 use APP\plugins\generic\objectsForReview\pages\ObjectsForReviewManagementHandler;
 
@@ -206,6 +207,9 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 			Hook::add('Mailer::Mailables', [$this, 'addMailable']);
 			Hook::add('Publication::publish', [$this, 'completeOnPublish']);
 
+			// REST API for imports: /index.php/{journal}/api/v1/objectsForReview/... (see api/SKILL.md)
+			Hook::add('APIHandler::endpoints::plugin', [$this, 'registerApi']);
+
 
 
 		}
@@ -234,6 +238,15 @@ class ObjectsForReviewPlugin extends GenericPlugin implements HasTaskScheduler {
 		if ($enabled && $context) {
 			Roles::ensureGroups($this, $context->getId());
 		}
+	}
+
+	/**
+	 * Register the plugin's REST API controller.
+	 * Hooked to APIHandler::endpoints::plugin.
+	 */
+	public function registerApi(string $hookName, \PKP\core\APIRouter $router) {
+		$router->registerPluginApiControllers([new ObjectsForReviewController($this)]);
+		return false;
 	}
 
 	/**

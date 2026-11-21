@@ -95,9 +95,6 @@ msgstr "Autor/innen"
 msgid "plugins.generic.objectsForReview.itemTitle"
 msgstr "Titel"
 
-msgid "plugins.generic.objectsForReview.itemDescription"
-msgstr "Beschreibung"
-
 msgid "plugins.generic.objectsForReview.itemDescription.description"
 msgstr "Optional. Wird in der Liste der angebotenen Werke unter dem Titel angezeigt."
 
@@ -861,6 +858,9 @@ msgstr "Bewerbungsliste verworfen ({$recipientCount})"
 
 msgid "plugins.generic.objectsForReview.history.event.completed"
 msgstr "Rezension von {$recipientName} veröffentlicht"
+
+msgid "plugins.generic.objectsForReview.history.event.imported"
+msgstr "Über die API importiert: {$recipientName}"
 
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Standard-Vergabe für neue Angebote"

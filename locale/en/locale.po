@@ -95,9 +95,6 @@ msgstr "Authors"
 msgid "plugins.generic.objectsForReview.itemTitle"
 msgstr "Title"
 
-msgid "plugins.generic.objectsForReview.itemDescription"
-msgstr "Description"
-
 msgid "plugins.generic.objectsForReview.itemDescription.description"
 msgstr "Optional. Shown below the title in the list of works offered for review."
 
@@ -862,6 +859,9 @@ msgstr "List of bidders discarded ({$recipientCount})"
 
 msgid "plugins.generic.objectsForReview.history.event.completed"
 msgstr "Review by {$recipientName} published"
+
+msgid "plugins.generic.objectsForReview.history.event.imported"
+msgstr "Imported through the API: {$recipientName}"
 
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Default assignment for new offers"
