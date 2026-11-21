@@ -18,6 +18,7 @@ use APP\facades\Repo;
 use APP\handler\Handler;
 use APP\plugins\generic\objectsForReview\classes\Assignment;
 use APP\plugins\generic\objectsForReview\classes\AssignmentWorkflow;
+use APP\plugins\generic\objectsForReview\classes\BundleWorkflow;
 use APP\plugins\generic\objectsForReview\classes\CopyWorkflow;
 use APP\plugins\generic\objectsForReview\classes\InvitationWorkflow;
 use APP\plugins\generic\objectsForReview\controllers\form\CopyStepForm;
@@ -161,8 +162,9 @@ class ObjectsForReviewManagementHandler extends Handler {
 			}
 
 			foreach ($assignments as $assignment) {
-				// Due date passed and no review attached
-				if ($assignment->getStatus() === Assignment::STATUS_ACCEPTED && $assignment->getData('dueDate') && $assignment->getData('dueDate') < $today) {
+				// Due date passed and no review attached (the essay's own assignment only; copy rows and
+				// publisher notifications stay per work, also for mirrors)
+				if (!$assignment->isMirror() && $assignment->getStatus() === Assignment::STATUS_ACCEPTED && $assignment->getData('dueDate') && $assignment->getData('dueDate') < $today) {
 					$overdue[] = $row + [
 						'reviewer' => $this->userName($assignment->getUserId(), $userCache),
 						'dueDate' => $assignment->getData('dueDate'),
@@ -237,13 +239,31 @@ class ObjectsForReviewManagementHandler extends Handler {
 				continue;
 			}
 			foreach ($assignments as $assignment) {
+				if ($assignment->isMirror()) {
+					continue;
+				}
 				$userId = $assignment->getUserId();
 				$users[$userId] = $this->userName($userId, $userCache);
 				if ($filterUserId && $filterUserId !== $userId) {
 					continue;
 				}
 				$active = in_array($assignment->getStatus(), [Assignment::STATUS_OFFERED, Assignment::STATUS_ACCEPTED], true);
+				$members = [];
+				if ($objects[$objectId]->isReviewEssay()) {
+					foreach (AssignmentWorkflow::dao()->getMirrors((int) $assignment->getId()) as $mirror) {
+						$work = $objects[$mirror->getObjectId()] ?? null;
+						if (!$work) {
+							continue;
+						}
+						$members[] = [
+							'description' => $work->getCitation(),
+							'copyStatusLabel' => CopyWorkflow::getStatus($mirror) === CopyWorkflow::NOT_NEEDED ? '' : CopyWorkflow::getStatusLabel($mirror),
+							'copyActions' => $this->copyActions($request, $work, $mirror),
+						];
+					}
+				}
 				$rows[] = $this->objectRow($objects[$objectId]) + [
+					'members' => $members,
 					'copyStatusLabel' => CopyWorkflow::getStatusLabel($assignment),
 					'copyActions' => $this->copyActions($request, $objects[$objectId], $assignment),
 					'user' => $users[$userId],
@@ -283,6 +303,10 @@ class ObjectsForReviewManagementHandler extends Handler {
 		$object = $this->getObject($request, (int) ($args[0] ?? $request->getUserVar('objectId')));
 		if (!$object) {
 			$request->redirect(null, self::PAGE);
+		}
+		// Invitations belong to the review essay, not to its works
+		if ($container = BundleWorkflow::getContainer($object)) {
+			$request->redirect(null, self::PAGE, 'invite', [$container->getId()]);
 		}
 		$context = $request->getContext();
 		$contextId = $context->getId();
@@ -549,7 +573,7 @@ class ObjectsForReviewManagementHandler extends Handler {
 		return [
 			'reviewer' => $this->userName($assignment->getUserId(), $userCache),
 			'assignmentStatus' => $assignment->getStatus(),
-			'copyPreferenceLabel' => __('plugins.generic.objectsForReview.reserve.copy.' . $assignment->getData('copyPreference')),
+			'copyPreferenceLabel' => $assignment->getData('copyPreference') ? __('plugins.generic.objectsForReview.reserve.copy.' . $assignment->getData('copyPreference')) : '',
 			'copyStatusLabel' => CopyWorkflow::getStatusLabel($assignment),
 			'copyStatusDate' => $assignment->getData('copyStatusDate'),
 			'copyReminderCount' => (int) $assignment->getData('copyReminderCount'),
@@ -627,6 +651,7 @@ class ObjectsForReviewManagementHandler extends Handler {
 			'identifier' => $object->getIdentifier(),
 			'identifierUrl' => $object->getIdentifierUrl(),
 			'hidden' => $object->isHidden(),
+			'essayTitle' => BundleWorkflow::getContainer($object)?->getTitle(),
 		];
 	}
 

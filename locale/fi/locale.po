@@ -924,7 +924,7 @@ msgid "plugins.generic.objectsForReview.reviewEssay.error.submitted"
 msgstr "Kooste-arvio on lähetetty: sen teoksia ei voi enää muuttaa."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
-msgstr "Tällä kooste-arviolla on avoin sopimustarjous tai käynnissä oleva kutsukierros."
+msgstr "Tällä kooste-arviolla on avoin sopimustarjous."
 
 msgid "plugins.generic.objectsForReview.history.email.essayChanged"
 msgstr "Arvioijalle ilmoitettu: kooste-arvion teokset ovat muuttuneet"

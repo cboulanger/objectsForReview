@@ -924,7 +924,7 @@ msgid "plugins.generic.objectsForReview.reviewEssay.error.submitted"
 msgstr "The review essay has been submitted: its works can no longer be changed."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
-msgstr "This review essay has a pending contract offer or a running invitation round."
+msgstr "This review essay has a pending contract offer."
 
 msgid "plugins.generic.objectsForReview.history.email.essayChanged"
 msgstr "Reviewer informed: the works of the review essay have changed"

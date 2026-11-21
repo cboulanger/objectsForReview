@@ -923,7 +923,7 @@ msgid "plugins.generic.objectsForReview.reviewEssay.error.submitted"
 msgstr "Die Sammelrezension ist eingereicht: Ihre Werke können nicht mehr geändert werden."
 
 msgid "plugins.generic.objectsForReview.reviewEssay.error.pendingEssay"
-msgstr "Für diese Sammelrezension läuft ein Vertragsangebot oder eine Einladungsrunde."
+msgstr "Für diese Sammelrezension läuft ein Vertragsangebot."
 
 msgid "plugins.generic.objectsForReview.history.email.essayChanged"
 msgstr "Rezensent:in informiert: Die Werke der Sammelrezension haben sich geändert"

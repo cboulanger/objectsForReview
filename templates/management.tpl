@@ -348,6 +348,17 @@
 								<td>
 									{$row.copyPreferenceLabel|escape|nl2br}
 									{if $row.copyStatusLabel}<div><strong>{$row.copyStatusLabel|escape}</strong></div>{/if}
+									{if $row.members}
+										<ul class="ofrDetail">
+											{foreach from=$row.members item=member}
+												<li>{$member.description|strip_unsafe_html}{if $member.copyStatusLabel}: <strong>{$member.copyStatusLabel|escape}</strong>{/if}
+													{foreach from=$member.copyActions item=action}
+														{include file="linkAction/linkAction.tpl" action=$action contextId="ofrAssignments"}
+													{/foreach}
+												</li>
+											{/foreach}
+										</ul>
+									{/if}
 									{if $row.shippingAddress}<div class="ofrDetail">{$row.shippingAddress|escape|nl2br}</div>{/if}
 									{if $row.phone}<div class="ofrDetail">{translate key="plugins.generic.objectsForReview.reserve.phone"}: {$row.phone|escape}</div>{/if}
 									{if $row.copyNote}<div class="ofrDetail">{$row.copyNote|escape|nl2br}</div>{/if}
