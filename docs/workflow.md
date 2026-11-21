@@ -13,6 +13,7 @@ This manual describes how a work offered for review becomes a published review, 
   6. [The review copy](#6-the-review-copy)
   7. [While the review is being written](#7-while-the-review-is-being-written)
   8. [Submission and publication](#8-submission-and-publication)
+  9. [Review essays: one review of several works](#9-review-essays-one-review-of-several-works)
 - [Keeping track](#keeping-track)
 - [Reference: statuses](#reference-statuses)
 
@@ -171,6 +172,26 @@ flowchart TD
     NB --> MAN
 
     ST["BRE stops the round"] -.-> Z["Pending invitations withdrawn,<br/>links stop working"]
+```
+
+### Review essays
+
+A review essay is one review of several works (see [section 9](#9-review-essays-one-review-of-several-works)). The process with the reviewer runs once, for the essay. The review copy and the publisher notification run separately for each work. The chart shows an essay of two works, A and B.
+
+```mermaid
+flowchart TD
+    N["BRE creates the works,<br/>then Create review essay"] --> E
+    C["Works already offered:<br/>Create review essay from them<br/>(open bids and invitations end)"] --> E
+    C -. "one work has a reviewer" .-> T["The reviewer is taken over:<br/>the agreement covers all works,<br/>reviewer informed by email"]
+    T --> E
+    E["Review essay: one offer,<br/>its works listed beneath it"] --> S["Shared process, once for the essay<br/>(see Overview): offer, reservation or bidding,<br/>agreement with a copy choice per work,<br/>writing, submission, publication"]
+    S --> CA["Work A: review copy<br/>from its publisher or stock;<br/>after publication, notify its publisher"]
+    S --> CB["Work B: review copy<br/>from its publisher or stock;<br/>after publication, notify its publisher"]
+    E -. "Add work /<br/>Remove from review essay<br/>(until submitted)" .-> CH["Works change;<br/>a reviewer is informed by email;<br/>a removed work is offered<br/>on its own, hidden"]
+    E -. "Dissolve<br/>(only without a reviewer)" .-> D["Each work is offered<br/>on its own again, hidden"]
+    S -- "reviewer withdraws<br/>or is cancelled" --> X["The essay is offered again"]
+    X --> RA["Work A: return of a printed copy,<br/>if required"]
+    X --> RB["Work B: return of a printed copy,<br/>if required"]
 ```
 
 ## Step by step
@@ -398,6 +419,66 @@ When the review is **published**:
 
 If the publisher asked to be notified, To-do shows the review under **Notify publishers of published reviews**. Click **Notify publisher** to send the publisher contact an email with a link to the review. You can edit the email first.
 
+### 9. Review essays: one review of several works
+
+A review essay is one review of several works, written by one reviewer. The essay is an offer of its own, and the works belong to it. The [flowchart](#review-essays) gives an overview.
+
+What runs **once, for the essay**:
+
+- the offer: the public page, the assignment mode, the bid deadline, the responsible book review editor, hiding;
+- invitations, applications and the choice of a reviewer;
+- the review agreement, the due date and the reminders;
+- withdrawal and cancellation;
+- submission and publication.
+
+What stays **with each work**:
+
+- its publisher contact and review copy settings;
+- the review copy steps: request, sending, receipt, return, and the reminders to the publisher;
+- the notification of the publisher after publication.
+
+#### Creating a review essay
+
+Click **Create review essay** above the list under **Offered works**. In the dialog, enter:
+
+- **Title of the review essay** (required), for example "New books on legal pluralism", and an optional description. Both appear on the public page, as for a work.
+- **Works**: tick the works the essay covers. Only works that can be combined are listed. Works that are already in a review essay, attached to a submission or closed are left out, and so are works with a pending contract offer or a running invitation round.
+- **Hide the review essay from the public list for now**, if you want to invite people first.
+- The assignment, the bid deadline and the responsible book review editor, as for a work.
+
+To make an essay of works that are not offered yet, first enter each work with **Add work**, with its publisher contact and copy settings, and then create the essay from them.
+
+In the list, the essay is shown with its works indented beneath it. On the public page, it is one entry with its title, description and works, which are not listed separately. Reservations, applications and invitations all concern the essay. The actions of the essay row are those of an ordinary offer (**Edit**, **Invite reviewers**, **Hide**, **History**, **Delete**), plus **Add work** and **Dissolve**. A work in an essay has only **Edit** (its bibliographic data and copy settings), **Remove from review essay**, **History** and **Delete**.
+
+#### Combining works that are already offered
+
+You can also create an essay from works that are already offered, with the same dialog. The rules:
+
+- **At most one of the works may have a reviewer.** It is marked "has a reviewer" in the list of works. That reviewer becomes the reviewer of the essay: their agreement and due date now cover all the works. For each of the other works, choose the reviewer's access to it (has it, printed copy, electronic copy, other). The reviewer is informed with the email "Review essay changed". This email is sent with the template text, without editing. If two of the works have different reviewers, the essay can't be created, since an essay has one reviewer.
+- **No pending contract offer or invitation round.** Such works aren't listed. Wait for the answer or stop the round first.
+- **Open applications and invitations end.** When the works are combined, bids on them are closed ("List closed") and their statements are deleted, and pending invitations are withdrawn. Invite people again for the essay, or let them apply for it.
+
+#### Adding and removing works
+
+Until the review is submitted, you can change which works an essay covers:
+
+- **Add work** in the essay's row, or **Add to review essay…** in the row of an ordinary work, adds a work. The same rules apply as for combining. A work that has a reviewer of its own can't be added to an existing essay; create a new essay from the works instead. If the essay has a reviewer, choose their access to the added work. The reviewer is informed with the email "Review essay changed", sent without editing.
+- **Remove from review essay** in a work's row takes the work out. It is offered on its own again, but hidden; use **Show** when it should appear on the public page. If the essay has a reviewer, their agreement no longer covers the work, and they receive the email "Review essay changed", sent without editing. A printed copy they already received can be called back with **Request return** on To-do, as usual. The last work of an essay can't be removed; dissolve the essay instead.
+- **Delete** on a work of an essay removes it from the essay first.
+
+**Dissolving an essay.** **Dissolve** in the essay's row ends the essay: each work is offered on its own again, hidden at first. This is possible only while the essay has no reviewer and no pending contract offer. Bids and invitations for the essay are closed first. **Delete** on an essay does the same.
+
+#### What the reviewer sees
+
+- **Reserving, applying, invitations.** These work as for a single work, on the essay's entry or with the links in the emails. In the review agreement, the reviewer chooses one due date for the whole essay, and their access to each work separately ("Access to the works of the review essay (one choice per work)"). The shipping address and phone number are asked once, if any of the works is to come as a printed copy.
+- **Confirmation, reminders, "I cannot write this review".** Once, for the essay.
+- **Review copies.** Each work that needs a copy appears separately on To-do under *Review copies*, marked with the essay's title. Each copy comes from that work's publisher contact or from the journal's stock, and the copy emails name the work. The steps are those of [section 6](#6-the-review-copy).
+- **Withdrawal or cancellation.** The essay as a whole becomes available again, as described in [section 5](#5-when-a-review-does-not-materialise). For each work, copies not yet arranged are no longer needed, and a printed copy that was sent can be called back with **Request return**, if that work requires returns.
+- **Submission.** In the submission wizard, under *For the Editors › Reviewed works*, the reviewer picks the essay as one entry: its title, followed by the works. All works are attached to the submission together. The article page lists the works, not the essay.
+- **Publication.** It completes the essay and all its works. Under **Notify publishers of published reviews**, To-do lists each work whose publisher asked to be notified.
+
+*Reviewers & bidders* lists the reviewer once, for the essay. The essay has its own history, and the history of each work also records the essay's changes and the reviewer's progress.
+
 ## Keeping track
 
 **History.** Every offer has a history, which you open with **History** on To-do or in the lists. It records who did what and when, and every email sent, with its full text. Steps taken through an email link are marked "via email link"; steps taken by the daily task are marked "automatically".
@@ -459,3 +540,5 @@ The labels are those shown in *Reviewers & bidders* (the flowchart above uses sh
 | Return requested | The reviewer has been asked to return it |
 | Sent back | On its way back |
 | Returned | Back with the journal or the publisher |
+
+**Works in a review essay.** The offer state and the reviewer's status belong to the essay; its works show the essay's state. Each work of the essay also has its own copy record for the reviewer, with one of the review copy states above. It follows the reviewer's status in the essay (reserved, submitted, published, or ended by withdrawal or cancellation), but it is not listed under *Reviewers & bidders* and gets no reminders of the due date. Its review copy state changes only through that work's copy steps.
