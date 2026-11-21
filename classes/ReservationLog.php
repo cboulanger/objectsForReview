@@ -78,6 +78,11 @@ class ReservationLog {
 	/** Review essays (see BundleWorkflow), logged on the works */
 	const EVENT_ESSAY_MIRRORED = 0x1F0F233;
 	const EVENT_ESSAY_STATUS = 0x1F0F234;
+	/** Review essays: created (on the container), works added or removed (on both), dissolved (on the works) */
+	const EVENT_ESSAY_CREATED = 0x1F0F235;
+	const EVENT_ESSAY_MEMBER_ADDED = 0x1F0F236;
+	const EVENT_ESSAY_MEMBER_REMOVED = 0x1F0F237;
+	const EVENT_ESSAY_DISSOLVED = 0x1F0F238;
 
 	const EVENT_MESSAGES = [
 		self::EVENT_RESERVED => 'plugins.generic.objectsForReview.history.event.reserved',
@@ -120,6 +125,11 @@ class ReservationLog {
 		self::EVENT_ESSAY_MIRRORED => 'plugins.generic.objectsForReview.history.event.essayMirrored',
 		// Logged with the message essayStatus.<status>
 		self::EVENT_ESSAY_STATUS => 'plugins.generic.objectsForReview.history.event.essayStatus',
+		self::EVENT_ESSAY_CREATED => 'plugins.generic.objectsForReview.history.event.essayCreated',
+		// On the container logged with the message <key>.container, naming the work
+		self::EVENT_ESSAY_MEMBER_ADDED => 'plugins.generic.objectsForReview.history.event.essayMemberAdded',
+		self::EVENT_ESSAY_MEMBER_REMOVED => 'plugins.generic.objectsForReview.history.event.essayMemberRemoved',
+		self::EVENT_ESSAY_DISSOLVED => 'plugins.generic.objectsForReview.history.event.essayDissolved',
 		self::EVENT_LIST_DISCARDED => 'plugins.generic.objectsForReview.history.event.listDiscarded',
 		self::EVENT_COMPLETED => 'plugins.generic.objectsForReview.history.event.completed',
 		self::EVENT_COPY_REQUESTED => 'plugins.generic.objectsForReview.history.event.copyRequested',

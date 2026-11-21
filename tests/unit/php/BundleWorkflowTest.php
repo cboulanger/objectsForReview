@@ -273,4 +273,268 @@ class BundleWorkflowTest extends TestCase {
 		$this->assertSame(0, $this->invoke($task, 'sendDueDateReminders', $this->plugin(['ofrReminderDays' => 14]), $context));
 		$this->assertNull((new AssignmentDAO())->getById($mirror->getId())->getData('reminderSent'));
 	}
+
+	//
+	// Creating and changing bundles
+	//
+
+	protected function editor(): \PKP\user\User {
+		return \APP\facades\Repo::user()->get(1, true);
+	}
+
+	protected function context() {
+		return \APP\core\Application::getContextDAO()->getById(self::CONTEXT_ID);
+	}
+
+	protected function createEssay(array $works, array $copyPreferences = []): ObjectForReview {
+		$container = BundleWorkflow::create($this->context(), 'Essay', 'About both', $works, $this->editor(), $copyPreferences);
+		$this->created[] = $container->getId();
+		return $container;
+	}
+
+	protected function reload(ObjectForReview $object): ObjectForReview {
+		return (new ObjectForReviewDAO())->getById($object->getId());
+	}
+
+	/**
+	 * An essay with reviewer 1, accepted, with mirrors.
+	 * @param array $preferences Work title => copy preference
+	 * @return array [container, members, container assignment]
+	 */
+	protected function essayWithReviewer(array $preferences, array $data = []): array {
+		[$container, $members] = $this->newEssay(array_keys($preferences));
+		$copyPreferences = [];
+		foreach (array_values($preferences) as $i => $preference) {
+			$copyPreferences[$members[$i]->getId()] = $preference;
+		}
+		$reviewer = $this->newAssignment($container, Assignment::STATUS_ACCEPTED, 1,
+			['dueDate' => '2030-01-31', 'copyPreferences' => $copyPreferences] + $data);
+		BundleWorkflow::syncMembers($container);
+		return [$container, $members, $reviewer];
+	}
+
+	public function testCreateFromFreshWorks(): void {
+		$a = $this->newWork('A', ['hidden' => true, 'assignmentMode' => 'bidding', 'bidDeadline' => '2030-01-31']);
+		$b = $this->newWork('B', ['hidden' => null]);
+
+		$container = $this->reload($this->createEssay([$a, $b]));
+
+		$this->assertTrue($container->isReviewEssay());
+		$this->assertSame('Essay', $container->getTitle());
+		$this->assertSame('About both', $container->getDescription());
+		$this->assertSame('', (string) $container->getIdentifier());
+		$this->assertSame('manager', $container->getCreator());
+		$this->assertTrue($container->isHidden());
+		$this->assertTrue($container->isBidding());
+		$this->assertSame('2030-01-31', $container->getData('bidDeadline'));
+		$this->assertSame([$a->getId(), $b->getId()],
+			array_map(fn ($m) => $m->getId(), (new ObjectForReviewDAO())->getMembers($container->getId())));
+		$this->assertSame(2, (int) $this->reload($b)->getData('bundlePosition'));
+		$this->assertSame([], (new AssignmentDAO())->getByObjectId($container->getId()));
+		$this->assertCount(1, ReservationLog::getHistory($container));
+		$this->assertStringContainsString('Essay', ReservationLog::getHistory($a)[0]['label']);
+	}
+
+	public function testCreateTakesOverExistingReviewer(): void {
+		$a = $this->newWork('A');
+		$b = $this->newWork('B');
+		$r = $this->newAssignment($a, Assignment::STATUS_ACCEPTED, 1, ['dueDate' => '2030-01-31', 'dateReserved' => '2029-01-01',
+			'copyPreference' => 'physical', 'shippingAddress' => 'Somewhere 1', 'phone' => '+49 30 123456',
+			'copyStatus' => 'requested']);
+
+		$container = $this->createEssay([$a, $b], [$b->getId() => 'electronic']);
+
+		$containerAssignments = (new AssignmentDAO())->getByObjectId($container->getId());
+		$this->assertCount(1, $containerAssignments);
+		$reviewer = $containerAssignments[0];
+		$this->assertSame(Assignment::STATUS_ACCEPTED, $reviewer->getStatus());
+		$this->assertSame('2030-01-31', $reviewer->getData('dueDate'));
+		$this->assertSame('2029-01-01', $reviewer->getData('dateReserved'));
+		$this->assertSame($reviewer->getId(), BundleWorkflow::getReviewerAssignment($container)->getId());
+		// A's assignment became the mirror; no second mirror for A
+		$assignmentsA = (new AssignmentDAO())->getByObjectId($a->getId());
+		$this->assertCount(1, $assignmentsA);
+		$this->assertSame($r->getId(), $assignmentsA[0]->getId());
+		$this->assertSame($reviewer->getId(), $assignmentsA[0]->getBundleAssignmentId());
+		$this->assertSame('physical', $assignmentsA[0]->getData('copyPreference'));
+		$this->assertSame('requested', $assignmentsA[0]->getData('copyStatus'));
+		$this->assertSame('Somewhere 1', $assignmentsA[0]->getData('shippingAddress'));
+		$assignmentsB = (new AssignmentDAO())->getByObjectId($b->getId());
+		$this->assertCount(1, $assignmentsB);
+		$this->assertSame($reviewer->getId(), $assignmentsB[0]->getBundleAssignmentId());
+		$this->assertSame('electronic', $assignmentsB[0]->getData('copyPreference'));
+		$this->assertSame(1, (int) $this->reload($container)->getUserId());
+		$this->assertSame(1, (int) $this->reload($b)->getUserId());
+	}
+
+	public function testCreateRefusesTwoReviewers(): void {
+		$a = $this->newWork('A');
+		$b = $this->newWork('B');
+		$this->newAssignment($a, Assignment::STATUS_ACCEPTED, 1, ['dueDate' => '2030-01-31']);
+		$this->newAssignment($b, Assignment::STATUS_ACCEPTED, 1, ['dueDate' => '2030-01-31']);
+
+		$this->assertSame('plugins.generic.objectsForReview.reviewEssay.error.twoReviewers', BundleWorkflow::canCombine([$a, $b]));
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage('plugins.generic.objectsForReview.reviewEssay.error.twoReviewers');
+		$this->createEssay([$a, $b]);
+	}
+
+	public function testCanCombineRefusesUnavailableAndPendingWorks(): void {
+		[$container, [$member]] = $this->newEssay(['M']);
+		$closed = $this->newWork('Closed', ['offerClosed' => true]);
+		$offered = $this->newWork('Offered');
+		$this->newAssignment($offered, Assignment::STATUS_OFFERED, 1);
+		$round = $this->newWork('Round', ['invitationMode' => InvitationWorkflow::MODE_SEQUENTIAL]);
+		$free = $this->newWork('Free');
+
+		$notAvailable = 'plugins.generic.objectsForReview.reviewEssay.error.notAvailable';
+		$this->assertSame($notAvailable, BundleWorkflow::canCombine([$free, $container]));
+		$this->assertSame($notAvailable, BundleWorkflow::canCombine([$free, $member]));
+		$this->assertSame($notAvailable, BundleWorkflow::canCombine([$free, $closed]));
+		$this->assertSame('plugins.generic.objectsForReview.reviewEssay.error.pending', BundleWorkflow::canCombine([$free, $offered]));
+		$this->assertSame('plugins.generic.objectsForReview.reviewEssay.error.pending', BundleWorkflow::canCombine([$free, $round]));
+		$this->assertNull(BundleWorkflow::canCombine([$free]));
+	}
+
+	public function testCreateDiscardsOpenBids(): void {
+		$a = $this->newWork('A', ['assignmentMode' => 'bidding']);
+		$b = $this->newWork('B');
+		$bid = $this->newAssignment($a, Assignment::STATUS_BID, 1, ['statement' => 'Me!']);
+		$invitee = $this->newAssignment($b, Assignment::STATUS_LISTED, 1);
+
+		$this->createEssay([$a, $b]);
+
+		$this->assertSame(Assignment::STATUS_DISCARDED, (new AssignmentDAO())->getById($bid->getId())->getStatus());
+		$this->assertSame(Assignment::STATUS_DISCARDED, (new AssignmentDAO())->getById($invitee->getId())->getStatus());
+	}
+
+	public function testAddMemberWithReviewerCreatesMirror(): void {
+		[$container, , $reviewer] = $this->essayWithReviewer(['A' => 'have']);
+		$c = $this->newWork('C');
+
+		BundleWorkflow::addMember($container, $c, $this->editor(), 'electronic');
+
+		$c = $this->reload($c);
+		$this->assertSame($container->getId(), $c->getBundleId());
+		$this->assertSame(2, (int) $c->getData('bundlePosition'));
+		$mirrors = (new AssignmentDAO())->getByObjectId($c->getId());
+		$this->assertCount(1, $mirrors);
+		$this->assertSame($reviewer->getId(), $mirrors[0]->getBundleAssignmentId());
+		$this->assertSame('electronic', $mirrors[0]->getData('copyPreference'));
+		$this->assertSame('pending', $mirrors[0]->getData('copyStatus'));
+		$this->assertSame(1, (int) $c->getUserId());
+		$this->assertNull((new AssignmentDAO())->getById($reviewer->getId())->getData('copyPreferences'));
+		$this->assertSame(['Work added to the review essay: C'], array_column(ReservationLog::getHistory($container), 'label'));
+		$this->assertSame('Review essay: Essay — work added to the essay', ReservationLog::getHistory($c)[0]['label']);
+	}
+
+	public function testAddMemberPhysicalCopiesAddressFromAnotherMirror(): void {
+		[$container] = $this->essayWithReviewer(['A' => 'physical', 'B' => 'have'],
+			['shippingAddress' => 'Somewhere 1', 'phone' => '+49 30 123456']);
+		$c = $this->newWork('C');
+
+		BundleWorkflow::addMember($container, $c, $this->editor(), 'physical');
+
+		$mirror = (new AssignmentDAO())->getByObjectId($c->getId())[0];
+		$this->assertSame('physical', $mirror->getData('copyPreference'));
+		$this->assertSame('Somewhere 1', $mirror->getData('shippingAddress'));
+		$this->assertSame('+49 30 123456', $mirror->getData('phone'));
+		$this->assertSame('pending', $mirror->getData('copyStatus'));
+	}
+
+	public function testAddMemberPhysicalWithoutAddressLeavesCopyPending(): void {
+		[$container, , $reviewer] = $this->essayWithReviewer(['A' => 'electronic']);
+		$c = $this->newWork('C');
+
+		BundleWorkflow::addMember($container, $c, $this->editor(), 'physical');
+
+		$mirror = (new AssignmentDAO())->getByObjectId($c->getId())[0];
+		$this->assertSame('physical', $mirror->getData('copyPreference'));
+		$this->assertNull($mirror->getData('shippingAddress'));
+		$this->assertSame('pending', $mirror->getData('copyStatus'));
+		$this->assertNull((new AssignmentDAO())->getById($reviewer->getId())->getData('shippingAddress'));
+	}
+
+	public function testAddMemberRefusesWorkWithReviewerAndSubmittedEssay(): void {
+		[$container] = $this->newEssay(['A']);
+		$c = $this->newWork('C');
+		$this->newAssignment($c, Assignment::STATUS_ACCEPTED, 1, ['dueDate' => '2030-01-31']);
+		try {
+			BundleWorkflow::addMember($container, $c, $this->editor());
+			$this->fail('A work with its own reviewer was added');
+		} catch (\InvalidArgumentException $e) {
+			$this->assertSame('plugins.generic.objectsForReview.reviewEssay.error.twoReviewers', $e->getMessage());
+		}
+
+		$container = $this->reload($container);
+		$container->setSubmissionId(424242);
+		(new ObjectForReviewDAO())->updateObject($container);
+		$this->expectExceptionMessage('plugins.generic.objectsForReview.reviewEssay.error.submitted');
+		BundleWorkflow::addMember($container, $this->newWork('D'), $this->editor());
+	}
+
+	public function testRemoveMemberCancelsMirrorAndHidesWork(): void {
+		[$container, [$a, $b], $reviewer] = $this->essayWithReviewer(['A' => 'physical', 'B' => 'have'],
+			['shippingAddress' => 'Somewhere 1']);
+		$mirror = (new AssignmentDAO())->getByObjectId($a->getId())[0];
+		$mirror->setData('copyStatus', 'sent');
+		(new AssignmentDAO())->updateObject($mirror);
+		$a = $this->reload($a);
+		$a->setOfferSetting('hidden', null);
+		(new ObjectForReviewDAO())->updateObject($a);
+
+		BundleWorkflow::removeMember($container, $a, $this->editor());
+
+		$a = $this->reload($a);
+		$this->assertTrue($a->isHidden());
+		$this->assertNull($a->getBundleId());
+		$this->assertNull($a->getData('bundlePosition'));
+		$this->assertNull($a->getUserId());
+		$mirror = (new AssignmentDAO())->getById($mirror->getId());
+		$this->assertSame(Assignment::STATUS_CANCELLED, $mirror->getStatus());
+		$this->assertFalse($mirror->isMirror());
+		$this->assertSame('sent', $mirror->getData('copyStatus'));
+		$this->assertNull($mirror->getData('shippingAddress'));
+		$this->assertSame([$b->getId()], array_map(fn ($m) => $m->getId(), (new ObjectForReviewDAO())->getMembers($container->getId())));
+		$this->assertSame(Assignment::STATUS_ACCEPTED, (new AssignmentDAO())->getById($reviewer->getId())->getStatus());
+		$this->assertSame(['Work removed from the review essay: A'], array_column(ReservationLog::getHistory($container), 'label'));
+	}
+
+	public function testRemoveLastMemberRefused(): void {
+		[$container, [$a]] = $this->newEssay(['A']);
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage('plugins.generic.objectsForReview.reviewEssay.error.lastMember');
+		BundleWorkflow::removeMember($container, $a, $this->editor());
+	}
+
+	public function testDissolveRefusedWithReviewer(): void {
+		[$container] = $this->essayWithReviewer(['A' => 'have', 'B' => 'have']);
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage('plugins.generic.objectsForReview.reviewEssay.error.hasReviewer');
+		BundleWorkflow::dissolve($container, $this->editor());
+	}
+
+	public function testDissolveFreesMembers(): void {
+		[$container, [$a, $b]] = $this->newEssay(['A', 'B']);
+		$bid = $this->newAssignment($container, Assignment::STATUS_BID, 1, ['statement' => 'Me!']);
+
+		BundleWorkflow::dissolve($container, $this->editor());
+
+		$this->assertNull((new ObjectForReviewDAO())->getById($container->getId()));
+		$this->assertNull((new AssignmentDAO())->getById($bid->getId()));
+		foreach ([$a, $b] as $work) {
+			$work = $this->reload($work);
+			$this->assertNull($work->getBundleId());
+			$this->assertNull($work->getData('bundlePosition'));
+			$this->assertTrue($work->isHidden());
+			$this->assertStringContainsString('Essay', ReservationLog::getHistory($work)[0]['label']);
+		}
+	}
+
+	public function testGetReviewerAssignmentPrefersTheNewestReviewer(): void {
+		[$container] = $this->newEssay(['A']);
+		$this->newAssignment($container, Assignment::STATUS_COMPLETED, 1, ['dateCreated' => '2030-01-01 10:00:00']);
+		$newest = $this->newAssignment($container, Assignment::STATUS_ACCEPTED, 1, ['dateCreated' => '2030-01-02 10:00:00']);
+		$this->assertSame($newest->getId(), BundleWorkflow::getReviewerAssignment($container)->getId());
+	}
 }

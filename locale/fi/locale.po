@@ -884,6 +884,42 @@ msgstr "Kooste-arvio: {$recipientName} — tilaksi muuttui Arvioija perui"
 msgid "plugins.generic.objectsForReview.history.event.essayStatus.cancelled"
 msgstr "Kooste-arvio: {$recipientName} — tilaksi muuttui Toimitus perui"
 
+msgid "plugins.generic.objectsForReview.history.event.essayCreated"
+msgstr "Kooste-arvio luotu: {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberAdded"
+msgstr "Kooste-arvio: {$recipientName} — teos lisätty kooste-arvioon"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberAdded.container"
+msgstr "Teos lisätty kooste-arvioon: {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberRemoved"
+msgstr "Kooste-arvio: {$recipientName} — teos poistettu kooste-arviosta"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberRemoved.container"
+msgstr "Teos poistettu kooste-arviosta: {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.essayDissolved"
+msgstr "Kooste-arvio: {$recipientName} — purettu, teosta tarjotaan taas erikseen"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.notAvailable"
+msgstr "Tämä teos ei voi kuulua kooste-arvioon: se kuuluu jo kooste-arvioon, on liitetty käsikirjoitukseen tai sen tarjous on suljettu."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.twoReviewers"
+msgstr "Vain yhdellä teoksista voi olla arvioija: kooste-arviolla on yksi arvioija."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.pending"
+msgstr "Yhdellä teoksista on avoin sopimustarjous tai kutsukierros. Odota sen päättymistä tai peru se ensin."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.lastMember"
+msgstr "Kooste-arvion viimeistä teosta ei voi poistaa. Pura kooste-arvio sen sijaan."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.hasReviewer"
+msgstr "Kooste-arviota, jolla on arvioija, ei voi purkaa."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.submitted"
+msgstr "Kooste-arvio on lähetetty: sen teoksia ei voi enää muuttaa."
+
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Uusien tarjousten oletusjakotapa"
 

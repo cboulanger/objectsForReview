@@ -884,6 +884,42 @@ msgstr "Review essay: {$recipientName} — status changed to Cancelled by the re
 msgid "plugins.generic.objectsForReview.history.event.essayStatus.cancelled"
 msgstr "Review essay: {$recipientName} — status changed to Cancelled by the editors"
 
+msgid "plugins.generic.objectsForReview.history.event.essayCreated"
+msgstr "Review essay created: {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberAdded"
+msgstr "Review essay: {$recipientName} — work added to the essay"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberAdded.container"
+msgstr "Work added to the review essay: {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberRemoved"
+msgstr "Review essay: {$recipientName} — work removed from the essay"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberRemoved.container"
+msgstr "Work removed from the review essay: {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.essayDissolved"
+msgstr "Review essay: {$recipientName} — essay dissolved, the work is offered on its own again"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.notAvailable"
+msgstr "This work cannot be part of a review essay: it is already in a review essay, attached to a submission, or its offer is closed."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.twoReviewers"
+msgstr "Only one of the works may have a reviewer: a review essay has one reviewer."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.pending"
+msgstr "A contract offer or an invitation round is pending for one of the works. Wait for it to end, or withdraw it first."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.lastMember"
+msgstr "The last work of a review essay cannot be removed. Dissolve the review essay instead."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.hasReviewer"
+msgstr "A review essay with a reviewer cannot be dissolved."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.submitted"
+msgstr "The review essay has been submitted: its works can no longer be changed."
+
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Default assignment for new offers"
 

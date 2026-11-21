@@ -883,6 +883,42 @@ msgstr "Sammelrezension: {$recipientName} — Status geändert zu Von der Rezens
 msgid "plugins.generic.objectsForReview.history.event.essayStatus.cancelled"
 msgstr "Sammelrezension: {$recipientName} — Status geändert zu Von der Redaktion storniert"
 
+msgid "plugins.generic.objectsForReview.history.event.essayCreated"
+msgstr "Sammelrezension angelegt: {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberAdded"
+msgstr "Sammelrezension: {$recipientName} — Werk zur Sammelrezension hinzugefügt"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberAdded.container"
+msgstr "Werk zur Sammelrezension hinzugefügt: {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberRemoved"
+msgstr "Sammelrezension: {$recipientName} — Werk aus der Sammelrezension entfernt"
+
+msgid "plugins.generic.objectsForReview.history.event.essayMemberRemoved.container"
+msgstr "Werk aus der Sammelrezension entfernt: {$recipientName}"
+
+msgid "plugins.generic.objectsForReview.history.event.essayDissolved"
+msgstr "Sammelrezension: {$recipientName} — aufgelöst, das Werk wird wieder einzeln angeboten"
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.notAvailable"
+msgstr "Dieses Werk kann nicht Teil einer Sammelrezension sein: Es gehört bereits zu einer Sammelrezension, ist einer Einreichung zugeordnet oder sein Angebot ist geschlossen."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.twoReviewers"
+msgstr "Nur eines der Werke darf eine Rezensentin/einen Rezensenten haben: Eine Sammelrezension hat eine Rezensentin/einen Rezensenten."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.pending"
+msgstr "Für eines der Werke läuft ein Vertragsangebot oder eine Einladungsrunde. Warten Sie das Ende ab oder ziehen Sie es zuerst zurück."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.lastMember"
+msgstr "Das letzte Werk einer Sammelrezension kann nicht entfernt werden. Lösen Sie stattdessen die Sammelrezension auf."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.hasReviewer"
+msgstr "Eine Sammelrezension mit Rezensentin/Rezensent kann nicht aufgelöst werden."
+
+msgid "plugins.generic.objectsForReview.reviewEssay.error.submitted"
+msgstr "Die Sammelrezension ist eingereicht: Ihre Werke können nicht mehr geändert werden."
+
 msgid "plugins.generic.objectsForReview.settings.defaultMode"
 msgstr "Standard-Vergabe für neue Angebote"
 
