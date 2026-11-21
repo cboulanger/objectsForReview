@@ -62,7 +62,18 @@ class Assignment extends DataObject {
 	 */
 	const FIELDS = ['statement', 'dateOffered', 'contractDeadline', 'contractReminderSent', 'declineReason',
 		'copyStatus', 'copyStatusDate', 'copySentBy', 'returnTarget', 'copyReminderSent', 'copyReminderCount',
-		'position', 'invitedBy', 'dateInvited', 'invitationDeadline', 'invitationDeclineReason', 'invitationReminderSent'];
+		'position', 'invitedBy', 'dateInvited', 'invitationDeadline', 'invitationDeclineReason', 'invitationReminderSent',
+		'bundleAssignmentId'];
+
+	/** A mirror carries the review copy status of one member work of a review essay. */
+	function isMirror(): bool {
+		return (bool) $this->getData('bundleAssignmentId');
+	}
+
+	/** Id of the container assignment this mirror belongs to. */
+	function getBundleAssignmentId(): ?int {
+		return $this->getData('bundleAssignmentId') ? (int) $this->getData('bundleAssignmentId') : null;
+	}
 
 	function getObjectId(): int {
 		return (int) $this->getData('objectId');

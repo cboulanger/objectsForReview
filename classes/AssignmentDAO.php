@@ -89,7 +89,18 @@ class AssignmentDAO extends DAO {
 			->where('user_id', $userId)
 			->where('context_id', $contextId)
 			->whereIn('status', [Assignment::STATUS_SUBMITTED, Assignment::STATUS_COMPLETED])
+			->whereNotIn('assignment_id', DB::table(self::SETTINGS_TABLE)->where('setting_name', 'bundleAssignmentId')->select('assignment_id'))
 			->count();
+	}
+
+	/**
+	 * Mirror assignments of a review essay assignment.
+	 * @return Assignment[]
+	 */
+	public function getMirrors(int $bundleAssignmentId): array {
+		$ids = DB::table(self::SETTINGS_TABLE)->where('setting_name', 'bundleAssignmentId')
+			->where('setting_value', (string) $bundleAssignmentId)->pluck('assignment_id')->all();
+		return $ids ? $this->toObjects(DB::table(self::TABLE)->whereIn('assignment_id', $ids)->orderBy('assignment_id')->get()) : [];
 	}
 
 	public function insertObject(Assignment $assignment): int {

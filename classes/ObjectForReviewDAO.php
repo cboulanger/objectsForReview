@@ -156,6 +156,17 @@ class ObjectForReviewDAO extends DAO {
 	 * Delete a objectForReview by ID.
 	 * @param $objectForReviewId int
 	 */
+	function getMembers(int $containerId): array {
+		$ids = DB::table('objects_for_review_settings')
+			->where('setting_name', 'bundleId')
+			->where('setting_value', (string) $containerId)
+			->pluck('object_id')->all();
+		$members = array_values(array_filter(array_map(fn ($id) => $this->getById((int) $id), $ids)));
+		usort($members, fn ($a, $b) => ((int) $a->getData('bundlePosition') <=> (int) $b->getData('bundlePosition'))
+			?: ($a->getId() <=> $b->getId()));
+		return $members;
+	}
+
 	function deleteById($objectId) {
 		(new AssignmentDAO())->deleteByObjectId((int) $objectId);
 		$this->update(

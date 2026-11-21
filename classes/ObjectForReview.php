@@ -42,10 +42,29 @@ class ObjectForReview extends \PKP\core\DataObject {
 	 * - invitationSubject, invitationBody: the email text edited when the round started
 	 * - invitationStarted, invitationStartedBy: when and by whom (the sender of the emails)
 	 * - invitationExhausted: date the round reached the end of the list
+	 * Review essays (one review of several works; the container owns the offer):
+	 * - bundleId: the review essay (container) this work belongs to
+	 * - bundlePosition: its place in the container's list
 	 */
 	const OFFER_FIELDS = ['assignmentMode', 'bidDeadline', 'biddingClosed', 'responsibleEditorId', 'offerClosed', 'hidden',
 		'publisherContactId', 'journalHoldsCopy', 'returnRequired', 'notifyPublisher', 'publisherNotified',
-		'invitationMode', 'invitationSubject', 'invitationBody', 'invitationStarted', 'invitationStartedBy', 'invitationExhausted'];
+		'invitationMode', 'invitationSubject', 'invitationBody', 'invitationStarted', 'invitationStartedBy', 'invitationExhausted',
+		'bundleId', 'bundlePosition'];
+
+	/** Resource type of a review essay container */
+	const RESOURCE_TYPE_REVIEW_ESSAY = 'reviewEssay';
+
+	function isReviewEssay(): bool {
+		return $this->getResourceType() === self::RESOURCE_TYPE_REVIEW_ESSAY;
+	}
+
+	function getBundleId(): ?int {
+		return $this->getData('bundleId') ? (int) $this->getData('bundleId') : null;
+	}
+
+	function isBundleMember(): bool {
+		return $this->getBundleId() !== null;
+	}
 
 	function isHidden(): bool {
 		return (bool) $this->getData('hidden');
@@ -204,6 +223,10 @@ class ObjectForReview extends \PKP\core\DataObject {
 	 * @return string
 	 */
 	function getCitation() {
+		if ($this->isReviewEssay()) {
+			$citations = array_map(fn (ObjectForReview $m) => $m->getCitation(), (new ObjectForReviewDAO())->getMembers((int) $this->getId()));
+			return $citations ? $this->getTitle() . ' (' . implode('; ', $citations) . ')' : (string) $this->getTitle();
+		}
 		$description = $this->getData('title');
 		if ($this->getData('authors'))
 			$description = $this->getData('authors') . ": " . $description;

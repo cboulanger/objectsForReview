@@ -42,7 +42,8 @@ class Reservation {
 	}
 
 	/** Contract data stored as assignment settings (see AssignmentDAO::getAdditionalFieldNames()) */
-	const FIELDS = ['dateReserved', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote', 'reminderSent'];
+	const FIELDS = ['dateReserved', 'dueDate', 'copyPreference', 'shippingAddress', 'phone', 'copyNote', 'reminderSent',
+		'copyPreferences'];
 
 	/** Personal data that is erased once it is no longer needed */
 	const PERSONAL_FIELDS = ['shippingAddress', 'phone'];

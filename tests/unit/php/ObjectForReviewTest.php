@@ -84,4 +84,14 @@ class ObjectForReviewTest extends TestCase {
 		$this->assertFalse($this->assignment(Assignment::STATUS_OFFERED)->isBidder());
 		$this->assertFalse($this->assignment(Assignment::STATUS_OFFERED)->isReviewer());
 	}
+
+	public function testReviewEssayFlags(): void {
+		$container = $this->object(['resourceType' => ObjectForReview::RESOURCE_TYPE_REVIEW_ESSAY, 'identifier' => '', 'identifierType' => '']);
+		$this->assertTrue($container->isReviewEssay());
+		$this->assertNull($container->getBundleId());
+		$member = $this->object(['bundleId' => '7']);
+		$this->assertFalse($member->isReviewEssay());
+		$this->assertTrue($member->isBundleMember());
+		$this->assertSame(7, $member->getBundleId());
+	}
 }

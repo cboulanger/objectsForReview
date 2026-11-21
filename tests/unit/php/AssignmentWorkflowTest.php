@@ -86,4 +86,11 @@ class AssignmentWorkflowTest extends TestCase {
 	private function bidding(array $data = []) {
 		return $this->object(['assignmentMode' => 'bidding'] + $data);
 	}
+
+	public function testMirrorFlag(): void {
+		$this->assertFalse($this->assignment(Assignment::STATUS_ACCEPTED)->isMirror());
+		$mirror = $this->assignment(Assignment::STATUS_ACCEPTED, ['bundleAssignmentId' => 12]);
+		$this->assertTrue($mirror->isMirror());
+		$this->assertSame(12, $mirror->getBundleAssignmentId());
+	}
 }
